@@ -36,9 +36,9 @@
     @endif
 </head>
 
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-[#04060c] font-sans antialiased text-slate-100">
 
-<div class="flex flex-col lg:flex-row h-screen overflow-hidden bg-gray-100">
+<div class="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#04060c]">
 
     <!-- Mobile Top Navigation Header -->
     <header class="bg-blue-900 text-white p-3.5 flex items-center justify-between lg:hidden shadow-md z-30 shrink-0">
@@ -157,8 +157,10 @@
     <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 hidden lg:hidden transition-opacity duration-300"></div>
 
     <!-- Content -->
-    <main class="flex-1 min-w-0 h-full overflow-y-auto p-4 lg:p-8">
-        @yield('content')
+    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-5 lg:p-7 bg-[#04060c]">
+        <div class="max-w-[1680px] mx-auto w-full">
+            @yield('content')
+        </div>
     </main>
 
 </div>
