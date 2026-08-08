@@ -155,7 +155,7 @@
         </div>
         @endauth
 
-        <div class="px-4 pb-3 text-center text-[10px] text-gray-500 uppercase tracking-widest shrink-0">
+        <div class="px-4 pb-3 text-center text-[10px] text-blue-300 font-bold uppercase tracking-widest shrink-0">
             v1.0.0 &copy; 2026
         </div>
 

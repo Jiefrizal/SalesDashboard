@@ -306,8 +306,8 @@ $colorPalette = [
                                 <i class="bi bi-record-circle-fill text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">ACV VS TARGET</p>
-                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetMin }}">{{ number_format($totalTargetMin) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-200 font-bold uppercase tracking-wider leading-tight">ACV VS TARGET</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-300 font-bold">/ <span class="counter-animate" data-target="{{ $totalTargetMin }}">{{ number_format($totalTargetMin) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
@@ -322,8 +322,8 @@ $colorPalette = [
                                 <i class="bi bi-graph-up-arrow text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">VS Last Month (LM)</p>
-                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalLm }}">{{ number_format($totalLm) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-200 font-bold uppercase tracking-wider leading-tight">VS Last Month (LM)</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-300 font-bold">/ <span class="counter-animate" data-target="{{ $totalLm }}">{{ number_format($totalLm) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
@@ -338,8 +338,8 @@ $colorPalette = [
                                 <i class="bi bi-calendar2-check-fill text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">ACT YTD vs Target 2026</p>
-                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalActYtdJan2026 }}">{{ number_format($totalActYtdJan2026) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetReguler2026 }}">{{ number_format($totalTargetReguler2026) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-200 font-bold uppercase tracking-wider leading-tight">ACT YTD vs Target 2026</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalActYtdJan2026 }}">{{ number_format($totalActYtdJan2026) }}</span> <span class="text-slate-300 font-bold">/ <span class="counter-animate" data-target="{{ $totalTargetReguler2026 }}">{{ number_format($totalTargetReguler2026) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
@@ -354,8 +354,8 @@ $colorPalette = [
                                 <i class="bi bi-trophy-fill text-base text-yellow-400"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer On Target</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5 font-semibold leading-tight">Capai Target</p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-200 font-bold uppercase tracking-wider leading-tight">Dealer On Target</p>
+                                <p class="text-[10px] text-yellow-300 mt-0.5 font-extrabold leading-tight">Capai Target</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
@@ -370,8 +370,8 @@ $colorPalette = [
                                 <i class="bi bi-graph-down-arrow text-base text-rose-400"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer Below Target</p>
-                                <p class="text-[10px] text-slate-400 mt-0.5 font-semibold leading-tight">Belum Capai Target</p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-200 font-bold uppercase tracking-wider leading-tight">Dealer Below Target</p>
+                                <p class="text-[10px] text-rose-300 mt-0.5 font-extrabold leading-tight">Belum Capai Target</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
@@ -405,9 +405,9 @@ $colorPalette = [
                             <i class="bi bi-trophy-fill text-base"></i>
                         </div>
                         <div class="min-w-0 flex-1 text-left">
-                            <p class="text-[9.5px] lg:text-xs text-slate-400 font-semibold uppercase tracking-wider leading-tight">Achieved Target</p>
+                            <p class="text-[9.5px] lg:text-xs text-slate-200 font-extrabold uppercase tracking-wider leading-tight">Achieved Target</p>
                             <p class="text-xs text-yellow-400 font-bold leading-tight mt-0.5">{{ $dealersOnTarget }} Dealer Capai Target</p>
-                            <p class="text-[9.5px] lg:text-[10.5px] text-slate-400 mt-1 leading-normal font-semibold">{{ !empty($dealersOnTargetNames) ? implode(', ', $dealersOnTargetNames) : 'Belum ada dealer' }}</p>
+                            <p class="text-[9.5px] lg:text-[10.5px] text-slate-300 mt-1 leading-normal font-semibold">{{ !empty($dealersOnTargetNames) ? implode(', ', $dealersOnTargetNames) : 'Belum ada dealer' }}</p>
                         </div>
                     </div>
 
@@ -418,9 +418,9 @@ $colorPalette = [
                                 <i class="bi bi-exclamation-triangle-fill text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1 text-left">
-                                <p class="text-[9.5px] lg:text-xs text-slate-400 font-semibold uppercase tracking-wider leading-tight">Stock Alert</p>
+                                <p class="text-[9.5px] lg:text-xs text-slate-200 font-extrabold uppercase tracking-wider leading-tight">Stock Alert</p>
                                 <p class="text-xs text-rose-400 font-bold leading-tight mt-0.5">Prioritaskan Penjualan</p>
-                                <p class="text-[9.5px] lg:text-[10.5px] text-slate-400 mt-1 leading-normal font-semibold">{{ implode(', ', $oldStockAlerts) }}</p>
+                                <p class="text-[9.5px] lg:text-[10.5px] text-slate-300 mt-1 leading-normal font-semibold">{{ implode(', ', $oldStockAlerts) }}</p>
                             </div>
                         </div>
                     @else
@@ -429,9 +429,9 @@ $colorPalette = [
                                 <i class="bi bi-shield-check text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1 text-left">
-                                <p class="text-[9.5px] lg:text-xs text-slate-400 font-semibold uppercase tracking-wider leading-tight">Stock Condition</p>
+                                <p class="text-[9.5px] lg:text-xs text-slate-200 font-extrabold uppercase tracking-wider leading-tight">Stock Condition</p>
                                 <p class="text-xs text-emerald-400 font-bold leading-tight mt-0.5">Optimal</p>
-                                <p class="text-[9.5px] lg:text-[10.5px] text-slate-400 mt-1 leading-normal font-semibold">Seluruh cabang bersih dari stock lama (2024/2025).</p>
+                                <p class="text-[9.5px] lg:text-[10.5px] text-slate-300 mt-1 leading-normal font-semibold">Seluruh cabang bersih dari stock lama (2024/2025).</p>
                             </div>
                         </div>
                     @endif
@@ -442,9 +442,9 @@ $colorPalette = [
                             <i class="bi bi-bar-chart-fill text-base"></i>
                         </div>
                         <div class="min-w-0 flex-1 text-left">
-                            <p class="text-[9.5px] lg:text-xs text-slate-400 font-semibold uppercase tracking-wider leading-tight">YTD 2026 Progress</p>
+                            <p class="text-[9.5px] lg:text-xs text-slate-200 font-extrabold uppercase tracking-wider leading-tight">YTD 2026 Progress</p>
                             <p class="text-xs text-blue-400 font-bold leading-tight mt-0.5">Pencapaian: <span id="highlight-ytd-percent">{{ round($overallYtdPercent) }}</span>%</p>
-                            <p class="text-[9.5px] lg:text-[10.5px] text-slate-400 mt-1 leading-normal font-semibold">Total actual YTD <span id="highlight-ytd-act">{{ $totalActYtdJan2026 }}</span> unit dari target 2026 <span id="highlight-ytd-target">{{ $totalTargetReguler2026 }}</span> unit.</p>
+                            <p class="text-[9.5px] lg:text-[10.5px] text-slate-300 mt-1 leading-normal font-semibold">Total actual YTD <span id="highlight-ytd-act">{{ $totalActYtdJan2026 }}</span> unit dari target 2026 <span id="highlight-ytd-target">{{ $totalTargetReguler2026 }}</span> unit.</p>
                         </div>
                     </div>
 
@@ -727,7 +727,7 @@ $colorPalette = [
                                 $totalStock = $cabang->stock_2024 + $cabang->stock_2025 + $cabang->stock_2026;
                             @endphp
                             <tr class="branch-row group hover:bg-blue-900/30 border-b border-blue-900/30 transition duration-150 text-center" data-id="{{ $cabang->id }}">
-                                <td class="sticky left-0 z-10 bg-slate-950/90 group-hover:bg-slate-900/95 py-2.5 px-3 border border-blue-900/40 text-center font-bold w-10 text-slate-400">{{ $index + 1 }}</td>
+                                <td class="sticky left-0 z-10 bg-slate-950/90 group-hover:bg-slate-900/95 py-2.5 px-3 border border-blue-900/40 text-center font-extrabold w-10 text-slate-200">{{ $index + 1 }}</td>
                                 <td class="sticky left-10 z-10 bg-slate-950/90 group-hover:bg-slate-900/95 py-2.5 px-3 border border-blue-900/40 text-left font-extrabold w-28 truncate text-white">{{ $cabang->nama }}</td>
                                 
                                 <!-- TARGET TANTANGAN -->
