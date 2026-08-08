@@ -34,6 +34,14 @@
     @else
         @vite(['resources/css/app.css','resources/js/app.js'])
     @endif
+    <style>
+        /* Compact Scaling for PC Screens to match 67% executive density */
+        @media (min-width: 1024px) {
+            .pc-zoom-compact {
+                zoom: 0.82;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-[#04060c] font-sans antialiased text-slate-100">
@@ -157,8 +165,8 @@
     <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 hidden lg:hidden transition-opacity duration-300"></div>
 
     <!-- Content -->
-    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-5 lg:p-7 bg-[#04060c]">
-        <div class="max-w-[1680px] mx-auto w-full">
+    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-5 lg:p-6 bg-[#04060c]">
+        <div class="max-w-[1750px] mx-auto w-full pc-zoom-compact">
             @yield('content')
         </div>
     </main>
