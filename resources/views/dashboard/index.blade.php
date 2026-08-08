@@ -680,6 +680,10 @@ $colorPalette = [
                     <span>Daftar Performa Dealer (STU & Stock)</span>
                     <span class="text-xs lg:text-sm text-blue-300 normal-case italic mt-1 sm:mt-0">Persentase: >=100% (Hijau), <80% (Merah)</span>
                 </div>
+                <div class="flex items-center justify-between sm:hidden mb-2 text-[10px] text-cyan-300 font-extrabold px-1">
+                    <span class="flex items-center space-x-1"><i class="bi bi-arrows-expand"></i> Geser tabel ke samping</span>
+                    <span class="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-full">Scrollable &rarr;</span>
+                </div>
                 
                 <div class="overflow-x-auto rounded-xl border border-blue-800">
                     <table class="w-full text-sm lg:text-base text-center border-collapse whitespace-nowrap">

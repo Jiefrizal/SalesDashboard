@@ -49,15 +49,16 @@
 <div class="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#04060c]">
 
     <!-- Mobile Top Navigation Header -->
-    <header class="bg-blue-900 text-white p-3.5 flex items-center justify-between lg:hidden shadow-md z-30 shrink-0">
-        <div class="flex items-center space-x-3">
-            <img src="{{ asset('logo.png') }}" alt="ASPACINDO" class="h-9 w-auto object-contain">
-            <div>
-                <h1 class="text-xs font-extrabold tracking-wider text-white uppercase">PT ASPACINDO KEDATON MOTOR</h1>
+    <header class="bg-slate-950/90 border-b border-blue-900/80 backdrop-blur-md px-4 py-3 flex items-center justify-between lg:hidden shadow-xl z-40 shrink-0">
+        <div class="flex items-center space-x-3 min-w-0">
+            <img src="{{ asset('logo.png') }}" alt="ASPACINDO" class="h-8 w-auto object-contain shrink-0">
+            <div class="min-w-0">
+                <h1 class="text-xs font-black tracking-wider text-white uppercase truncate">PT ASPACINDO KEDATON MOTOR</h1>
+                <span class="text-[9.5px] font-extrabold text-yellow-400 block uppercase tracking-widest leading-none mt-0.5">Sales & Stock Realtime</span>
             </div>
         </div>
-        <button id="mobile-menu-toggle" class="text-white hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1">
-            <i class="bi bi-list text-2xl"></i>
+        <button id="mobile-menu-toggle" aria-label="Open Navigation Menu" class="bg-blue-900/80 hover:bg-blue-800 text-white border border-blue-700/80 rounded-xl p-2 focus:outline-none shrink-0 shadow-md">
+            <i class="bi bi-list text-xl"></i>
         </button>
     </header>
 
