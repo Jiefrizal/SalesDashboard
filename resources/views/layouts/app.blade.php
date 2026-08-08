@@ -35,10 +35,10 @@
         @vite(['resources/css/app.css','resources/js/app.js'])
     @endif
     <style>
-        /* Executive Compact Typography & Asset Scaling for 100% Desktop Viewport */
+        /* Fluid Executive Typography & Asset Scaling adapted dynamically to screen width */
         @media (min-width: 1024px) {
             html {
-                font-size: 13.5px !important;
+                font-size: clamp(11px, 0.72vw + 0.1rem, 12.5px) !important;
             }
         }
     </style>
