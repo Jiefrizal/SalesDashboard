@@ -187,31 +187,31 @@ $colorPalette = [
 @endphp
 
 <!-- Outer Glassmorphic / Premium Border Card wrapper -->
-<div class="bg-gradient-to-br from-blue-950 via-slate-900 to-blue-900 text-white rounded-2xl lg:rounded-3xl p-3 lg:p-6 shadow-2xl border border-blue-900 overflow-hidden">
+<div class="bg-gradient-to-br from-blue-950 via-slate-900 to-blue-900 text-white rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-2xl border border-blue-900 overflow-hidden">
 
     <!-- Header Section -->
-    <header class="bg-gradient-to-r from-blue-900 via-blue-950 to-blue-900 rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-blue-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between">
+    <header class="bg-gradient-to-r from-blue-900 via-blue-950 to-blue-900 rounded-xl p-3 lg:p-4 border border-blue-800 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between">
         <!-- background glow -->
         <div class="absolute -right-16 -top-16 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-20"></div>
         
         <!-- Left: Yamaha Logo -->
         <div class="flex items-center justify-center md:justify-start z-10">
-            <img src="{{ asset('yamaha_logo.png') }}" alt="YAMAHA" class="h-10 lg:h-16 w-auto object-contain">
+            <img src="{{ asset('yamaha_logo.png') }}" alt="YAMAHA" class="h-8 lg:h-12 w-auto object-contain">
         </div>
 
         <!-- Center: Title -->
-        <div class="text-center my-3 md:my-0 z-10 flex-1">
-            <h1 class="text-xl lg:text-3xl font-extrabold text-white tracking-wider drop-shadow-md">
+        <div class="text-center my-2 md:my-0 z-10 flex-1">
+            <h1 class="text-lg lg:text-2xl font-black text-white tracking-wider drop-shadow-md">
                 REPORT SALES
             </h1>
-            <p class="text-yellow-400 font-semibold tracking-widest text-[10px] lg:text-sm mt-0.5 uppercase">
+            <p class="text-yellow-400 font-bold tracking-widest text-[10px] lg:text-xs mt-0.5 uppercase">
                 {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }}
             </p>
         </div>
 
         <!-- Right: GASPOLL Badge -->
         <div class="z-10 flex flex-col items-center md:items-end">
-            <div class="bg-gradient-to-r from-yellow-400 to-amber-500 text-blue-950 font-extrabold px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-lg lg:rounded-xl italic text-[10px] lg:text-xs shadow-lg transform hover:scale-105 transition duration-300 border border-yellow-300 uppercase tracking-tight flex items-center space-x-1">
+            <div class="bg-gradient-to-r from-yellow-400 to-amber-500 text-blue-950 font-extrabold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-lg italic text-[10px] lg:text-xs shadow-lg transform hover:scale-105 transition duration-300 border border-yellow-300 uppercase tracking-tight flex items-center space-x-1">
                 <span>Gebrak Bersama</span>
                 <span class="text-red-700 font-extrabold">Full Gasspoll!</span>
             </div>
@@ -286,113 +286,113 @@ $colorPalette = [
         <div class="xl:col-span-1 flex flex-col space-y-4 lg:space-y-6">
             
             <!-- Ringkasan Kinerja Card -->
-            <div class="bg-slate-900/80 border border-blue-900/60 rounded-2xl lg:rounded-3xl p-4 lg:p-5 shadow-2xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start hover:border-blue-700/80 transition duration-300">
+            <div class="bg-slate-900/80 border border-blue-900/60 rounded-xl p-3.5 lg:p-4 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start hover:border-blue-700/80 transition duration-300">
                 <!-- Background glow decoration -->
                 <div class="absolute -right-16 -top-16 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
 
                 <!-- Frame Header -->
-                <div class="flex items-center justify-between border-b border-blue-950 pb-2.5 mb-3.5">
-                    <h3 class="text-sm lg:text-base font-extrabold text-white tracking-wider uppercase flex items-center space-x-2">
+                <div class="flex items-center justify-between border-b border-blue-950 pb-2 mb-3">
+                    <h3 class="text-xs lg:text-sm font-black text-white tracking-wider uppercase flex items-center space-x-2">
                         <span class="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
                         <span>Ringkasan Kinerja</span>
                     </h3>
                 </div>
                 
-                <div class="space-y-3">
+                <div class="space-y-2.5">
                     <!-- STU vs Target -->
-                    <div class="bg-slate-950/40 rounded-xl p-3 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-blue-700/50 hover:bg-slate-950/60 transition duration-300">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-blue-500/10 text-blue-400 p-2.5 rounded-lg shrink-0 border border-blue-500/20">
-                                <i class="bi bi-record-circle-fill text-lg"></i>
+                    <div class="bg-slate-950/50 rounded-xl p-2.5 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-blue-700/50 transition duration-300">
+                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                            <div class="bg-blue-500/10 text-blue-400 p-2 rounded-lg shrink-0 border border-blue-500/20">
+                                <i class="bi bi-record-circle-fill text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs lg:text-sm text-slate-300 font-bold uppercase tracking-wider leading-tight">ACV VS TARGET</p>
-                                <p class="text-sm lg:text-base text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetMin }}">{{ number_format($totalTargetMin) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">ACV VS TARGET</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetMin }}">{{ number_format($totalTargetMin) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
-                            <span class="counter-animate text-xl lg:text-3xl font-black tracking-tight text-blue-400 leading-none" data-target="{{ round($overallAcvPercent) }}" data-suffix="%">{{ round($overallAcvPercent) }}%</span>
+                            <span class="counter-animate text-lg lg:text-2xl font-black tracking-tight text-blue-400 leading-none" data-target="{{ round($overallAcvPercent) }}" data-suffix="%">{{ round($overallAcvPercent) }}%</span>
                         </div>
                     </div>
 
                     <!-- Growth (VS LM) -->
-                    <div class="bg-slate-950/40 rounded-xl p-3 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-emerald-700/50 hover:bg-slate-950/60 transition duration-300">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-emerald-500/10 text-emerald-400 p-2.5 rounded-lg shrink-0 border border-emerald-500/20">
-                                <i class="bi bi-graph-up-arrow text-lg"></i>
+                    <div class="bg-slate-950/50 rounded-xl p-2.5 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-emerald-700/50 transition duration-300">
+                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                            <div class="bg-emerald-500/10 text-emerald-400 p-2 rounded-lg shrink-0 border border-emerald-500/20">
+                                <i class="bi bi-graph-up-arrow text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs lg:text-sm text-slate-300 font-bold uppercase tracking-wider leading-tight">VS Last Month (LM)</p>
-                                <p class="text-sm lg:text-base text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalLm }}">{{ number_format($totalLm) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">VS Last Month (LM)</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalAcv }}">{{ number_format($totalAcv) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalLm }}">{{ number_format($totalLm) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
-                            <span class="counter-animate text-xl lg:text-3xl font-black tracking-tight text-emerald-400 leading-none" data-target="{{ round($overallGrowthPercent) }}" data-suffix="%">{{ round($overallGrowthPercent) }}%</span>
+                            <span class="counter-animate text-lg lg:text-2xl font-black tracking-tight text-emerald-400 leading-none" data-target="{{ round($overallGrowthPercent) }}" data-suffix="%">{{ round($overallGrowthPercent) }}%</span>
                         </div>
                     </div>
 
                     <!-- YTD Achievement -->
-                    <div class="bg-slate-950/40 rounded-xl p-3 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-purple-700/50 hover:bg-slate-955/50 transition duration-300">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-purple-500/10 text-purple-400 p-2.5 rounded-lg shrink-0 border border-purple-500/20">
-                                <i class="bi bi-calendar2-check-fill text-lg"></i>
+                    <div class="bg-slate-950/50 rounded-xl p-2.5 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-purple-700/50 transition duration-300">
+                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                            <div class="bg-purple-500/10 text-purple-400 p-2 rounded-lg shrink-0 border border-purple-500/20">
+                                <i class="bi bi-calendar2-check-fill text-base"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs lg:text-sm text-slate-300 font-bold uppercase tracking-wider leading-tight">ACT YTD vs Target 2026</p>
-                                <p class="text-sm lg:text-base text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalActYtdJan2026 }}">{{ number_format($totalActYtdJan2026) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetReguler2026 }}">{{ number_format($totalTargetReguler2026) }}</span></span></p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">ACT YTD vs Target 2026</p>
+                                <p class="text-xs lg:text-sm text-slate-100 mt-0.5 font-extrabold leading-tight"><span class="counter-animate" data-target="{{ $totalActYtdJan2026 }}">{{ number_format($totalActYtdJan2026) }}</span> <span class="text-slate-400 font-medium">/ <span class="counter-animate" data-target="{{ $totalTargetReguler2026 }}">{{ number_format($totalTargetReguler2026) }}</span></span></p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
-                            <span class="counter-animate text-xl lg:text-3xl font-black tracking-tight text-purple-400 leading-none" data-target="{{ round($overallYtdPercent) }}" data-suffix="%">{{ round($overallYtdPercent) }}%</span>
+                            <span class="counter-animate text-lg lg:text-2xl font-black tracking-tight text-purple-400 leading-none" data-target="{{ round($overallYtdPercent) }}" data-suffix="%">{{ round($overallYtdPercent) }}%</span>
                         </div>
                     </div>
 
                     <!-- DEALER ON TARGET -->
-                    <div class="bg-slate-950/40 rounded-xl p-3 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-yellow-700/50 hover:bg-slate-955/50 transition duration-300">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-yellow-500/10 text-yellow-450 p-2.5 rounded-lg shrink-0 border border-yellow-500/20">
-                                <i class="bi bi-trophy-fill text-lg text-yellow-400"></i>
+                    <div class="bg-slate-950/50 rounded-xl p-2.5 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-yellow-700/50 transition duration-300">
+                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                            <div class="bg-yellow-500/10 text-yellow-450 p-2 rounded-lg shrink-0 border border-yellow-500/20">
+                                <i class="bi bi-trophy-fill text-base text-yellow-400"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs lg:text-sm text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer On Target</p>
-                                <p class="text-xs text-slate-400 mt-0.5 font-semibold leading-tight">Capai Target</p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer On Target</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5 font-semibold leading-tight">Capai Target</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
-                            <span class="counter-animate text-xl lg:text-3xl font-black tracking-tight text-yellow-400 leading-none" data-target="{{ $dealersOnTarget }}">{{ $dealersOnTarget }}</span>
+                            <span class="counter-animate text-lg lg:text-2xl font-black tracking-tight text-yellow-400 leading-none" data-target="{{ $dealersOnTarget }}">{{ $dealersOnTarget }}</span>
                         </div>
                     </div>
 
                     <!-- DEALER DI BAWAH TARGET -->
-                    <div class="bg-slate-950/40 rounded-xl p-3 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-rose-700/50 hover:bg-slate-955/50 transition duration-300">
-                        <div class="flex items-center space-x-3 min-w-0 flex-1">
-                            <div class="bg-rose-500/10 text-rose-455 p-2.5 rounded-lg shrink-0 border border-rose-500/20">
-                                <i class="bi bi-graph-down-arrow text-lg text-rose-400"></i>
+                    <div class="bg-slate-950/50 rounded-xl p-2.5 flex items-center justify-between shadow-inner border border-blue-950/80 hover:border-rose-700/50 transition duration-300">
+                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                            <div class="bg-rose-500/10 text-rose-455 p-2 rounded-lg shrink-0 border border-rose-500/20">
+                                <i class="bi bi-graph-down-arrow text-base text-rose-400"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs lg:text-sm text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer Below Target</p>
-                                <p class="text-xs text-slate-400 mt-0.5 font-semibold leading-tight">Belum Capai Target</p>
+                                <p class="text-[10px] lg:text-[11px] text-slate-300 font-bold uppercase tracking-wider leading-tight">Dealer Below Target</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5 font-semibold leading-tight">Belum Capai Target</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 pl-2">
-                            <span class="counter-animate text-xl lg:text-3xl font-black tracking-tight text-rose-400 leading-none" data-target="{{ $dealersBelowTarget }}">{{ $dealersBelowTarget }}</span>
+                            <span class="counter-animate text-lg lg:text-2xl font-black tracking-tight text-rose-400 leading-none" data-target="{{ $dealersBelowTarget }}">{{ $dealersBelowTarget }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Highlights & Alerts Card (Highlight & Analisis) -->
-            <div id="highlight-card" class="bg-slate-900/80 rounded-2xl lg:rounded-3xl p-4 lg:p-5 shadow-2xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start highlight-card-animated">
+            <div id="highlight-card" class="bg-slate-900/80 rounded-xl p-3.5 lg:p-4 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start highlight-card-animated">
                 <!-- Background glow decoration -->
                 <div class="absolute -right-16 -top-16 w-40 h-40 bg-blue-500/20 rounded-full blur-2xl highlight-glow-orb"></div>
                 <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-indigo-500/15 rounded-full blur-2xl highlight-glow-orb2"></div>
 
                 <!-- Frame Header -->
-                <div class="flex items-center justify-between border-b border-blue-950 pb-2.5 mb-3.5">
-                    <h3 class="text-sm lg:text-base font-extrabold text-white tracking-wider uppercase flex items-center space-x-2">
-                        <span class="relative flex h-3 w-3">
+                <div class="flex items-center justify-between border-b border-blue-950 pb-2 mb-3">
+                    <h3 class="text-xs lg:text-sm font-black text-white tracking-wider uppercase flex items-center space-x-2">
+                        <span class="relative flex h-2.5 w-2.5">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
                         </span>
                         <span class="highlight-shimmer-text">Highlight & Analisis</span>
                     </h3>
