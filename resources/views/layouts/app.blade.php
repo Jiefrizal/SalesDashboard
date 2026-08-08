@@ -34,14 +34,6 @@
     @else
         @vite(['resources/css/app.css','resources/js/app.js'])
     @endif
-    <style>
-        /* Compact Scaling for PC Screens to match 67% executive density */
-        @media (min-width: 1024px) {
-            .pc-zoom-compact {
-                zoom: 0.82;
-            }
-        }
-    </style>
 </head>
 
 <body class="bg-[#04060c] font-sans antialiased text-slate-100">
@@ -62,7 +54,7 @@
     </header>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-blue-900 text-white transform -translate-x-full lg:translate-x-0 lg:static lg:h-full transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none flex flex-col shrink-0">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-52 bg-blue-900 text-white transform -translate-x-full lg:translate-x-0 lg:static lg:h-full transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none flex flex-col shrink-0">
 
         <!-- Brand -->
         <div class="flex flex-col items-center justify-center py-6 border-b border-blue-700 relative px-4 text-center shrink-0">
@@ -165,8 +157,8 @@
     <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 hidden lg:hidden transition-opacity duration-300"></div>
 
     <!-- Content -->
-    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-5 lg:p-6 bg-[#04060c]">
-        <div class="max-w-[1750px] mx-auto w-full pc-zoom-compact">
+    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-5 bg-[#04060c]">
+        <div class="w-full mx-auto">
             @yield('content')
         </div>
     </main>
