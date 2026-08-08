@@ -20,3 +20,10 @@
     }
 }
 @import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Executive Compact Typography Scaling for 100% Desktop Viewport */
+@media (min-width: 1024px) {
+    html {
+        font-size: 13.5px !important;
+    }
+}

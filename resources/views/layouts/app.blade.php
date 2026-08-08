@@ -34,6 +34,14 @@
     @else
         @vite(['resources/css/app.css','resources/js/app.js'])
     @endif
+    <style>
+        /* Executive Compact Typography & Asset Scaling for 100% Desktop Viewport */
+        @media (min-width: 1024px) {
+            html {
+                font-size: 13.5px !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-[#04060c] font-sans antialiased text-slate-100">
