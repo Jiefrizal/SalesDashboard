@@ -492,7 +492,7 @@ $overallYtdPercent = $totalTargetReguler2026 > 0 ? ($totalActYtdJan2026 / $total
                         </div>
 
                         <div class="min-w-0 flex-1">
-                            <h3 class="text-xs sm:text-sm lg:text-base font-black tracking-wide uppercase italic truncate font-mono {{ $theme['name'] }}" title="{{ $sName }}">
+                            <h3 class="text-xs sm:text-sm lg:text-base font-black tracking-wider uppercase italic truncate font-mono leading-snug py-0.5 {{ $theme['name'] }}" title="{{ $sName }}">
                                 {{ $sName }}
                             </h3>
                             <div class="flex items-center space-x-1 mt-0.5">
@@ -504,25 +504,32 @@ $overallYtdPercent = $totalTargetReguler2026 > 0 ? ($totalActYtdJan2026 / $total
                     </div>
 
                     <!-- Middle Section: Glowing Track Progress Bar with Chevron Motion & Bike Rider -->
-                    <div class="flex-1 relative mx-0 md:mx-3 my-1.5 md:my-0 z-10">
-                        <!-- Track Background Slot -->
-                        <div class="w-full bg-slate-950/90 rounded-xl h-9 lg:h-10 border border-blue-900/50 relative overflow-hidden flex items-center shadow-[inset_0_2px_6px_rgba(0,0,0,0.8)]">
+                    <div class="flex-1 relative mx-0 md:mx-3 my-1.5 md:my-0 z-20">
+                        <!-- Track Container Slot (Unclipped Wrapper) -->
+                        <div class="w-full relative flex items-center py-1">
                             
-                            <!-- Glowing Race Speed Progress Bar -->
-                            <div class="h-full rounded-xl transition-all duration-700 relative flex items-center justify-end pr-2 {{ $theme['bar'] }}" style="width: {{ min(100, max(3, $pct)) }}%;">
-                                <!-- Chevron Speed Arrows Overlay -->
-                                <div class="absolute inset-0 race-chevrons opacity-30 rounded-xl"></div>
+                            <!-- Track Background Slot (Overflow Hidden only for Inner Bar) -->
+                            <div class="w-full bg-slate-950/90 rounded-xl h-8 lg:h-9 border border-blue-900/50 relative overflow-hidden flex items-center shadow-[inset_0_2px_6px_rgba(0,0,0,0.8)]">
+                                
+                                <!-- Glowing Race Speed Progress Bar -->
+                                <div class="h-full rounded-xl transition-all duration-700 relative flex items-center justify-end pr-2 {{ $theme['bar'] }}" style="width: {{ min(100, max(3, $pct)) }}%;">
+                                    <!-- Chevron Speed Arrows Overlay -->
+                                    <div class="absolute inset-0 race-chevrons opacity-30 rounded-xl"></div>
 
-                                <!-- Chevron Indicator Inside Bar -->
-                                <div class="hidden sm:flex items-center space-x-1 text-white/80 font-black text-xs lg:text-sm tracking-tighter opacity-80 mr-8 drop-shadow-md">
-                                    <span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span>
+                                    <!-- Chevron Indicator Inside Bar -->
+                                    <div class="hidden sm:flex items-center space-x-1 text-white/80 font-black text-xs lg:text-sm tracking-tighter opacity-80 mr-10 drop-shadow-md">
+                                        <span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span><span>&rsaquo;</span>
+                                    </div>
                                 </div>
 
-                                <!-- Futuristic Bike Rider Asset at tip of Progress Bar -->
-                                <div class="absolute -right-4 lg:-right-5 top-1/2 -translate-y-1/2 w-9 h-9 lg:w-11 lg:h-11 shrink-0 z-30 transition-all duration-300 transform group-hover:scale-115 group-hover:drop-shadow-[0_0_18px_rgba(56,189,248,1)]">
+                            </div>
+
+                            <!-- Futuristic Bike Rider Asset (Positioned ON TOP of Track Tip, UNCLIPPED & Dynamic) -->
+                            <div class="absolute top-1/2 -translate-y-1/2 transition-all duration-700 z-30 pointer-events-none" style="left: calc({{ min(100, max(4, $pct)) }}% - 20px);">
+                                <div class="relative w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center transform group-hover:scale-125 transition duration-300 drop-shadow-[0_0_14px_rgba(56,189,248,0.9)]">
                                     <!-- Glowing Pulsing Aura Backdrop Behind Bike -->
-                                    <div class="absolute inset-0.5 rounded-full bg-cyan-400/20 blur-sm animate-pulse"></div>
-                                    <img src="{{ $img }}" alt="{{ $sName }}" class="w-full h-full object-contain relative z-10 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.95)]">
+                                    <div class="absolute inset-0 rounded-full bg-cyan-400/30 blur-md animate-pulse"></div>
+                                    <img src="{{ $img }}" alt="{{ $sName }}" class="w-full h-full object-contain relative z-10 filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                                 </div>
                             </div>
 
