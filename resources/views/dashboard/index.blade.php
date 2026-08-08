@@ -1784,94 +1784,99 @@ $colorPalette = [
                             </div>
                         </div>
 
-                        <!-- Grid of 7 Items for Grand Total (Disusun Horizontal Memanjang ke Kanan) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
-                            <!-- DISTINCT CASH CARD (TOTAL) -->
-                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-blue-400/80 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:border-blue-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/cash">
-                                <div class="absolute -right-8 -top-8 w-20 h-20 bg-blue-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                <div class="flex items-center justify-between pb-1.5 border-b border-blue-500/30">
-                                    <div class="flex items-center space-x-1.5 min-w-0">
-                                        <div class="w-6 h-6 rounded-lg bg-blue-500/25 border border-blue-400/60 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.4)]">
-                                            <i class="bi bi-cash-stack text-blue-300 text-xs"></i>
+                        <!-- 2-TIER EXECUTIVE GRID: TIER 1 (CASH & KREDIT) + TIER 2 (5 FINCOY PROVIDERS) -->
+                        <div class="space-y-3">
+                            <!-- TIER 1: CASH & KREDIT HIGHLIGHT PILLARS -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <!-- DISTINCT CASH CARD (TOTAL) -->
+                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_15px_rgba(34,211,238,0.25)] hover:border-cyan-300 flex items-center justify-between space-x-3 relative overflow-hidden group/cash">
+                                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-cyan-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                    <div class="flex items-center space-x-3 min-w-0 flex-1">
+                                        <div class="w-10 h-10 rounded-xl bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(34,211,238,0.4)]">
+                                            <i class="bi bi-cash-stack text-cyan-300 text-lg"></i>
                                         </div>
-                                        <div>
-                                            <h4 class="text-xs font-black text-blue-100 uppercase tracking-wide">CASH</h4>
-                                            <span class="text-[9px] font-extrabold text-blue-300 block leading-none">Utama</span>
-                                        </div>
-                                    </div>
-                                    <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-blue-500/30 text-blue-100 border border-blue-400/70 shadow-sm">
-                                        {{ $leasingTotal['pct_ach']['cash'] }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-black text-white">
-                                        <strong class="text-blue-300 text-sm sm:text-base font-black">{{ $leasingTotal['ach_cash'] }}</strong> / {{ $leasingTotal['target_cash'] }} Unit
-                                    </div>
-                                    <span class="text-[9.5px] text-blue-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $leasingTotal['pct_target']['cash'] }}</span>
-                                </div>
-                                <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-blue-400/40">
-                                    <div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
-                                </div>
-                            </div>
-
-                            <!-- DISTINCT KREDIT CARD (TOTAL) -->
-                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:border-purple-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/kredit">
-                                <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                <div class="flex items-center justify-between pb-1.5 border-b border-purple-500/30">
-                                    <div class="flex items-center space-x-1.5 min-w-0">
-                                        <div class="w-6 h-6 rounded-lg bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(168,85,247,0.4)]">
-                                            <i class="bi bi-credit-card-2-front-fill text-purple-300 text-xs"></i>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-xs font-black text-purple-100 uppercase tracking-wide">KREDIT</h4>
-                                            <span class="text-[9px] font-extrabold text-purple-300 block leading-none">Utama</span>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center space-x-2">
+                                                <h4 class="text-xs font-black text-cyan-100 uppercase tracking-wider">CASH (TUNAI)</h4>
+                                                <span class="text-[9px] font-extrabold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.2 rounded">Utama</span>
+                                            </div>
+                                            <div class="text-xs font-bold text-slate-200 mt-1">
+                                                <strong class="text-cyan-300 text-sm font-black">{{ $leasingTotal['ach_cash'] }}</strong> / {{ $leasingTotal['target_cash'] }} Unit
+                                                <span class="text-[10px] text-cyan-200 font-bold ml-2">Tgt Ratio: {{ $leasingTotal['pct_target']['cash'] }}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm">
-                                        {{ $leasingTotal['pct_ach']['kredit'] }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-black text-white">
-                                        <strong class="text-purple-300 text-sm sm:text-base font-black">{{ $leasingTotal['ach_kredit'] }}</strong> / {{ $leasingTotal['target_kredit'] }} Unit
-                                    </div>
-                                    <span class="text-[9.5px] text-purple-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $leasingTotal['pct_target']['kredit'] }}</span>
-                                </div>
-                                <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
-                                    <div class="bg-gradient-to-r from-purple-600 via-pink-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
-                                </div>
-                            </div>
-
-                            <!-- 5 FINCOY ITEMS FOR TOTAL -->
-                            @foreach($fincoyKeys as $fk)
-                                @php
-                                    $achVal = $leasingTotal['fincoy_ach'][$fk];
-                                    $tgtVal = $leasingTotal['fincoy_target'][$fk];
-                                    $pctAchStr = $leasingTotal['pct_ach'][$fk];
-                                    $pctTgtStr = $leasingTotal['pct_target'][$fk];
-                                    $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
-                                @endphp
-                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-teal-500/30 hover:border-teal-400 shadow-md flex flex-col justify-between space-y-2">
-                                    <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
-                                        <div class="flex items-center space-x-1.5">
-                                            <i class="bi bi-building text-teal-400 text-xs"></i>
-                                            <h4 class="text-xs font-black text-teal-200 uppercase">{{ $fk }}</h4>
-                                        </div>
-                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black {{ $achVal > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-slate-900 text-slate-500' }}">
-                                            {{ $pctAchStr }}
+                                    <div class="flex flex-col items-end shrink-0 pl-2">
+                                        <span class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm mb-1.5">
+                                            {{ $leasingTotal['pct_ach']['cash'] }}
                                         </span>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-black text-white">
-                                            <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-400' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                        <div class="w-24 bg-[#02050b] rounded-full h-2 overflow-hidden border border-cyan-400/40">
+                                            <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                         </div>
-                                        <span class="text-[9.5px] text-slate-400 font-bold block">Tgt Ratio: {{ $pctTgtStr }}</span>
-                                    </div>
-                                    <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-teal-500/30">
-                                        <div class="bg-gradient-to-r from-teal-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
                                     </div>
                                 </div>
-                            @endforeach
+
+                                <!-- DISTINCT KREDIT CARD (TOTAL) -->
+                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.25)] hover:border-purple-300 flex items-center justify-between space-x-3 relative overflow-hidden group/kredit">
+                                    <div class="absolute -right-8 -top-8 w-24 h-24 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                    <div class="flex items-center space-x-3 min-w-0 flex-1">
+                                        <div class="w-10 h-10 rounded-xl bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
+                                            <i class="bi bi-credit-card-2-front-fill text-purple-300 text-lg"></i>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center space-x-2">
+                                                <h4 class="text-xs font-black text-purple-100 uppercase tracking-wider">KREDIT (FINANCE)</h4>
+                                                <span class="text-[9px] font-extrabold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-1.5 py-0.2 rounded">Utama</span>
+                                            </div>
+                                            <div class="text-xs font-bold text-slate-200 mt-1">
+                                                <strong class="text-purple-300 text-sm font-black">{{ $leasingTotal['ach_kredit'] }}</strong> / {{ $leasingTotal['target_kredit'] }} Unit
+                                                <span class="text-[10px] text-purple-200 font-bold ml-2">Tgt Ratio: {{ $leasingTotal['pct_target']['kredit'] }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end shrink-0 pl-2">
+                                        <span class="px-3 py-1 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm mb-1.5">
+                                            {{ $leasingTotal['pct_ach']['kredit'] }}
+                                        </span>
+                                        <div class="w-24 bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
+                                            <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TIER 2: 5 FINCOY PROVIDER BREAKDOWN (ADIRA, BAF, IMFI, MEGA, SOF) -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                                @foreach($fincoyKeys as $fk)
+                                    @php
+                                        $achVal = $leasingTotal['fincoy_ach'][$fk];
+                                        $tgtVal = $leasingTotal['fincoy_target'][$fk];
+                                        $pctAchStr = $leasingTotal['pct_ach'][$fk];
+                                        $pctTgtStr = $leasingTotal['pct_target'][$fk];
+                                        $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                    @endphp
+                                    <div class="p-3 rounded-xl border transition bg-[#0e1326]/90 border-teal-500/30 hover:border-teal-400 shadow-md flex flex-col justify-between space-y-2">
+                                        <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
+                                            <div class="flex items-center space-x-1.5">
+                                                <i class="bi bi-building text-teal-400 text-xs"></i>
+                                                <h4 class="text-xs font-black text-teal-200 uppercase">{{ $fk }}</h4>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-md text-[11px] font-black {{ $achVal > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800' }}">
+                                                {{ $pctAchStr }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">
+                                                <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                            </div>
+                                            <span class="text-[10px] text-slate-300 font-bold block mt-0.5">Tgt Ratio: {{ $pctTgtStr }}</span>
+                                        </div>
+                                        <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-teal-500/30">
+                                            <div class="bg-gradient-to-r from-teal-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -1881,7 +1886,7 @@ $colorPalette = [
                             $cColor = $colorPalette[$b['cabang']] ?? '#e94560';
                             $achPctNum = (int)filter_var($b['pct_ach']['target'], FILTER_SANITIZE_NUMBER_INT);
                         @endphp
-                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
+                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
                             <div class="absolute -right-12 -top-12 w-36 h-36 bg-[#e94560]/10 rounded-full blur-2xl group-hover:bg-[#e94560]/20 transition pointer-events-none"></div>
 
                             <!-- Header Bar Cabang (Horizontal Layout Memanjang Ke Kanan) -->
@@ -1896,105 +1901,108 @@ $colorPalette = [
                                 
                                 <!-- Summary STU Badge -->
                                 <div class="flex items-center space-x-2 bg-[#0e1326] border border-[#e94560]/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
-                                    <span class="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
+                                    <span class="text-[11px] text-slate-300 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
                                     <span class="text-sm sm:text-base font-black text-emerald-400">
                                         {{ $b['ach_total'] }}
                                     </span>
-                                    <span class="text-xs text-slate-400 font-bold">/ <span class="text-slate-200 font-black">{{ $b['target_total'] }}</span> Target</span>
+                                    <span class="text-xs text-slate-300 font-bold">/ <span class="text-white font-black">{{ $b['target_total'] }}</span> Target</span>
                                     <span class="bg-[#e94560]/20 text-[#f36892] text-xs font-black px-2 py-0.5 rounded-md border border-[#e94560]/40 ml-1">
                                         %ACH: {{ $b['pct_ach']['target'] }}
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- Sub Leasing Items (Disusun Horizontal Memanjang ke Kanan: CASH, KREDIT, 5 FINCOY) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
-                                <!-- DISTINCT CASH ITEM (CABANG) -->
-                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-blue-400/80 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:border-blue-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/cash">
-                                    <div class="absolute -right-8 -top-8 w-20 h-20 bg-blue-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                    <div class="flex items-center justify-between pb-1.5 border-b border-blue-500/30">
-                                        <div class="flex items-center space-x-1.5 min-w-0">
-                                            <div class="w-5 h-5 rounded-md bg-blue-500/25 border border-blue-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(59,130,246,0.4)]">
-                                                <i class="bi bi-cash-stack text-blue-300 text-[10px]"></i>
+                            <!-- 2-TIER GRID FOR DEALER CABANG: TIER 1 (CASH & KREDIT) + TIER 2 (5 FINCOY) -->
+                            <div class="space-y-3">
+                                <!-- TIER 1 (CABANG): CASH & KREDIT -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <!-- CASH CABANG -->
+                                    <div class="p-3 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_12px_rgba(34,211,238,0.2)] hover:border-cyan-300 flex items-center justify-between space-x-3 relative overflow-hidden group/cash">
+                                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                                            <div class="w-8 h-8 rounded-lg bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(34,211,238,0.3)]">
+                                                <i class="bi bi-cash-stack text-cyan-300 text-sm"></i>
                                             </div>
-                                            <div class="min-w-0">
-                                                <h4 class="text-xs font-black text-blue-100 uppercase truncate">CASH</h4>
-                                                <span class="text-[8.5px] font-extrabold text-blue-300 block leading-none">Metode Utama</span>
-                                            </div>
-                                        </div>
-                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 bg-blue-500/30 text-blue-100 border border-blue-400/70 shadow-sm">
-                                            {{ $b['pct_ach']['cash'] }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-black text-white">
-                                            <strong class="text-blue-300 text-sm font-black">{{ $b['ach_cash'] }}</strong> / {{ $b['target_cash'] }} Unit
-                                        </div>
-                                        <span class="text-[9.5px] text-blue-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $b['pct_target']['cash'] }}</span>
-                                    </div>
-                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-blue-400/40">
-                                        <div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
-                                    </div>
-                                </div>
-
-                                <!-- DISTINCT KREDIT ITEM (CABANG) -->
-                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:border-purple-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/kredit">
-                                    <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                    <div class="flex items-center justify-between pb-1.5 border-b border-purple-500/30">
-                                        <div class="flex items-center space-x-1.5 min-w-0">
-                                            <div class="w-5 h-5 rounded-md bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.4)]">
-                                                <i class="bi bi-credit-card-2-front-fill text-purple-300 text-[10px]"></i>
-                                            </div>
-                                            <div class="min-w-0">
-                                                <h4 class="text-xs font-black text-purple-100 uppercase truncate">KREDIT</h4>
-                                                <span class="text-[8.5px] font-extrabold text-purple-300 block leading-none">Metode Utama</span>
+                                            <div class="min-w-0 flex-1">
+                                                <div class="flex items-center space-x-1.5">
+                                                    <h4 class="text-xs font-black text-cyan-100 uppercase truncate">CASH</h4>
+                                                    <span class="text-[8.5px] font-extrabold text-cyan-300">Metode Utama</span>
+                                                </div>
+                                                <div class="text-xs font-bold text-slate-200 mt-0.5">
+                                                    <strong class="text-cyan-300 text-sm font-black">{{ $b['ach_cash'] }}</strong> / {{ $b['target_cash'] }} Unit
+                                                    <span class="text-[10px] text-cyan-200 font-bold ml-2">Tgt Ratio: {{ $b['pct_target']['cash'] }}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm">
-                                            {{ $b['pct_ach']['kredit'] }}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-black text-white">
-                                            <strong class="text-purple-300 text-sm font-black">{{ $b['ach_kredit'] }}</strong> / {{ $b['target_kredit'] }} Unit
-                                        </div>
-                                        <span class="text-[9.5px] text-purple-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $b['pct_target']['kredit'] }}</span>
-                                    </div>
-                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
-                                        <div class="bg-gradient-to-r from-purple-600 via-pink-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
-                                    </div>
-                                </div>
-
-                                <!-- 5 FINCOY ITEMS FOR CABANG -->
-                                @foreach($fincoyKeys as $fk)
-                                    @php
-                                        $achVal = $b['fincoy_ach'][$fk];
-                                        $tgtVal = $b['fincoy_target'][$fk];
-                                        $pctAchStr = $b['pct_ach'][$fk];
-                                        $pctTgtStr = $b['pct_target'][$fk];
-                                        $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
-                                    @endphp
-                                    <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-2">
-                                        <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
-                                            <div class="flex items-center space-x-1.5 min-w-0">
-                                                <i class="bi bi-building text-teal-400 text-xs shrink-0"></i>
-                                                <h4 class="text-xs font-black text-slate-100 uppercase truncate">{{ $fk }}</h4>
-                                            </div>
-                                            <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 {{ $achVal > 0 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-900 text-slate-500 border border-slate-800' }}">
-                                                {{ $pctAchStr }}
+                                        <div class="flex flex-col items-end shrink-0 pl-2">
+                                            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm mb-1">
+                                                {{ $b['pct_ach']['cash'] }}
                                             </span>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-black text-white">
-                                                <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-400' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                            <div class="w-20 bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-cyan-400/40">
+                                                <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                             </div>
-                                            <span class="text-[9.5px] text-slate-400 font-bold block">Tgt Ratio: {{ $pctTgtStr }}</span>
-                                        </div>
-                                        <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-[#e94560]/30">
-                                            <div class="bg-gradient-to-r from-[#e94560] via-amber-400 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
                                         </div>
                                     </div>
-                                @endforeach
+
+                                    <!-- KREDIT CABANG -->
+                                    <div class="p-3 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_12px_rgba(168,85,247,0.2)] hover:border-purple-300 flex items-center justify-between space-x-3 relative overflow-hidden group/kredit">
+                                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                                            <div class="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.3)]">
+                                                <i class="bi bi-credit-card-2-front-fill text-purple-300 text-sm"></i>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <div class="flex items-center space-x-1.5">
+                                                    <h4 class="text-xs font-black text-purple-100 uppercase truncate">KREDIT</h4>
+                                                    <span class="text-[8.5px] font-extrabold text-purple-300">Metode Utama</span>
+                                                </div>
+                                                <div class="text-xs font-bold text-slate-200 mt-0.5">
+                                                    <strong class="text-purple-300 text-sm font-black">{{ $b['ach_kredit'] }}</strong> / {{ $b['target_kredit'] }} Unit
+                                                    <span class="text-[10px] text-purple-200 font-bold ml-2">Tgt Ratio: {{ $b['pct_target']['kredit'] }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-col items-end shrink-0 pl-2">
+                                            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm mb-1">
+                                                {{ $b['pct_ach']['kredit'] }}
+                                            </span>
+                                            <div class="w-20 bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-purple-400/40">
+                                                <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- TIER 2 (CABANG): 5 FINCOY ITEMS -->
+                                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                                    @foreach($fincoyKeys as $fk)
+                                        @php
+                                            $achVal = $b['fincoy_ach'][$fk];
+                                            $tgtVal = $b['fincoy_target'][$fk];
+                                            $pctAchStr = $b['pct_ach'][$fk];
+                                            $pctTgtStr = $b['pct_target'][$fk];
+                                            $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                        @endphp
+                                        <div class="p-2.5 rounded-xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-1.5">
+                                            <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
+                                                <div class="flex items-center space-x-1.5 min-w-0">
+                                                    <i class="bi bi-building text-teal-400 text-xs shrink-0"></i>
+                                                    <h4 class="text-xs font-black text-slate-100 uppercase truncate">{{ $fk }}</h4>
+                                                </div>
+                                                <span class="px-1.5 py-0.2 rounded-md text-[10.5px] font-black shrink-0 {{ $achVal > 0 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800' }}">
+                                                    {{ $pctAchStr }}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div class="text-xs font-black text-white">
+                                                    <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                                </div>
+                                                <span class="text-[9.5px] text-slate-300 font-bold block mt-0.5">Tgt Ratio: {{ $pctTgtStr }}</span>
+                                            </div>
+                                            <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-[#e94560]/30">
+                                                <div class="bg-gradient-to-r from-[#e94560] via-amber-400 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     @endforeach
