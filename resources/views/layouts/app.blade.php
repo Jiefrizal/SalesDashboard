@@ -12,7 +12,28 @@
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('logo.png') }}">
 
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Tailwind CSS CDN Fallback for Mobile Tunnel Devices -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Compiled Production Assets / Vite -->
+    @if(file_exists(public_path('build/manifest.json')))
+        @php
+            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
+            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+            $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
+        @endphp
+        @if($cssFile)
+            <link rel="stylesheet" href="{{ asset('build/' . $cssFile) }}">
+        @endif
+        @if($jsFile)
+            <script type="module" src="{{ asset('build/' . $jsFile) }}"></script>
+        @endif
+    @else
+        @vite(['resources/css/app.css','resources/js/app.js'])
+    @endif
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
