@@ -211,9 +211,10 @@ $colorPalette = [
 
         <!-- Right: GASPOLL Badge -->
         <div class="z-10 flex flex-col items-center md:items-end">
-            <div class="bg-gradient-to-r from-yellow-400 to-amber-500 text-blue-950 font-extrabold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-lg italic text-[10px] lg:text-xs shadow-lg transform hover:scale-105 transition duration-300 border border-yellow-300 uppercase tracking-tight flex items-center space-x-1">
-                <span>Gebrak Bersama</span>
-                <span class="text-red-700 font-extrabold">Full Gasspoll!</span>
+            <div class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs shadow-[0_0_15px_rgba(251,191,36,0.5)] border border-yellow-200 uppercase tracking-wider flex items-center space-x-2 transform hover:scale-105 transition duration-300">
+                <i class="bi bi-lightning-charge-fill text-red-600 text-sm"></i>
+                <span class="text-slate-950 font-black">Gebrak Bersama</span>
+                <span class="bg-red-600 text-white font-black px-2 py-0.5 rounded-md text-[10px] tracking-widest shadow-sm">Full Gasspoll!</span>
             </div>
         </div>
     </header>
