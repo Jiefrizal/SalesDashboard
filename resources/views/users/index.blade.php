@@ -48,6 +48,7 @@
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider text-center w-12">No</th>
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider">Nama Pengguna</th>
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider">Username / Email</th>
+                    <th class="p-4 text-xs font-extrabold uppercase tracking-wider text-center">Jenis User</th>
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider">Hak Akses Menu</th>
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider text-center">Tanggal Dibuat</th>
                     <th class="p-4 text-xs font-extrabold uppercase tracking-wider text-center w-36">Aksi</th>
@@ -70,6 +71,21 @@
                         </td>
                         <td class="p-4 text-sm text-gray-300 font-mono">
                             {{ $user->email }}
+                        </td>
+                        <td class="p-4 text-center">
+                            @if($user->role === 'super_admin' || $user->role === 'admin')
+                                <span class="inline-flex items-center text-xs px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+                                    <i class="bi bi-shield-check text-purple-400 mr-1.5"></i>Super Admin
+                                </span>
+                            @elseif($user->role === 'editor')
+                                <span class="inline-flex items-center text-xs px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                                    <i class="bi bi-pencil-square text-amber-400 mr-1.5"></i>Editor
+                                </span>
+                            @else
+                                <span class="inline-flex items-center text-xs px-2.5 py-1 rounded-full bg-slate-500/20 text-slate-300 border border-slate-500/30 font-bold">
+                                    <i class="bi bi-eye text-slate-400 mr-1.5"></i>Viewer
+                                </span>
+                            @endif
                         </td>
                         <td class="p-4">
                             <div class="flex flex-wrap gap-1.5">

@@ -25,6 +25,7 @@ class Cabang extends Model
         'stu_breakdown',
         'daily_performance',
         'leasing_breakdown',
+        'monthly_sales',
     ];
 
     protected $casts = [
@@ -32,5 +33,16 @@ class Cabang extends Model
         'stu_breakdown' => 'array',
         'daily_performance' => 'array',
         'leasing_breakdown' => 'array',
+        'monthly_sales' => 'array',
     ];
+
+    public function getMonthlySalesData(): array
+    {
+        $sales = is_array($this->monthly_sales) ? $this->monthly_sales : [];
+        $result = [];
+        for ($i = 0; $i < 12; $i++) {
+            $result[$i] = (int)($sales[$i] ?? 0);
+        }
+        return $result;
+    }
 }

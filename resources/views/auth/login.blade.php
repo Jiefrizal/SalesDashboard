@@ -7,9 +7,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('logo.png') }}">
 
@@ -168,9 +165,12 @@
         <!-- Direct 1-Click Viewer Entry -->
         <form method="POST" action="{{ route('login.viewer') }}" class="mb-6">
             @csrf
-            <button type="submit" class="btn-viewer">
-                <i class="bi bi-speedometer2 text-lg"></i>
-                <span>Masuk ke Dashboard</span>
+            <button type="submit" class="btn-viewer flex flex-col items-center justify-center py-3">
+                <div class="flex items-center space-x-2">
+                    <i class="bi bi-eye-fill text-lg"></i>
+                    <span>Masuk ke Dashboard</span>
+                </div>
+                <span class="text-[10px] font-normal opacity-80 normal-case tracking-normal">(Akses Viewer / Hanya Lihat)</span>
             </button>
         </form>
 
@@ -183,11 +183,11 @@
         <!-- Toggle Admin Form Button -->
         <button type="button" id="toggle-admin-btn" class="btn-admin flex items-center justify-center space-x-2">
             <i class="bi bi-shield-lock-fill"></i>
-            <span>Login Super Admin</span>
+            <span>Login</span>
             <i class="bi bi-chevron-down text-xs ml-1 transition-transform duration-200" id="admin-chevron"></i>
         </button>
 
-        <!-- Super Admin Login Form (Hidden by default, can be toggled or auto-opened if error) -->
+        <!-- Admin Login Form (Hidden by default, can be toggled or auto-opened if error) -->
         <div id="admin-form-container" class="mt-4 hidden transition-all duration-300">
             <form method="POST" action="{{ route('login') }}" class="space-y-3.5 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
                 @csrf
@@ -224,7 +224,7 @@
                 <div class="pt-1">
                     <button type="submit" id="admin-submit-btn" disabled class="w-full bg-slate-700/60 text-slate-400 border border-slate-700 font-bold text-xs py-2.5 px-4 rounded-lg transition-all flex items-center justify-center space-x-2 cursor-not-allowed opacity-60">
                         <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Masuk sebagai Super Admin</span>
+                        <span>Login</span>
                     </button>
                 </div>
             </form>

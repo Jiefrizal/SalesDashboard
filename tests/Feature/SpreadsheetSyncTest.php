@@ -285,6 +285,7 @@ class SpreadsheetSyncTest extends TestCase
         ]);
 
         $user = \App\Models\User::factory()->create([
+            'role' => 'editor',
             'allowed_menus' => ['dashboard', 'stu_unit', 'digital_marketing', 'cabang', 'users']
         ]);
         $response = $this->actingAs($user)->post(route('cabang.updateYtd', $cabang), [
@@ -301,5 +302,87 @@ class SpreadsheetSyncTest extends TestCase
             'id' => $cabang->id,
             'act_ytd_jan_2026' => 350
         ]);
+    }
+
+    /**
+     * Test updating monthly sales via AJAX.
+     */
+    public function test_update_monthly_sales_endpoint(): void
+    {
+        $cabang = Cabang::create([
+            'nama' => 'Pekanbaru',
+            'target_tantangan' => 100,
+            'target_reguler' => 90,
+            'target_reguler_2026' => 1000,
+        ]);
+
+        $user = \App\Models\User::factory()->create([
+            'role' => 'editor',
+            'allowed_menus' => ['cabang']
+        ]);
+
+        $monthlySales = [52, 70, 70, 66, 60, 81, 86, 10, 20, 30, 40, 50];
+
+        $response = $this->actingAs($user)->post(route('cabang.updateMonthlySales', $cabang), [
+            'monthly_sales' => $monthlySales
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+            'total' => array_sum($monthlySales),
+        ]);
+
+        $cabang->refresh();
+        $this->assertEquals($monthlySales, $cabang->getMonthlySalesData());
+    }
+
+    /**
+     * Test viewer role cannot update monthly sales.
+     */
+    public function test_viewer_cannot_update_monthly_sales(): void
+    {
+        $cabang = Cabang::create([
+            'nama' => 'Pekanbaru',
+            'target_tantangan' => 100,
+            'target_reguler' => 90,
+            'target_reguler_2026' => 1000,
+        ]);
+
+        $viewer = \App\Models\User::factory()->create([
+            'role' => 'viewer',
+            'allowed_menus' => ['cabang']
+        ]);
+
+        $response = $this->actingAs($viewer)->post(route('cabang.updateMonthlySales', $cabang), [
+            'monthly_sales' => [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Test non-super-admin user cannot view super admin accounts in user list.
+     */
+    public function test_non_super_admin_cannot_see_super_admin_users(): void
+    {
+        $superAdmin = \App\Models\User::factory()->create([
+            'name' => 'Boss Admin',
+            'email' => 'boss@aspacindo.com',
+            'role' => 'super_admin',
+            'allowed_menus' => ['dashboard', 'users']
+        ]);
+
+        $editorUser = \App\Models\User::factory()->create([
+            'name' => 'Editor Guy',
+            'email' => 'editor@aspacindo.com',
+            'role' => 'editor',
+            'allowed_menus' => ['dashboard', 'users']
+        ]);
+
+        $response = $this->actingAs($editorUser)->get(route('users.index'));
+        $response->assertStatus(200);
+        $response->assertDontSee('Boss Admin');
+        $response->assertSee('Editor Guy');
     }
 }

@@ -52,13 +52,25 @@ class User extends Authenticatable
     /** Helper: check if user is super admin / admin user */
     public function isSuperAdmin(): bool
     {
-        return $this->role === 'super_admin' || $this->hasMenuAccess('users');
+        return $this->role === 'super_admin' || $this->role === 'admin';
+    }
+
+    /** Helper: check if user is editor */
+    public function isEditor(): bool
+    {
+        return $this->role === 'editor';
     }
 
     /** Helper: check if user is viewer */
     public function isViewer(): bool
     {
-        return !$this->isSuperAdmin();
+        return $this->role === 'viewer';
+    }
+
+    /** Helper: check if user has permission to edit data */
+    public function canEdit(): bool
+    {
+        return $this->isSuperAdmin() || $this->isEditor();
     }
 
     /** Helper: check if user has access to a specific menu */
@@ -68,7 +80,7 @@ class User extends Authenticatable
             if ($this->role === 'super_admin') {
                 return true;
             }
-            return in_array($menuKey, ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing', 'service'], true);
+            return in_array($menuKey, ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing'], true);
         }
 
         return is_array($this->allowed_menus) && in_array($menuKey, $this->allowed_menus, true);
@@ -82,7 +94,6 @@ class User extends Authenticatable
             'stu_unit'          => 'STU UNIT',
             'stok_unit'         => 'STOK UNIT',
             'digital_marketing' => 'SOSIAL MEDIA',
-            'service'           => 'SERVICE',
             'cabang'            => 'CABANG',
             'users'             => 'KELOLA USER',
         ];

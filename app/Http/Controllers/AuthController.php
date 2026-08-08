@@ -17,13 +17,27 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /** Log in directly as Viewer without entering any credentials. */
+    /** Log in directly as Viewer (read-only) without entering any credentials. */
     public function loginViewer(Request $request)
     {
-        $viewer = User::where('role', 'viewer')->first() ?? User::firstOrCreate(
-            ['email' => 'viewer@aspacindo.com'],
-            ['name' => 'Viewer', 'password' => '', 'role' => 'viewer']
-        );
+        $viewer = User::where('role', 'viewer')->first();
+
+        if (!$viewer) {
+            $viewer = User::firstOrCreate(
+                ['email' => 'viewer@aspacindo.com'],
+                [
+                    'name'          => 'Viewer',
+                    'password'      => '',
+                    'role'          => 'viewer',
+                    'allowed_menus' => ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing'],
+                ]
+            );
+        } else {
+            // Ensure role is strictly viewer
+            if ($viewer->role !== 'viewer') {
+                $viewer->update(['role' => 'viewer']);
+            }
+        }
 
         Auth::login($viewer, true);
         $request->session()->regenerate();

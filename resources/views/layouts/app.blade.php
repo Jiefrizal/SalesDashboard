@@ -78,46 +78,7 @@
                     </a>
                 @endif
 
-                @if(auth()->user()->hasMenuAccess('service'))
-                    <div class="my-1.5 px-3">
-                        <div class="bg-blue-950/80 border border-blue-800/80 rounded-2xl overflow-hidden shadow-xl transition-all duration-200">
-                            <!-- Parent SERVICE Link Header -->
-                            <div class="flex items-center justify-between px-4 py-3 {{ Request::is('service*') ? 'bg-blue-800/90 text-white font-extrabold' : 'text-slate-200' }} hover:bg-blue-800/80 transition select-none">
-                                <a href="{{ route('service.index') }}" class="flex items-center flex-1 space-x-2.5">
-                                    <i class="bi bi-tools text-teal-400 text-base"></i>
-                                    <span class="tracking-wide">SERVICE</span>
-                                </a>
-                                <button type="button" id="service-menu-toggle" class="p-1 text-slate-300 hover:text-white focus:outline-none rounded hover:bg-blue-700/50" title="Buka/Tutup Sub Menu Service">
-                                    <i id="service-chevron" class="bi bi-chevron-down text-xs transition-transform duration-200 block {{ Request::is('service*') ? 'rotate-180' : '' }}"></i>
-                                </button>
-                            </div>
-                            
-                            <!-- Sub-menu Box Container (Distinct Box highlighting Service Hierarchy) -->
-                            <div id="service-submenu" class="bg-slate-950/90 border-t border-blue-900/60 p-2 space-y-1 {{ Request::is('service*') ? '' : 'hidden' }}">
-                                <div class="text-[9px] font-extrabold text-teal-400/90 uppercase tracking-widest px-3 py-1 flex items-center justify-between">
-                                    <span>SUB MENU SERVICE</span>
-                                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
-                                </div>
-                                <a href="{{ route('service.index', ['tab' => 'rut-ksg-ue']) }}" class="flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition {{ Request::query('tab') == 'rut-ksg-ue' ? 'bg-blue-800 text-yellow-300 font-black border-l-4 border-yellow-400 shadow-md' : 'text-slate-300 hover:text-white hover:bg-blue-900/70' }}">
-                                    <i class="bi bi-clipboard2-data mr-2.5 text-teal-400 text-sm shrink-0"></i>
-                                    <span>RUT KSG dan UE</span>
-                                </a>
-                                <a href="{{ route('service.index', ['tab' => 'jasa']) }}" class="flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition {{ Request::query('tab') == 'jasa' ? 'bg-blue-800 text-yellow-300 font-black border-l-4 border-yellow-400 shadow-md' : 'text-slate-300 hover:text-white hover:bg-blue-900/70' }}">
-                                    <i class="bi bi-cash-coin mr-2.5 text-amber-400 text-sm shrink-0"></i>
-                                    <span>JASA</span>
-                                </a>
-                                <a href="{{ route('service.index', ['tab' => 'jasa-unit']) }}" class="flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition {{ Request::query('tab') == 'jasa-unit' ? 'bg-blue-800 text-yellow-300 font-black border-l-4 border-yellow-400 shadow-md' : 'text-slate-300 hover:text-white hover:bg-blue-900/70' }}">
-                                    <i class="bi bi-calculator mr-2.5 text-purple-400 text-sm shrink-0"></i>
-                                    <span>JASA/UNIT</span>
-                                </a>
-                                <a href="{{ route('service.index', ['tab' => 'income-bengkel']) }}" class="flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition {{ Request::query('tab') == 'income-bengkel' ? 'bg-blue-800 text-yellow-300 font-black border-l-4 border-yellow-400 shadow-md' : 'text-slate-300 hover:text-white hover:bg-blue-900/70' }}">
-                                    <i class="bi bi-piggy-bank-fill mr-2.5 text-emerald-400 text-sm shrink-0"></i>
-                                    <span>INCOME BENGKEL</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+
 
                 @if(auth()->user()->hasMenuAccess('cabang'))
                     <a href="{{ route('cabang.index') }}" class="flex items-center px-6 py-3 {{ Request::is('cabang*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
@@ -134,10 +95,6 @@
                 @endif
             @endauth
 
-            <a href="#" class="flex items-center px-6 py-3 hover:bg-blue-800 text-gray-400 cursor-not-allowed">
-                <i class="bi bi-file-earmark-bar-graph mr-3"></i>
-                Laporan
-            </a>
         </nav>
 
         <!-- User Info & Logout -->
@@ -210,19 +167,7 @@
             backdrop.addEventListener('click', closeSidebar);
         }
 
-        // SERVICE Sub-menu Toggle Handler
-        const serviceToggleBtn = document.getElementById('service-menu-toggle');
-        const serviceSubmenu = document.getElementById('service-submenu');
-        const serviceChevron = document.getElementById('service-chevron');
 
-        if (serviceToggleBtn && serviceSubmenu && serviceChevron) {
-            serviceToggleBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                serviceSubmenu.classList.toggle('hidden');
-                serviceChevron.classList.toggle('rotate-180');
-            });
-        }
 
         // Instant Counter (Disabled JS Count Up Animation Loop for Maximum Speed & Performance)
         const initCounters = () => {

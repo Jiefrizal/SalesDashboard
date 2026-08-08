@@ -108,15 +108,18 @@ class SpreadsheetService
 
                 $existing = $dbCabang ?: Cabang::where('nama', $actualNama)->first();
                 if ($existing) {
+                    $acvVal = (int)($data['acv'] ?? 0);
+                    $monthlySum = is_array($existing->monthly_sales) ? array_sum($existing->monthly_sales) : 0;
+                    $actYtdVal = ($monthlySum > 0) ? ($monthlySum + $acvVal) : (($existing->act_ytd_jan_2026 > 0) ? (int)$existing->act_ytd_jan_2026 : $data['act_ytd_jan_2026']);
                     $currentMonth = \Carbon\Carbon::now()->month;
                     $remainingMonths = 12 - $currentMonth + 1;
-                    $diff = $existing->target_reguler_2026 - $data['act_ytd_jan_2026'];
+                    $diff = $existing->target_reguler_2026 - $actYtdVal;
                     $targetPerbulan = $remainingMonths > 0 ? (int)round($diff / $remainingMonths) : 0;
 
                     $existing->update([
                         'acv' => $data['acv'],
                         'lm' => $data['lm'],
-                        'act_ytd_jan_2026' => $data['act_ytd_jan_2026'],
+                        'act_ytd_jan_2026' => $actYtdVal,
                         'target_perbulan_utk_2026' => $targetPerbulan,
                         'stock_2024' => $data['stock_2024'],
                         'stock_2025' => $data['stock_2025'],
@@ -189,12 +192,13 @@ class SpreadsheetService
         try {
             $isXlsxSync = str_contains($salesUrl, 'docs.google.com') && !str_ends_with($salesUrl, '.csv');
             if ($isXlsxSync) {
-                $xlsxUrl = "https://docs.google.com/spreadsheets/d/17FFWWaFdeq6zK3eh56DSI6Qr8j6MgoQE/export?format=xlsx";
+                $timestamp = time();
+                $xlsxUrl = "https://docs.google.com/spreadsheets/d/17FFWWaFdeq6zK3eh56DSI6Qr8j6MgoQE/export?format=xlsx&t={$timestamp}";
                 if (preg_match('/\/d\/([a-zA-Z0-9-_]+)/', $salesUrl, $matches)) {
-                    $xlsxUrl = "https://docs.google.com/spreadsheets/d/{$matches[1]}/export?format=xlsx";
+                    $xlsxUrl = "https://docs.google.com/spreadsheets/d/{$matches[1]}/export?format=xlsx&t={$timestamp}";
                 }
 
-                $response = Http::timeout(20)->get($xlsxUrl);
+                $response = Http::timeout(25)->get($xlsxUrl);
                 if (!$response->successful()) {
                     Log::error("Failed to fetch {$cabang->nama} spreadsheet XLSX. HTTP Status: " . $response->status());
                     return false;
@@ -259,15 +263,25 @@ class SpreadsheetService
                 $lmVal = !empty($lmUrl) && $lmUrl !== $salesUrl ? $lmVal : (int)($result['lm'] ?? 0);
                 $lmFullVal = isset($result['lm_full']) && (int)$result['lm_full'] > 0 ? (int)$result['lm_full'] : $lmVal;
                 
-                // ACT YTD JAN 2026 = total STU LM + ACV (STU per hari ini)
-                $actYtdVal = isset($result['act_ytd_jan_2026']) && (int)$result['act_ytd_jan_2026'] > 0 
-                    ? (int)$result['act_ytd_jan_2026'] 
-                    : ($lmFullVal + $acvVal);
+                // ACT YTD JAN 2026: (monthly sales sum) + acv
+                $monthlySum = is_array($cabang->monthly_sales) ? array_sum($cabang->monthly_sales) : 0;
+                $actYtdVal = ($monthlySum > 0)
+                    ? ($monthlySum + $acvVal)
+                    : (($cabang->act_ytd_jan_2026 > 0)
+                        ? (int)$cabang->act_ytd_jan_2026
+                        : (isset($result['act_ytd_jan_2026']) && (int)$result['act_ytd_jan_2026'] > 0 
+                            ? (int)$result['act_ytd_jan_2026'] 
+                            : ($lmFullVal + $acvVal)));
 
                 $currentMonth = \Carbon\Carbon::now()->month;
                 $remainingMonths = 12 - $currentMonth + 1;
                 $diff = $cabang->target_reguler_2026 - $actYtdVal;
                 $targetPerbulan = $remainingMonths > 0 ? (int)round($diff / $remainingMonths) : 0;
+
+                $stuBd = $result['stu_breakdown'] ?? [];
+                if (isset($result['pos_breakdown'])) {
+                    $stuBd['pos'] = $result['pos_breakdown'];
+                }
 
                 // Update database
                 $cabang->update([
@@ -276,7 +290,7 @@ class SpreadsheetService
                     'stock_2025' => $result['stock_2025'],
                     'stock_2026' => $result['stock_2026'],
                     'stock_breakdown' => $result['stock_breakdown'] ?? null,
-                    'stu_breakdown' => $result['stu_breakdown'] ?? null,
+                    'stu_breakdown' => $stuBd,
                     'daily_performance' => $result['daily_performance'] ?? null,
                     'leasing_breakdown' => $result['leasing_breakdown'] ?? null,
                     'target_perbulan_utk_2026' => $targetPerbulan,
@@ -461,16 +475,18 @@ class SpreadsheetService
                 }
             }
 
+            $monthlySum = is_array($cabang->monthly_sales) ? array_sum($cabang->monthly_sales) : 0;
+            $actYtdVal = ($monthlySum > 0) ? ($monthlySum + $totalAcv) : (($cabang->act_ytd_jan_2026 > 0) ? (int)$cabang->act_ytd_jan_2026 : $totalActYtdJan2026);
             $currentMonth = \Carbon\Carbon::now()->month;
             $remainingMonths = 12 - $currentMonth + 1;
-            $diff = $cabang->target_reguler_2026 - $totalActYtdJan2026;
+            $diff = $cabang->target_reguler_2026 - $actYtdVal;
             $targetPerbulan = $remainingMonths > 0 ? (int)round($diff / $remainingMonths) : 0;
 
             // Save to database
             $cabang->update([
                 'acv' => $totalAcv,
                 'lm' => $lmVal !== null ? $lmVal : $totalLm,
-                'act_ytd_jan_2026' => $totalActYtdJan2026,
+                'act_ytd_jan_2026' => $actYtdVal,
                 'target_perbulan_utk_2026' => $targetPerbulan,
                 'stock_2024' => $totalStock2024,
                 'stock_2025' => $totalStock2025,

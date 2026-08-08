@@ -12,9 +12,19 @@ class UserController extends Controller
     /**
      * Display a listing of the users.
      */
+    /**
+     * Display a listing of the users.
+     */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->get();
+        $query = User::orderBy('name', 'asc');
+
+        // Super Admin accounts can only be viewed by Super Admin users
+        if (!auth()->user()->isSuperAdmin()) {
+            $query->whereNotIn('role', ['super_admin', 'admin']);
+        }
+
+        $users = $query->get();
         return view('users.index', compact('users'));
     }
 
@@ -35,6 +45,7 @@ class UserController extends Controller
             'name'            => 'required|string|max:255',
             'email'           => 'required|string|max:255|unique:users,email',
             'password'        => 'required|string|min:6|confirmed',
+            'role'            => 'required|string|in:super_admin,editor,viewer',
             'allowed_menus'   => 'required|array|min:1',
             'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,digital_marketing,cabang,users',
         ], [
@@ -44,19 +55,21 @@ class UserController extends Controller
             'password.required'      => 'Password wajib diisi.',
             'password.min'           => 'Password minimal 6 karakter.',
             'password.confirmed'     => 'Konfirmasi password tidak cocok.',
+            'role.required'          => 'Jenis pengguna (Role) wajib dipilih.',
             'allowed_menus.required' => 'Pilih minimal 1 hak akses menu.',
             'allowed_menus.min'      => 'Pilih minimal 1 hak akses menu.',
         ]);
 
-        $menus = $validated['allowed_menus'];
-        $hasAdminMenu = in_array('users', $menus, true) || in_array('cabang', $menus, true);
+        if ($validated['role'] === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak memiliki hak akses untuk membuat akun Super Admin.');
+        }
 
         User::create([
             'name'          => $validated['name'],
             'email'         => $validated['email'],
             'password'      => Hash::make($validated['password']),
-            'role'          => $hasAdminMenu ? 'super_admin' : 'viewer',
-            'allowed_menus' => $menus,
+            'role'          => $validated['role'],
+            'allowed_menus' => $validated['allowed_menus'],
         ]);
 
         return redirect()->route('users.index')->with('success', 'Akun pengguna berhasil ditambahkan.');
@@ -67,6 +80,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return redirect()->route('users.index')->with('error', 'Akun Super Admin tidak dapat dilihat atau dikelola selain oleh Super Admin.');
+        }
+
         return view('users.edit', compact('user'));
     }
 
@@ -75,10 +92,15 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return redirect()->route('users.index')->with('error', 'Akun Super Admin tidak dapat dilihat atau dikelola selain oleh Super Admin.');
+        }
+
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
             'email'           => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password'        => 'nullable|string|min:6|confirmed',
+            'role'            => 'required|string|in:super_admin,editor,viewer',
             'allowed_menus'   => 'required|array|min:1',
             'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,digital_marketing,cabang,users',
         ], [
@@ -87,18 +109,20 @@ class UserController extends Controller
             'email.unique'           => 'Username / Email telah terpakai oleh pengguna lain.',
             'password.min'           => 'Password minimal 6 karakter.',
             'password.confirmed'     => 'Konfirmasi password tidak cocok.',
+            'role.required'          => 'Jenis pengguna (Role) wajib dipilih.',
             'allowed_menus.required' => 'Pilih minimal 1 hak akses menu.',
             'allowed_menus.min'      => 'Pilih minimal 1 hak akses menu.',
         ]);
 
-        $menus = $validated['allowed_menus'];
-        $hasAdminMenu = in_array('users', $menus, true) || in_array('cabang', $menus, true);
+        if ($validated['role'] === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+            return redirect()->back()->withInput()->with('error', 'Anda tidak memiliki hak akses untuk menetapkan peran Super Admin.');
+        }
 
         $data = [
             'name'          => $validated['name'],
             'email'         => $validated['email'],
-            'role'          => $hasAdminMenu ? 'super_admin' : 'viewer',
-            'allowed_menus' => $menus,
+            'role'          => $validated['role'],
+            'allowed_menus' => $validated['allowed_menus'],
         ];
 
         if (!empty($validated['password'])) {
@@ -115,6 +139,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if ($user->isSuperAdmin() && !auth()->user()->isSuperAdmin()) {
+            return redirect()->route('users.index')->with('error', 'Akun Super Admin tidak dapat dihapus selain oleh Super Admin.');
+        }
+
         if (auth()->id() === $user->id) {
             return redirect()->route('users.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri yang sedang aktif.');
         }

@@ -119,7 +119,10 @@ def extract_lm_day(val_date, target_year, target_month):
 def classify_stu_row(row_klasifikasi, row_series, row_type):
     combined = f"{row_klasifikasi or ''} {row_series or ''} {row_type or ''}".upper().strip()
     
-    if 'PREMIUM' in combined or 'NMAX' in combined or 'AEROX' in combined or 'XMAX' in combined or 'LEXI' in combined:
+    if 'OFF ROAD' in combined or 'OFFROAD' in combined or 'WR' in combined:
+        cat = 'OFF ROAD'
+        sname = 'WR SERIES'
+    elif 'PREMIUM' in combined or 'NMAX' in combined or 'AEROX' in combined or 'XMAX' in combined or 'LEXI' in combined:
         cat = 'PREMIUM'
         if 'AEROX' in combined: sname = 'AEROX SERIES'
         elif 'XMAX' in combined: sname = 'XMAX SERIES'
@@ -138,12 +141,12 @@ def classify_stu_row(row_klasifikasi, row_series, row_type):
         if 'JUPITER' in combined: sname = 'JUPITER SERIES'
         elif 'VEGA' in combined: sname = 'VEGA SERIES'
         else: sname = 'MX SERIES'
-    elif 'SPORT' in combined or 'WR' in combined or 'R15' in combined or 'XSR' in combined or 'VIXION' in combined:
+    elif 'SPORT' in combined or 'R15' in combined or 'XSR' in combined or 'VIXION' in combined:
         cat = 'SPORT'
         if 'R15' in combined: sname = 'R15 SERIES'
         elif 'XSR' in combined: sname = 'XSR SERIES'
         elif 'VIXION' in combined: sname = 'VIXION SERIES'
-        else: sname = 'WR SERIES'
+        else: sname = 'SPORT SERIES'
     elif 'AT STD' in combined or 'MIO' in combined or 'XRIDE' in combined or 'X-RIDE' in combined:
         cat = 'AT STD'
         if 'XRIDE' in combined or 'X-RIDE' in combined: sname = 'X-RIDE SERIES'
@@ -173,6 +176,10 @@ def main():
         stock_2026 = 0
         stock_breakdown = {}
         stu_breakdown = {}
+        pos_breakdown = {}
+        l_cash = 0
+        l_kredit = 0
+        fincoy_ach = {"ADIRA": 0, "BAF": 0, "IMFI": 0, "MEGA": 0, "SOF": 0}
         daily_counts = {}
         max_day_found = 0
         
@@ -191,65 +198,113 @@ def main():
                     sheet_stu = wb[wb.sheetnames[0]]
                     
             if sheet_stu:
-                col_aa = find_column_index(sheet_stu, ["RANGKA", "MESIN"]) or 1
-                col_date = find_column_index(sheet_stu, ["TGLJUAL", "TANGGALJUAL", "TGLDEL", "TANGGALDEL", "TGL", "TANGGAL", "DATE"], exclude_patterns=["LAHIR", "BIRTH", "BORN"]) or 6
-                col_klas = find_column_index(sheet_stu, ["KLASIFIKASI", "KATEGORI"])
-                col_ser = find_column_index(sheet_stu, ["SERIES"])
+                col_aa = find_column_index(sheet_stu, ["RANGKA", "MESIN"])
+                col_no = find_column_index(sheet_stu, ["NO", "NOMOR", "SPK"])
                 col_typ = find_column_index(sheet_stu, ["TYPE", "TIPE", "MOTOR"])
+                col_consumer = find_column_index(sheet_stu, ["KONSUMEN", "PELANGGAN", "BUYER", "PEMBELI"])
+                col_pos = find_column_index(sheet_stu, ["DEALER", "POS", "PENJUAL"])
+                col_ser = find_column_index(sheet_stu, ["SERIES"])
+                col_klas = find_column_index(sheet_stu, ["KLASIFIKASI", "KATEGORI"])
                 col_leasing = find_column_index(sheet_stu, ["LEASING", "FINCOY", "FINANCE", "LSG", "BEBAN", "CARABAYAR", "CARA BAYAR", "PAYMENT", "SYSTEM", "SISTEM"])
+
+                # Priority date search: TGL JUAL first, then TGL DEL/DO
+                col_date = find_column_index(sheet_stu, ["TGLJUAL", "TANGGALJUAL", "TGLJUALJL"], exclude_patterns=["LAHIR", "BIRTH", "BORN"])
+                if not col_date:
+                    col_date = find_column_index(sheet_stu, ["TGLDEL", "TANGGALDEL", "TGLDO", "TANGGALDO", "DEL"], exclude_patterns=["LAHIR", "BIRTH", "BORN"])
+                if not col_date:
+                    col_date = find_column_index(sheet_stu, ["TGL", "TANGGAL", "DATE"], exclude_patterns=["LAHIR", "BIRTH", "BORN"])
 
                 l_cash = 0
                 l_kredit = 0
                 fincoy_ach = {"ADIRA": 0, "BAF": 0, "IMFI": 0, "MEGA": 0, "SOF": 0}
+                pos_breakdown = {}
 
                 target_year = datetime.datetime.now().year
                 target_month = datetime.datetime.now().month
 
                 for row in sheet_stu.iter_rows(min_row=2, max_row=1000):
-                    if col_aa <= len(row):
-                        val = row[col_aa - 1].value
-                        if val is not None and str(val).strip() != "":
+                    val_aa = str(row[col_aa - 1].value or "").strip() if col_aa and col_aa <= len(row) else ""
+                    val_consumer = str(row[col_consumer - 1].value or "").strip() if col_consumer and col_consumer <= len(row) else ""
+                    val_leasing_raw = str(row[col_leasing - 1].value or "").strip() if col_leasing and col_leasing <= len(row) else ""
+
+                    has_real_aa = val_aa not in ("", "-", "NONE", "#N/A")
+                    has_real_consumer = val_consumer not in ("", "-", "NONE", "#N/A")
+                    has_real_leasing = val_leasing_raw not in ("", "-", "NONE", "#N/A")
+
+                    # Row is valid if it has real chassis/engine OR customer name OR leasing method
+                    if has_real_aa or has_real_consumer or has_real_leasing:
+                        acv += 1
+
+                        # Date processing & daily performance
+                        dt = None
+                        if col_date and col_date <= len(row):
+                            val_date = row[col_date - 1].value
+                            dt = normalize_sales_date(val_date, target_year, target_month)
+
+                        if dt:
+                            day_num = dt.day
+                        else:
+                            # Fallback day number extraction if val_date is numeric or float string
+                            day_num = None
                             if col_date and col_date <= len(row):
-                                val_date = row[col_date - 1].value
-                                dt = normalize_sales_date(val_date, target_year, target_month)
-                                if dt:
-                                    acv += 1
-                                    day_num = dt.day
-                                    if 1 <= day_num <= 31:
-                                        daily_counts[day_num] = daily_counts.get(day_num, 0) + 1
-                                        if day_num > max_day_found:
-                                            max_day_found = day_num
+                                raw_v = str(row[col_date - 1].value or "").strip()
+                                if raw_v.replace('.', '', 1).isdigit():
+                                    try:
+                                        dn = int(float(raw_v))
+                                        if 1 <= dn <= 31:
+                                            day_num = dn
+                                    except ValueError:
+                                        pass
+                            if not day_num:
+                                day_num = max_day_found if max_day_found > 0 else 1
 
-                                    # Parse STU breakdown
-                                    val_klas = row[col_klas - 1].value if col_klas and col_klas <= len(row) else None
-                                    val_ser = row[col_ser - 1].value if col_ser and col_ser <= len(row) else None
-                                    val_typ = row[col_typ - 1].value if col_typ and col_typ <= len(row) else None
-                                    cat_name, series_name = classify_stu_row(val_klas, val_ser, val_typ)
-                                    if cat_name not in stu_breakdown:
-                                        stu_breakdown[cat_name] = {}
-                                    stu_breakdown[cat_name][series_name] = stu_breakdown[cat_name].get(series_name, 0) + 1
+                        if 1 <= day_num <= 31:
+                            daily_counts[day_num] = daily_counts.get(day_num, 0) + 1
+                            if day_num > max_day_found:
+                                max_day_found = day_num
 
-                                    # Parse LEASING column from branch spreadsheet
-                                    if col_leasing and col_leasing <= len(row):
-                                        val_p = str(row[col_leasing - 1].value or "").upper().strip()
-                                        if val_p in ("", "CASH", "TUNAI", "DIRECT"):
-                                            l_cash += 1
-                                        else:
-                                            l_kredit += 1
-                                            if "ADIRA" in val_p:
-                                                fincoy_ach["ADIRA"] = fincoy_ach.get("ADIRA", 0) + 1
-                                            elif "BAF" in val_p or "BUSSAN" in val_p:
-                                                fincoy_ach["BAF"] = fincoy_ach.get("BAF", 0) + 1
-                                            elif "IMFI" in val_p or "INDOMOBIL" in val_p:
-                                                fincoy_ach["IMFI"] = fincoy_ach.get("IMFI", 0) + 1
-                                            elif "MEGA" in val_p:
-                                                fincoy_ach["MEGA"] = fincoy_ach.get("MEGA", 0) + 1
-                                            elif "SOF" in val_p or "SUMMIT" in val_p or "OTOBAN" in val_p:
-                                                fincoy_ach["SOF"] = fincoy_ach.get("SOF", 0) + 1
-                                            else:
-                                                clean_name = val_p.replace("PT", "").replace(".", "").strip()
-                                                if clean_name:
-                                                    fincoy_ach[clean_name] = fincoy_ach.get(clean_name, 0) + 1
+                        # Parse STU breakdown
+                        val_klas = row[col_klas - 1].value if col_klas and col_klas <= len(row) else None
+                        val_ser = row[col_ser - 1].value if col_ser and col_ser <= len(row) else None
+                        val_typ = row[col_typ - 1].value if col_typ and col_typ <= len(row) else None
+                        cat_name, series_name = classify_stu_row(val_klas, val_ser, val_typ)
+                        if cat_name not in stu_breakdown:
+                            stu_breakdown[cat_name] = {}
+                        stu_breakdown[cat_name][series_name] = stu_breakdown[cat_name].get(series_name, 0) + 1
+
+                        # Parse POS breakdown (Rule: SO1, SO 1, SO-1, RIAU 1, D1... -> DEALER)
+                        val_pos_raw = str(row[col_pos - 1].value or "").upper().strip() if col_pos and col_pos <= len(row) else ""
+                        matched_pos = 'DEALER'
+                        if any(term in val_pos_raw for term in ["SO1", "SO 1", "SO-1", "RIAU 1"]) or val_pos_raw in ("", "-", "NONE", "DEALER") or val_pos_raw.startswith("D1"):
+                            matched_pos = 'DEALER'
+                        else:
+                            for sub_p in ["RIAU 2", "GARUDA SAKTI", "LIPAT KAIN", "BANGKINANG", "PETAPAHAN", "BELILAS", "PERANAP", "SUNGAI LALA", "PADANG LUAS", "KERINCI", "UKUI", "PERAWANG", "KERINCI KANAN", "SIAK", "SABAK AUH", "PANCUR BATU"]:
+                                if sub_p in val_pos_raw:
+                                    matched_pos = sub_p
+                                    break
+
+                        pos_breakdown[matched_pos] = pos_breakdown.get(matched_pos, 0) + 1
+
+                        # Parse LEASING column from branch spreadsheet
+                        val_p = val_leasing_raw.upper()
+                        if val_p in ("", "-", "NONE", "CASH", "TUNAI", "DIRECT", "CASH P", "CASH S", "KDS"):
+                            l_cash += 1
+                        else:
+                            l_kredit += 1
+                            if "ADIRA" in val_p:
+                                fincoy_ach["ADIRA"] = fincoy_ach.get("ADIRA", 0) + 1
+                            elif "BAF" in val_p or "BUSSAN" in val_p:
+                                fincoy_ach["BAF"] = fincoy_ach.get("BAF", 0) + 1
+                            elif "IMFI" in val_p or "INDOMOBIL" in val_p:
+                                fincoy_ach["IMFI"] = fincoy_ach.get("IMFI", 0) + 1
+                            elif "MEGA" in val_p or "MAF" in val_p or val_p == "MF":
+                                fincoy_ach["MEGA"] = fincoy_ach.get("MEGA", 0) + 1
+                            elif "SOF" in val_p or "SUMMIT" in val_p or "OTO" in val_p:
+                                fincoy_ach["SOF"] = fincoy_ach.get("SOF", 0) + 1
+                            else:
+                                clean_name = val_p.replace("PT", "").replace(".", "").strip()
+                                if clean_name:
+                                    fincoy_ach[clean_name] = fincoy_ach.get(clean_name, 0) + 1
 
         daily_performance = []
         if max_day_found == 0 and acv > 0:
@@ -367,6 +422,7 @@ def main():
             "stock_2026": stock_2026,
             "stock_breakdown": stock_breakdown,
             "stu_breakdown": stu_breakdown,
+            "pos_breakdown": pos_breakdown,
             "leasing_breakdown": {"cash": l_cash, "kredit": l_kredit, "fincoy": fincoy_ach},
             "daily_performance": daily_performance
         }))

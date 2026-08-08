@@ -244,7 +244,7 @@ $colorPalette = [
                     </div>
                 </div>
                 @auth
-                    @if(auth()->user()->isSuperAdmin())
+                    @if(auth()->user()->canEdit())
                         <a href="{{ route('cabang.index') }}" class="bg-blue-800 hover:bg-blue-700 text-white font-extrabold px-4 py-2 rounded-xl transition duration-200 text-center whitespace-nowrap flex items-center justify-center space-x-2 border border-blue-700 hover:border-blue-600 shadow-md">
                             <span>Atur URL Cabang</span>
                             <i class="bi bi-gear-fill"></i>
@@ -260,16 +260,16 @@ $colorPalette = [
                         <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
                     @auth
-                        @if(auth()->user()->isSuperAdmin())
-                            <span class="font-bold text-slate-200">Koneksi Spreadsheet Cabang Terhubung (Klik "Sinkronisasi Sekarang" untuk memperbarui data)</span>
+                        @if(auth()->user()->canEdit())
+                            <span class="font-bold text-slate-200">Koneksi Spreadsheet Cabang Terhubung (Klik "Sinkronisasi Sekarang" untuk memperbarui data realtime)</span>
                         @else
                             <span class="font-bold text-slate-200">Koneksi Spreadsheet Cabang Terhubung (Data Realtime Sales & Stok Cabang)</span>
                         @endif
                     @endauth
                 </div>
                 @auth
-                    @if(auth()->user()->isSuperAdmin())
-                        <a href="{{ route('sync.spreadsheet') }}" class="mt-2 sm:mt-0 bg-blue-800 hover:bg-blue-700 text-white font-extrabold px-4 py-2.5 rounded-xl transition duration-200 inline-flex items-center space-x-2 border border-blue-700 hover:border-blue-600 shadow-md transform hover:scale-105 active:scale-95 duration-150">
+                    @if(auth()->user()->canEdit())
+                        <a href="{{ route('sync.spreadsheet') }}" onclick="this.classList.add('pointer-events-none', 'opacity-75'); this.querySelector('i').classList.add('animate-spin'); this.querySelector('span').innerText = 'Memproses Realtime...';" class="mt-2 sm:mt-0 bg-blue-800 hover:bg-blue-700 text-white font-extrabold px-4 py-2.5 rounded-xl transition duration-200 inline-flex items-center space-x-2 border border-blue-700 hover:border-blue-600 shadow-md transform hover:scale-105 active:scale-95 duration-150">
                             <i class="bi bi-arrow-repeat text-sm"></i>
                             <span>Sinkronisasi Sekarang</span>
                         </a>
@@ -452,8 +452,8 @@ $colorPalette = [
                     <div class="bg-slate-950/30 rounded-xl shadow-inner border border-indigo-500/20 hover:border-indigo-400/50 transition duration-300" style="animation: slide-in-up 0.5s ease-out 0.7s both; animation-fill-mode: both;">
 
                         @auth
-                            @if(auth()->user()->isSuperAdmin())
-                                {{-- Super Admin: icon header + editable textarea --}}
+                            @if(auth()->user()->canEdit())
+                                {{-- Editor & Super Admin: icon header + editable textarea --}}
                                 <div class="flex items-start space-x-2.5 px-2.5 pt-2.5 pb-2">
                                     <div class="bg-indigo-500/10 text-indigo-400 p-2 rounded-lg shrink-0 border border-indigo-500/20">
                                         <i class="bi bi-pencil-square text-base"></i>
@@ -570,62 +570,69 @@ $colorPalette = [
             @endphp
 
             <!-- Box 1: Sudah Input Laporan Hari Ini -->
-            <div class="bg-emerald-955/50 border border-emerald-500/40 rounded-2xl lg:rounded-3xl p-4 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start hover:border-emerald-400/60 transition duration-300">
-                <div class="flex items-center justify-between border-b border-emerald-500/30 pb-2.5 mb-3">
-                    <div class="flex items-center space-x-2 min-w-0">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-                        <h4 class="text-xs lg:text-sm font-extrabold text-emerald-300 uppercase tracking-wider leading-tight">
+            <div class="bg-[#0e1326] border-[1.5px] border-emerald-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col justify-start hover:border-emerald-400 transition duration-300">
+                <div class="flex items-center justify-between border-b border-emerald-500/30 pb-3.5 mb-4 gap-2">
+                    <div class="flex items-start space-x-2.5 min-w-0">
+                        <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0 mt-1"></span>
+                        <h4 class="text-sm sm:text-base font-black text-emerald-300 uppercase tracking-wider leading-tight">
                             Sudah Input Laporan Hari Ini
                         </h4>
                     </div>
-                    <span class="text-[10px] lg:text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-md shrink-0">
+                    <span class="bg-emerald-500/15 border border-emerald-500/60 text-emerald-300 px-3.5 py-1 rounded-full text-xs font-black shrink-0 whitespace-nowrap shadow-md">
                         {{ count($sudahInputCabangs) }} Cabang
                     </span>
                 </div>
 
-                <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wide mb-2">Tanggal Laporan: {{ $reportingDay }} {{ \Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y') }}</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3.5">TANGGAL LAPORAN: {{ $reportingDay }} {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y')) }}</p>
                 
                 @if(count($sudahInputCabangs) > 0)
-                    <div class="flex flex-wrap gap-1.5">
+                    <div class="space-y-2.5">
                         @foreach($sudahInputCabangs as $c)
                             @php
                                 $color = $colorPalette[$c->nama] ?? '#22c55e';
                                 $valToday = $c->daily_performance[$reportingIdx] ?? $c->acv;
                             @endphp
-                            <div class="inline-flex items-center space-x-1.5 bg-slate-950/80 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-xs font-bold text-white shadow">
-                                <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
-                                <span>{{ $c->nama }}</span>
-                                <span class="text-emerald-400 font-extrabold">({{ $valToday }} Unit)</span>
-                                <i class="bi bi-check-circle-fill text-emerald-400 text-xs"></i>
+                            <div class="flex items-center justify-between bg-[#080a14]/90 border border-emerald-500/40 hover:border-emerald-400/80 px-4 py-2.5 rounded-xl sm:rounded-2xl transition duration-200 shadow-md">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
+                                    <span class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate">{{ $c->nama }}</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5 shrink-0 ml-3">
+                                    <span class="text-xs sm:text-sm font-semibold text-slate-400">Tgl {{ $reportingDay }}:</span>
+                                    <span class="text-sm sm:text-base font-black text-emerald-400">{{ $valToday }}</span>
+                                    <i class="bi bi-check-circle-fill text-emerald-400 text-sm sm:text-base ml-0.5"></i>
+                                </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <p class="text-xs text-slate-400 italic">Belum ada cabang yang menginputkan laporan hari ini.</p>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5 text-center text-slate-400 text-xs font-bold italic">
+                        Belum ada cabang yang menginputkan laporan hari ini.
+                    </div>
                 @endif
             </div>
 
-            <!-- Box 2: Belum Input Laporan Hari Ini -->
-            <div class="bg-rose-955/50 border border-rose-500/40 rounded-2xl lg:rounded-3xl p-4 shadow-xl backdrop-blur-md relative overflow-hidden flex flex-col justify-start hover:border-rose-400/60 transition duration-300">
-                <div class="flex items-center justify-between border-b border-rose-500/30 pb-2.5 mb-3">
-                    <div class="flex items-center space-x-2 min-w-0">
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse shrink-0"></span>
-                        <h4 class="text-xs lg:text-sm font-extrabold text-rose-300 uppercase tracking-wider leading-tight">
+            <!-- Box 2: Belum Input Laporan Hari Ini (SAMAKAN WARNA DAN JENIS DENGAN SUDAH INPUT LAPORAN) -->
+            <div class="bg-[#0e1326] border-[1.5px] border-emerald-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col justify-start hover:border-emerald-400 transition duration-300">
+                <div class="flex items-center justify-between border-b border-emerald-500/30 pb-3.5 mb-4 gap-2">
+                    <div class="flex items-start space-x-2.5 min-w-0">
+                        <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0 mt-1"></span>
+                        <h4 class="text-sm sm:text-base font-black text-emerald-300 uppercase tracking-wider leading-tight">
                             Belum Input Laporan Hari Ini
                         </h4>
                     </div>
-                    <span class="text-[10px] lg:text-xs font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-md shrink-0">
+                    <span class="bg-emerald-500/15 border border-emerald-500/60 text-emerald-300 px-3.5 py-1 rounded-full text-xs font-black shrink-0 whitespace-nowrap shadow-md">
                         {{ count($belumInputCabangs) }} Cabang
                     </span>
                 </div>
 
-                <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-wide mb-2">Tanggal Laporan: {{ $reportingDay }} {{ \Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y') }}</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3.5">TANGGAL LAPORAN: {{ $reportingDay }} {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y')) }}</p>
 
                 @if(count($belumInputCabangs) > 0)
-                    <div class="flex flex-col space-y-1.5">
+                    <div class="space-y-2.5">
                         @foreach($belumInputCabangs as $c)
                             @php
-                                $color = $colorPalette[$c->nama] ?? '#f43f5e';
+                                $color = $colorPalette[$c->nama] ?? '#22c55e';
                                 $rawP = $c->daily_performance ?: [];
                                 $lastDayNum = 0;
                                 $lastVal = 0;
@@ -637,24 +644,25 @@ $colorPalette = [
                                     }
                                 }
                             @endphp
-                            <div class="flex items-center justify-between bg-slate-950/80 border border-rose-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold text-white shadow">
-                                <div class="flex items-center space-x-1.5 min-w-0">
-                                    <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
-                                    <span class="truncate">{{ $c->nama }}</span>
+                            <div class="flex items-center justify-between bg-[#080a14]/90 border border-emerald-500/40 hover:border-emerald-400/80 px-4 py-2.5 rounded-xl sm:rounded-2xl transition duration-200 shadow-md">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
+                                    <span class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate">{{ $c->nama }}</span>
                                 </div>
-                                <div class="flex items-center space-x-1 shrink-0 ml-2">
+                                <div class="flex items-center space-x-1.5 shrink-0 ml-3">
                                     @if($lastDayNum > 0)
-                                        <span class="text-slate-400 font-medium text-[10.5px]">Tgl {{ $lastDayNum }}: <strong class="text-yellow-400 font-black">{{ $lastVal }}</strong></span>
+                                        <span class="text-xs sm:text-sm font-semibold text-slate-400">Tgl {{ $lastDayNum }}:</span>
+                                        <span class="text-sm sm:text-base font-black text-emerald-400">{{ $lastVal }}</span>
                                     @else
-                                        <span class="text-rose-400 text-[10.5px] font-bold">Belum Input</span>
+                                        <span class="text-xs sm:text-sm font-bold text-rose-400">Belum Input</span>
                                     @endif
-                                    <i class="bi bi-clock-history text-rose-400 text-xs"></i>
+                                    <i class="bi bi-clock-history text-emerald-400 text-sm sm:text-base ml-0.5"></i>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2.5 text-center text-emerald-300 text-xs font-bold flex items-center justify-center space-x-1.5">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3.5 text-center text-emerald-300 text-xs font-bold flex items-center justify-center space-x-1.5">
                         <i class="bi bi-check-all text-base"></i>
                         <span>Semua cabang sudah menginputkan laporan hari ini!</span>
                     </div>
@@ -787,22 +795,8 @@ $colorPalette = [
                                 <td class="py-2 px-2 lg:py-3.5 lg:px-4 border border-blue-900/30 bg-teal-500/5 text-teal-300 font-bold text-center">
                                     {{ $cabang->target_reguler_2026 }}
                                 </td>
-                                 <td class="ytd-act-cell py-2 px-2 border border-blue-900/30 bg-teal-500/5 text-center text-teal-300 font-bold">
-                                    @auth
-                                        @if(auth()->user()->isSuperAdmin())
-                                            <input 
-                                                type="number" 
-                                                value="{{ $cabang->act_ytd_jan_2026 }}" 
-                                                class="update-ytd-input w-24 text-center bg-teal-950/40 border border-teal-900/50 rounded px-2 py-1 text-teal-300 text-sm lg:text-base font-bold focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                data-id="{{ $cabang->id }}"
-                                                data-target-reguler="{{ $cabang->target_reguler_2026 }}"
-                                            >
-                                        @else
-                                            <span>{{ $cabang->act_ytd_jan_2026 }}</span>
-                                        @endif
-                                    @else
-                                        <span>{{ $cabang->act_ytd_jan_2026 }}</span>
-                                    @endauth
+                                 <td class="ytd-act-cell py-2 px-2 lg:py-3.5 lg:px-4 border border-blue-900/30 bg-teal-500/5 text-center text-teal-300 font-bold">
+                                    <span>{{ $cabang->act_ytd_jan_2026 }}</span>
                                  </td>
                                  <td class="ytd-diff-cell py-2 px-2 lg:py-3.5 lg:px-4 border border-blue-900/30 bg-teal-500/5 font-extrabold {{ $ytdDiff < 0 ? 'text-rose-400' : 'text-emerald-400' }}">
                                     {{ $ytdDiff > 0 ? '+' : '' }}{{ $ytdDiff }}
@@ -1181,7 +1175,7 @@ $colorPalette = [
                 });
             </script>
 
-            <!-- LAPORAN HASIL ANALISA: STU BY POS SECTION (CARD VIEW PRIMARY) -->
+            <!-- LAPORAN HASIL ANALISA: STU BY POS SECTION (HORIZONTAL VIEW PER CABANG BERURUTAN) -->
             @php
                 $posDataList = [
                     [
@@ -1190,7 +1184,7 @@ $colorPalette = [
                         'target' => 90,
                         'total_stu' => 10,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 90, 'stu' => 8],
+                            ['name' => 'DEALER', 'target' => 30, 'stu' => 8],
                             ['name' => 'RIAU 2', 'target' => 30, 'stu' => 2],
                             ['name' => 'GARUDA SAKTI', 'target' => 30, 'stu' => 0],
                         ]
@@ -1201,7 +1195,7 @@ $colorPalette = [
                         'target' => 70,
                         'total_stu' => 12,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 70, 'stu' => 7],
+                            ['name' => 'DEALER', 'target' => 25, 'stu' => 7],
                             ['name' => 'LIPAT KAIN', 'target' => 15, 'stu' => 1],
                             ['name' => 'BANGKINANG', 'target' => 15, 'stu' => 2],
                             ['name' => 'PETAPAHAN', 'target' => 15, 'stu' => 2],
@@ -1213,7 +1207,7 @@ $colorPalette = [
                         'target' => 106,
                         'total_stu' => 22,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 106, 'stu' => 7],
+                            ['name' => 'DEALER', 'target' => 34, 'stu' => 7],
                             ['name' => 'BELILAS', 'target' => 30, 'stu' => 9],
                             ['name' => 'PERANAP', 'target' => 25, 'stu' => 1],
                             ['name' => 'SUNGAI LALA', 'target' => 17, 'stu' => 5],
@@ -1225,7 +1219,7 @@ $colorPalette = [
                         'target' => 174,
                         'total_stu' => 23,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 174, 'stu' => 8],
+                            ['name' => 'DEALER', 'target' => 74, 'stu' => 8],
                             ['name' => 'PADANG LUAS', 'target' => 25, 'stu' => 3],
                             ['name' => 'KERINCI', 'target' => 50, 'stu' => 6],
                             ['name' => 'UKUI', 'target' => 25, 'stu' => 6],
@@ -1237,7 +1231,7 @@ $colorPalette = [
                         'target' => 125,
                         'total_stu' => 15,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 125, 'stu' => 3],
+                            ['name' => 'DEALER', 'target' => 43, 'stu' => 3],
                             ['name' => 'PERAWANG', 'target' => 30, 'stu' => 3],
                             ['name' => 'KERINCI KANAN', 'target' => 11, 'stu' => 0],
                             ['name' => 'SIAK', 'target' => 30, 'stu' => 9],
@@ -1250,25 +1244,39 @@ $colorPalette = [
                         'target' => 135,
                         'total_stu' => 24,
                         'pos' => [
-                            ['name' => 'DEALER', 'target' => 135, 'stu' => 21],
+                            ['name' => 'DEALER', 'target' => 115, 'stu' => 21],
                             ['name' => 'PANCUR BATU', 'target' => 20, 'stu' => 3],
                         ]
                     ],
                 ];
 
                 $processedPosData = [];
-                foreach ($posDataList as $item) {
-                    $dbC = $cabangs->first(fn($c) => strtoupper(trim($c->nama)) === $item['dealer']);
-                    $dealerTarget = $dbC && $dbC->target_reguler > 0 ? (int)$dbC->target_reguler : $item['target'];
-                    $dealerTotalStu = $dbC ? (int)$dbC->acv : $item['total_stu'];
+                $posMapByName = [];
+                foreach ($posDataList as $pItem) {
+                    $posMapByName[strtoupper(trim($pItem['dealer']))] = $pItem;
+                }
+
+                foreach ($cabangs as $dbC) {
+                    $cName = strtoupper(trim($dbC->nama));
+                    $item = $posMapByName[$cName] ?? null;
+                    if (!$item) continue;
+
+                    $dealerTarget = $dbC->target_reguler > 0 ? (int)$dbC->target_reguler : $item['target'];
+                    $dealerTotalStu = (int)$dbC->acv;
+
+                    $dbPosMap = (is_array($dbC->stu_breakdown) && isset($dbC->stu_breakdown['pos']))
+                        ? $dbC->stu_breakdown['pos']
+                        : [];
 
                     $posItems = [];
                     foreach ($item['pos'] as $p) {
-                        $pStu = $p['stu'];
-                        $pctVal = $dealerTotalStu > 0 ? round(($pStu / $dealerTotalStu) * 100) : 0;
+                        $pName = $p['name'];
+                        $pStu = isset($dbPosMap[$pName]) ? (int)$dbPosMap[$pName] : $p['stu'];
+                        $pTarget = (int)$p['target'];
+                        $pctVal = $pTarget > 0 ? round(($pStu / $pTarget) * 100) : 0;
                         $posItems[] = [
-                            'name' => $p['name'],
-                            'target' => $p['target'],
+                            'name' => $pName,
+                            'target' => $pTarget,
                             'stu' => $pStu,
                             'growth' => $pctVal . '%',
                             'pct_raw' => $pctVal
@@ -1276,130 +1284,178 @@ $colorPalette = [
                     }
 
                     $processedPosData[] = [
-                        'dealer' => $item['dealer'],
+                        'dealer' => strtoupper($dbC->nama),
                         'type' => $item['type'],
                         'target' => $dealerTarget,
                         'total_stu' => $dealerTotalStu,
                         'pos' => $posItems
                     ];
                 }
-            @endphp
 
-            <div class="mt-8 mb-8 bg-slate-900/90 border border-slate-800 rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-2xl backdrop-blur-xl">
+                // Fallback if processedPosData empty
+                if (empty($processedPosData)) {
+                    foreach ($posDataList as $item) {
+                        $dbC = $cabangs->first(fn($c) => strtoupper(trim($c->nama)) === $item['dealer']);
+                        $dealerTarget = $dbC && $dbC->target_reguler > 0 ? (int)$dbC->target_reguler : $item['target'];
+                        $dealerTotalStu = $dbC ? (int)$dbC->acv : $item['total_stu'];
+
+                        $dbPosMap = ($dbC && is_array($dbC->stu_breakdown) && isset($dbC->stu_breakdown['pos']))
+                            ? $dbC->stu_breakdown['pos']
+                            : [];
+
+                        $posItems = [];
+                        foreach ($item['pos'] as $p) {
+                            $pName = $p['name'];
+                            $pStu = isset($dbPosMap[$pName]) ? (int)$dbPosMap[$pName] : $p['stu'];
+                            $pTarget = (int)$p['target'];
+                            $pctVal = $pTarget > 0 ? round(($pStu / $pTarget) * 100) : 0;
+                            $posItems[] = [
+                                'name' => $pName,
+                                'target' => $pTarget,
+                                'stu' => $pStu,
+                                'growth' => $pctVal . '%',
+                                'pct_raw' => $pctVal
+                            ];
+                        }
+
+                        $processedPosData[] = [
+                            'dealer' => $item['dealer'],
+                            'type' => $item['type'],
+                            'target' => $dealerTarget,
+                            'total_stu' => $dealerTotalStu,
+                            'pos' => $posItems
+                        ];
+                    }
+                }
+            @endphp            <div class="mt-8 mb-8 bg-[#0e1326] border-[1.5px] border-[#e94560]/70 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl hover:border-[#e94560] transition duration-300">
                 
-                <!-- Section Header Banner -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 mb-6 gap-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-gradient-to-br from-rose-600 to-amber-700 p-2.5 rounded-2xl text-yellow-300 border border-rose-500/40 shadow-lg shrink-0">
-                            <i class="bi bi-diagram-3-fill text-xl lg:text-2xl"></i>
-                        </div>
+                <!-- Section Header Banner (Matching BELUM INPUT LAPORAN style) -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[#e94560]/30 pb-3.5 mb-5 gap-3">
+                    <div class="flex items-start space-x-2.5 min-w-0">
+                        <span class="w-3 h-3 rounded-full bg-[#e94560] shadow-[0_0_8px_#e94560] shrink-0 mt-1"></span>
                         <div>
-                            <h2 class="text-lg lg:text-xl font-black text-white uppercase tracking-wider">LAPORAN HASIL ANALISA (STU BY POS DEALER)</h2>
-                            <p class="text-xs text-rose-300 font-extrabold tracking-wide mt-0.5">ANALISA CAPAIAN POS PENJUALAN TIAP CABANG DEALER &bull; {{ \Carbon\Carbon::now()->format('d-M-y') }}</p>
+                            <h2 class="text-sm sm:text-base lg:text-lg font-black text-[#f36892] uppercase tracking-wider leading-tight">
+                                LAPORAN HASIL ANALISA (STU BY POS DEALER)
+                            </h2>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                ANALISA CAPAIAN POS PENJUALAN TIAP CABANG DEALER &bull; {{ \Carbon\Carbon::now()->format('d-M-y') }}
+                            </p>
                         </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="inline-flex items-center space-x-1.5 text-xs font-extrabold bg-[#e94560]/15 border border-[#e94560]/60 text-[#f36892] px-3.5 py-1 rounded-full shadow-md">
+                            <i class="bi bi-diagram-3-fill text-[#f36892]"></i>
+                            <span>{{ count($processedPosData) }} Cabang Dealer</span>
+                        </span>
                     </div>
                 </div>
 
-                <!-- 1. CARD VIEW CONTAINER (DEFAULT PRIMARY VIEW) -->
-                <div id="posCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- WIDE LANDSCAPE BRANCH CARDS CONTAINER (MEMANJANG KE KANAN) -->
+                <div id="posCardsContainer" class="space-y-4 lg:space-y-5">
                     @foreach($processedPosData as $d)
-                        <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950/30 border border-rose-900/60 rounded-2xl lg:rounded-3xl p-5 lg:p-6 shadow-2xl relative overflow-hidden flex flex-col justify-between hover:border-rose-500/60 transition group">
-                            <div class="absolute -right-12 -top-12 w-36 h-36 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition pointer-events-none"></div>
+                        @php
+                            $cColor = $colorPalette[$d['dealer']] ?? '#e94560';
+                        @endphp
+                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
+                            <div class="absolute -right-12 -top-12 w-36 h-36 bg-[#e94560]/10 rounded-full blur-2xl group-hover:bg-[#e94560]/20 transition pointer-events-none"></div>
 
-                            <div>
-                                <!-- Card Dealer Header -->
-                                <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-600 to-amber-600 flex items-center justify-center text-white shadow-lg border border-rose-400/30 shrink-0">
-                                            <i class="bi bi-building-fill text-lg"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-lg lg:text-xl font-black text-white uppercase tracking-wide">
-                                                {{ $d['dealer'] }}
-                                            </h3>
-                                            <span class="text-xs lg:text-sm font-extrabold text-rose-400 uppercase tracking-wider">DEALER ({{ $d['type'] }})</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Summary STU Badge -->
-                                    <div class="text-right bg-slate-950/90 border border-slate-800 px-3.5 py-2 rounded-2xl shadow-inner">
-                                        <div class="text-[10px] lg:text-[11px] text-slate-400 uppercase font-black tracking-wider">TOTAL STU</div>
-                                        <div class="text-lg lg:text-xl font-black text-emerald-400 leading-tight">
-                                            {{ $d['total_stu'] }} <span class="text-xs lg:text-sm text-slate-300 font-bold">/ <span class="pos-dealer-target-val text-yellow-400 font-black" data-dealer="{{ $d['dealer'] }}">{{ $d['target'] }}</span> Tgt</span>
-                                        </div>
-                                    </div>
+                            <!-- Header Bar Cabang (Horizontal Layout Memanjang Ke Kanan) -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#e94560]/30 pb-3 mb-3.5 gap-2.5">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: {{ $cColor }}; box-shadow: 0 0 10px {{ $cColor }}b0;"></span>
+                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">
+                                        {{ $d['dealer'] }}
+                                    </h3>
+                                    <span class="bg-[#e94560]/15 border border-[#e94560]/50 text-[#f36892] px-3 py-0.5 rounded-full text-xs font-black">DEALER ({{ $d['type'] }})</span>
                                 </div>
+                                
+                                <!-- Summary STU Badge -->
+                                <div class="flex items-center space-x-2 bg-[#0e1326] border border-[#e94560]/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
+                                    <span class="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL STU:</span>
+                                    <span class="text-sm sm:text-base font-black text-emerald-400">
+                                        {{ $d['total_stu'] }}
+                                    </span>
+                                    <span class="text-xs text-slate-400 font-bold">/ <span class="pos-dealer-target-val text-amber-400 font-black" data-dealer="{{ $d['dealer'] }}">{{ $d['target'] }}</span> Target</span>
+                                </div>
+                            </div>
 
-                                <!-- Sub POS List per Dealer -->
-                                <div class="space-y-3.5">
-                                    @foreach($d['pos'] as $p)
-                                        <div class="p-3.5 lg:p-4 rounded-2xl border transition {{ $p['name'] === 'DEALER' ? 'bg-rose-950/40 border-rose-500/40 shadow-lg' : 'bg-slate-950/80 border-slate-800/90 hover:border-slate-700' }}">
-                                            
-                                            <!-- Row 1: POS Name & Growth Badge -->
-                                            <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-slate-800/80">
-                                                <div class="flex items-center space-x-2.5">
-                                                    @if($p['name'] === 'DEALER')
-                                                        <div class="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
-                                                            <i class="bi bi-building-fill text-rose-400 text-xs"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h4 class="text-sm lg:text-base font-black text-rose-200 uppercase tracking-wide">{{ $p['name'] }}</h4>
-                                                            <span class="text-[10px] lg:text-[11px] font-bold text-rose-400/80">Pos Utama Dealer</span>
-                                                        </div>
-                                                    @else
-                                                        <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
-                                                            <i class="bi bi-geo-alt-fill text-amber-400 text-xs"></i>
-                                                        </div>
-                                                        <div>
-                                                            <h4 class="text-sm lg:text-base font-black text-slate-100 tracking-wide">{{ $p['name'] }}</h4>
-                                                            <span class="text-[10px] lg:text-[11px] font-medium text-slate-400">Sub-Pos Penjualan</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <span class="pos-growth-badge px-3 py-1 rounded-xl text-xs lg:text-sm font-black shadow-sm {{ $p['pct_raw'] >= 50 ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/40' : ($p['pct_raw'] > 0 ? 'bg-amber-500/25 text-amber-300 border border-amber-500/40' : 'bg-slate-800 text-slate-400 border border-slate-700') }}">
-                                                        {{ $p['growth'] }}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <!-- Row 2: Target & STU Mini Cards -->
-                                            <div class="grid grid-cols-2 gap-2 mb-2.5">
-                                                <div class="group/input bg-slate-950/80 border border-slate-700/60 hover:border-rose-500/60 focus-within:border-rose-400 focus-within:ring-2 focus-within:ring-rose-500/30 px-2.5 py-1.5 rounded-xl flex items-center justify-between shadow-inner transition-all duration-200 min-w-0 space-x-1">
-                                                    <div class="flex items-center space-x-1 shrink-0">
-                                                        <i class="bi bi-pencil-fill text-[9px] text-rose-400/60 group-hover/input:text-rose-400 transition-colors shrink-0"></i>
-                                                        <span class="text-[10px] sm:text-[11px] lg:text-xs font-extrabold text-slate-300 uppercase tracking-tight whitespace-nowrap shrink-0">TARGET</span>
+                            <!-- Sub POS List per Dealer (Disusun Horizontal Memanjang ke Kanan) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                                @foreach($d['pos'] as $p)
+                                    <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-2.5">
+                                        
+                                        <!-- Row 1: POS Name & Growth Badge -->
+                                        <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+                                            <div class="flex items-center space-x-2 min-w-0">
+                                                @if($p['name'] === 'DEALER')
+                                                    <div class="w-5 h-5 rounded-lg bg-[#e94560]/20 border border-[#e94560]/50 flex items-center justify-center shrink-0">
+                                                        <i class="bi bi-building-fill text-[#f36892] text-[10px]"></i>
                                                     </div>
-                                                    <div class="flex-1 min-w-0 text-right">
+                                                    <div class="min-w-0">
+                                                        <h4 class="text-xs font-black text-rose-200 uppercase tracking-wide truncate">{{ $p['name'] }}</h4>
+                                                        <span class="text-[9px] font-bold text-[#f36892] block leading-tight">Pos Utama</span>
+                                                    </div>
+                                                @else
+                                                    <div class="w-5 h-5 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
+                                                        <i class="bi bi-geo-alt-fill text-amber-400 text-[10px]"></i>
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <h4 class="text-xs font-black text-slate-100 uppercase tracking-wide truncate">{{ $p['name'] }}</h4>
+                                                        <span class="text-[9px] font-medium text-slate-400 block leading-tight">Sub-Pos</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="shrink-0 ml-1">
+                                                <span class="pos-growth-badge px-2 py-0.5 rounded-md text-[11px] font-black shadow-sm {{ $p['pct_raw'] >= 50 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : ($p['pct_raw'] > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800') }}">
+                                                    {{ $p['growth'] }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Row 2: Target & STU Mini Inputs -->
+                                        <div class="grid grid-cols-2 gap-1.5">
+                                            <div class="group/input bg-[#04060d] border border-[#e94560]/40 hover:border-[#e94560]/80 focus-within:border-[#e94560] focus-within:ring-1 focus-within:ring-[#e94560]/40 px-2 py-1 rounded-lg flex items-center justify-between shadow-inner transition-all duration-200 min-w-0 space-x-1">
+                                                <div class="flex items-center space-x-1 shrink-0">
+                                                    @if(auth()->user()->canEdit())
+                                                        <i class="bi bi-pencil-fill text-[8px] text-[#f36892] group-hover/input:text-[#f36892] transition-colors shrink-0"></i>
+                                                    @else
+                                                        <i class="bi bi-bullseye text-[8px] text-[#f36892] shrink-0"></i>
+                                                    @endif
+                                                    <span class="text-[9px] font-extrabold text-slate-400 uppercase tracking-tight whitespace-nowrap shrink-0">TGT</span>
+                                                </div>
+                                                <div class="flex-1 min-w-0 text-right">
+                                                    @if(auth()->user()->canEdit())
                                                         <input 
                                                             type="number" 
                                                             value="{{ $p['target'] }}" 
                                                             min="0"
-                                                            class="pos-target-input w-full text-right bg-transparent text-white font-extrabold text-xs lg:text-sm focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                            class="pos-target-input w-full text-right bg-transparent text-white font-extrabold text-xs focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                             data-dealer="{{ $d['dealer'] }}"
                                                             data-pos="{{ $p['name'] }}"
                                                             data-stu="{{ $p['stu'] }}"
                                                             onfocus="this.select()"
                                                             title="Klik untuk mengubah nilai target"
                                                         >
-                                                    </div>
-                                                </div>
-                                                <div class="bg-emerald-950/30 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl flex items-center justify-between min-w-0 space-x-1">
-                                                    <span class="text-[10px] sm:text-[11px] lg:text-xs font-extrabold text-emerald-400 uppercase tracking-wider whitespace-nowrap shrink-0">STU</span>
-                                                    <span class="text-xs lg:text-sm font-black text-emerald-400 truncate text-right flex-1 min-w-0">{{ $p['stu'] }}</span>
+                                                    @else
+                                                        <span class="font-extrabold text-xs text-white select-none">{{ $p['target'] }}</span>
+                                                    @endif
                                                 </div>
                                             </div>
-
-                                            <!-- Progress Bar Meter -->
-                                            <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-slate-800">
-                                                <div class="pos-progress-bar bg-gradient-to-r {{ $p['name'] === 'DEALER' ? 'from-rose-500 via-amber-400 to-emerald-400' : 'from-blue-500 to-emerald-400' }} h-2.5 rounded-full transition-all duration-500" style="width: {{ min(100, max(5, $p['pct_raw'])) }}%;"></div>
+                                            <div class="bg-emerald-955/40 border border-emerald-500/40 px-2 py-1 rounded-lg flex items-center justify-between min-w-0 space-x-1 shadow-inner">
+                                                <span class="text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider whitespace-nowrap shrink-0">STU</span>
+                                                <span class="text-xs font-black text-emerald-400 truncate text-right flex-1 min-w-0">{{ $p['stu'] }}</span>
                                             </div>
-
                                         </div>
-                                    @endforeach
-                                </div>
-                            </div>
 
+                                        <!-- Progress Bar Meter -->
+                                        <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-[#e94560]/30">
+                                            <div class="pos-progress-bar bg-gradient-to-r {{ $p['name'] === 'DEALER' ? 'from-[#e94560] via-amber-400 to-emerald-400' : 'from-blue-500 to-emerald-400' }} h-1.5 rounded-full transition-all duration-500" style="width: {{ min(100, max(5, $p['pct_raw'])) }}%;"></div>
+                                        </div>
+
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -1408,6 +1464,20 @@ $colorPalette = [
 
             <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Horizontal navigation scroll buttons for POS Cards
+                const posContainer = document.getElementById('posCardsContainer');
+                const btnPosLeft = document.getElementById('posScrollLeft');
+                const btnPosRight = document.getElementById('posScrollRight');
+
+                if (posContainer && btnPosLeft && btnPosRight) {
+                    btnPosLeft.addEventListener('click', function() {
+                        posContainer.scrollBy({ left: -390, behavior: 'smooth' });
+                    });
+                    btnPosRight.addEventListener('click', function() {
+                        posContainer.scrollBy({ left: 390, behavior: 'smooth' });
+                    });
+                }
+
                 const posInputs = document.querySelectorAll('.pos-target-input');
 
                 posInputs.forEach(input => {
@@ -1432,7 +1502,7 @@ $colorPalette = [
                         // Save to localStorage
                         localStorage.setItem(`pos_target_${currentDealer}_${currentPos}`, target);
 
-                        const posCard = inputEl.closest('.p-3\\.5, .p-4');
+                        const posCard = inputEl.closest('.p-3\\.5, .p-4, .p-3');
                         if (posCard) {
                             // Calculate percentage
                             const pct = target > 0 ? Math.round((stu / target) * 100) : 0;
@@ -1442,11 +1512,11 @@ $colorPalette = [
                             if (growthBadge) {
                                 growthBadge.textContent = pct + '%';
                                 if (pct >= 50) {
-                                    growthBadge.className = 'pos-growth-badge px-3 py-1 rounded-xl text-xs lg:text-sm font-black shadow-sm bg-emerald-500/25 text-emerald-300 border border-emerald-500/40';
+                                    growthBadge.className = 'pos-growth-badge px-2.5 py-0.5 rounded-lg text-xs font-black shadow-sm bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
                                 } else if (pct > 0) {
-                                    growthBadge.className = 'pos-growth-badge px-3 py-1 rounded-xl text-xs lg:text-sm font-black shadow-sm bg-amber-500/25 text-amber-300 border border-amber-500/40';
+                                    growthBadge.className = 'pos-growth-badge px-2.5 py-0.5 rounded-lg text-xs font-black shadow-sm bg-amber-500/20 text-amber-300 border border-amber-500/40';
                                 } else {
-                                    growthBadge.className = 'pos-growth-badge px-3 py-1 rounded-xl text-xs lg:text-sm font-black shadow-sm bg-slate-800 text-slate-400 border border-slate-700';
+                                    growthBadge.className = 'pos-growth-badge px-2.5 py-0.5 rounded-lg text-xs font-black shadow-sm bg-slate-900 text-slate-400 border border-slate-800';
                                 }
                             }
 
@@ -1459,7 +1529,7 @@ $colorPalette = [
                         }
 
                         // Recalculate Total Dealer Target
-                        const dealerCard = inputEl.closest('.bg-gradient-to-br');
+                        const dealerCard = inputEl.closest('.dealer-card-root, .bg-gradient-to-br, .bg-\\[\\#080a14\\]\\/90');
                         if (dealerCard) {
                             let newDealerTarget = 0;
                             dealerCard.querySelectorAll('.pos-target-input').forEach(inp => {
@@ -1487,7 +1557,7 @@ $colorPalette = [
             });
             </script>
 
-            <!-- ACHIEVEMENT BY LEASING SECTION (CARD VIEW & TABLE VIEW TOGGLE) -->
+            <!-- ACHIEVEMENT BY LEASING SECTION (LAYOUT MEMANJANG KE KANAN EXACTLY MATCHING STU BY POS DEALER) -->
             @php
                 $leasingBranches = [];
                 $totalTargetTotal = 0;
@@ -1541,22 +1611,26 @@ $colorPalette = [
                     $targetKredit = $cfg['target_kredit'];
                     $fincoyTarget = $cfg['fincoy_target'];
 
-                    // SOURCED DYNAMICALLY FROM REAL SPREADSHEET DATA PER RESPECTIVE CABANG
                     $achTotal = (int)$cabang->acv;
                     
                     $lData = $cabang->leasing_breakdown ?? ($cabang->stu_breakdown['leasing'] ?? null);
                     if ($lData && (isset($lData['cash']) || isset($lData['fincoy']))) {
                         $achCash = (int)($lData['cash'] ?? 0);
                         $achKredit = (int)($lData['kredit'] ?? max(0, $achTotal - $achCash));
+                        $megaCombined = (int)($lData['fincoy']['MEGA'] ?? 0)
+                            + (int)($lData['fincoy']['MAF'] ?? 0)
+                            + (int)($lData['fincoy']['MF'] ?? 0);
+                        $sofCombined = (int)($lData['fincoy']['SOF'] ?? 0)
+                            + (int)($lData['fincoy']['OTO'] ?? 0)
+                            + (int)($lData['fincoy']['OTOBAN'] ?? 0);
                         $fincoyAch = [
                             'ADIRA' => (int)($lData['fincoy']['ADIRA'] ?? 0),
                             'BAF'   => (int)($lData['fincoy']['BAF'] ?? 0),
                             'IMFI'  => (int)($lData['fincoy']['IMFI'] ?? 0),
-                            'MEGA'  => (int)($lData['fincoy']['MEGA'] ?? 0),
-                            'SOF'   => (int)($lData['fincoy']['SOF'] ?? 0),
+                            'MEGA'  => $megaCombined,
+                            'SOF'   => $sofCombined,
                         ];
                     } else {
-                        // Proportionate ACH derived directly from real branch spreadsheet ACV
                         $pctCashRatio = $targetTotal > 0 ? ($targetCash / $targetTotal) : 0.35;
                         $achCash = (int)round($achTotal * $pctCashRatio);
                         $achKredit = max(0, $achTotal - $achCash);
@@ -1583,12 +1657,13 @@ $colorPalette = [
                     }
 
                     $pctAch = [
-                        'target' => $targetTotal > 0 ? round(($achTotal / $targetTotal) * 100) . '%' : '0%',
-                        'cash'   => $achTotal > 0 ? round(($achCash / $achTotal) * 100) . '%' : '0%',
-                        'kredit' => $achTotal > 0 ? round(($achKredit / $achTotal) * 100) . '%' : '0%',
+                        'target' => $targetTotal > 0 ? round(($achTotal / $targetTotal) * 100, 1) . '%' : '0%',
+                        'cash'   => $targetCash > 0 ? round(($achCash / $targetCash) * 100, 1) . '%' : '0%',
+                        'kredit' => $targetKredit > 0 ? round(($achKredit / $targetKredit) * 100, 1) . '%' : '0%',
                     ];
                     foreach (['ADIRA', 'BAF', 'IMFI', 'MEGA', 'SOF'] as $fk) {
-                        $pctAch[$fk] = $achKredit > 0 ? round((($fincoyAch[$fk] ?? 0) / $achKredit) * 100) . '%' : '0%';
+                        $fTgt = $fincoyTarget[$fk] ?? 0;
+                        $pctAch[$fk] = $fTgt > 0 ? round((($fincoyAch[$fk] ?? 0) / $fTgt) * 100, 1) . '%' : '0%';
                     }
 
                     $leasingBranches[] = [
@@ -1628,17 +1703,18 @@ $colorPalette = [
                 }
 
                 $totalPctAch = [
-                    'target' => $totalTargetTotal > 0 ? round(($totalAchTotal / $totalTargetTotal) * 100) . '%' : '0%',
-                    'cash'   => $totalAchTotal > 0 ? round(($totalAchCash / $totalAchTotal) * 100) . '%' : '0%',
-                    'kredit' => $totalAchTotal > 0 ? round(($totalAchKredit / $totalAchTotal) * 100) . '%' : '0%',
+                    'target' => $totalTargetTotal > 0 ? round(($totalAchTotal / $totalTargetTotal) * 100, 1) . '%' : '0%',
+                    'cash'   => $totalTargetCash > 0 ? round(($totalAchCash / $totalTargetCash) * 100, 1) . '%' : '0%',
+                    'kredit' => $totalTargetKredit > 0 ? round(($totalAchKredit / $totalTargetKredit) * 100, 1) . '%' : '0%',
                 ];
                 foreach (['ADIRA', 'BAF', 'IMFI', 'MEGA', 'SOF'] as $fk) {
-                    $totalPctAch[$fk] = $totalAchKredit > 0 ? round(($totalFincoyAch[$fk] / $totalAchKredit) * 100) . '%' : '0%';
+                    $fTgtTot = $totalFincoyTarget[$fk] ?? 0;
+                    $totalPctAch[$fk] = $fTgtTot > 0 ? round(($totalFincoyAch[$fk] / $fTgtTot) * 100, 1) . '%' : '0%';
                 }
 
                 $leasingTotal = [
                     'no' => count($leasingBranches) + 1,
-                    'cabang' => 'TOTAL REKAPITULASI',
+                    'cabang' => 'TOTAL REKAPITULASI SELURUH DEALER',
                     'pct_target' => $totalPctTarget,
                     'target_total' => $totalTargetTotal,
                     'target_cash' => $totalTargetCash,
@@ -1654,180 +1730,964 @@ $colorPalette = [
                 $fincoyKeys = ['ADIRA', 'BAF', 'IMFI', 'MEGA', 'SOF'];
             @endphp
 
-            <div class="mt-8 mb-8 bg-slate-900/90 border border-blue-900/70 rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-2xl backdrop-blur-xl">
+            <div class="mt-8 mb-8 bg-[#0e1326] border-[1.5px] border-[#e94560]/70 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl hover:border-[#e94560] transition duration-300">
                 
-                <!-- Card Section Header Banner -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-blue-900/80 pb-4 mb-6 gap-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-gradient-to-br from-blue-600 to-indigo-800 p-2.5 rounded-2xl text-yellow-400 border border-blue-500/40 shadow-lg shrink-0">
-                            <i class="bi bi-bank2 text-xl lg:text-2xl"></i>
-                        </div>
+                <!-- Section Header Banner (Matching STU BY POS DEALER style) -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[#e94560]/30 pb-3.5 mb-5 gap-3">
+                    <div class="flex items-start space-x-2.5 min-w-0">
+                        <span class="w-3 h-3 rounded-full bg-[#e94560] shadow-[0_0_8px_#e94560] shrink-0 mt-1"></span>
                         <div>
-                            <h2 class="text-lg lg:text-xl font-black text-white uppercase tracking-wider">ACHIEVEMENT BY LEASING</h2>
-                            <p class="text-xs text-yellow-400 font-extrabold tracking-wide mt-0.5">PT ASPACINDO KEDATON MOTOR &bull; {{ \Carbon\Carbon::now()->format('d-M-y') }}</p>
+                            <h2 class="text-sm sm:text-base lg:text-lg font-black text-[#f36892] uppercase tracking-wider leading-tight">
+                                ACHIEVEMENT BY LEASING
+                            </h2>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                ANALISA CAPAIAN PENJUALAN CASH & FINCOY LEASING TIAP CABANG DEALER &bull; {{ \Carbon\Carbon::now()->format('d-M-y') }}
+                            </p>
                         </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="inline-flex items-center space-x-1.5 text-xs font-extrabold bg-[#e94560]/15 border border-[#e94560]/60 text-[#f36892] px-3.5 py-1 rounded-full shadow-md">
+                            <i class="bi bi-bank2 text-[#f36892]"></i>
+                            <span>{{ count($leasingBranches) }} Cabang Dealer</span>
+                        </span>
                     </div>
                 </div>
 
-                <!-- 1. CARD VIEW CONTAINER -->
-                <div id="leasingCardsContainer" class="space-y-6">
+                <!-- WIDE LANDSCAPE LEASING CARDS CONTAINER (MEMANJANG KE KANAN) -->
+                <div id="leasingCardsContainer" class="space-y-4 lg:space-y-5">
                     
-                    <!-- Grand Total Banner Card (Row 7 Summary) -->
-                    <div class="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border-2 border-yellow-500/60 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
-                        <div class="absolute -right-16 -bottom-16 w-56 h-56 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                        <div class="flex flex-col lg:flex-row lg:items-center justify-between border-b border-slate-800/80 pb-4 mb-4 gap-3">
+                    <!-- Grand Total Banner Card (Wide Landscape Strip) -->
+                    <div class="dealer-card-root w-full bg-[#080a14]/90 border border-yellow-500/50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-yellow-400 transition duration-300">
+                        <div class="absolute -right-12 -top-12 w-36 h-36 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                        <!-- Header Bar Total -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-yellow-500/30 pb-3 mb-3.5 gap-2.5">
                             <div class="flex items-center space-x-3">
-                                <span class="w-3 h-3 rounded-full bg-yellow-400 animate-pulse shrink-0"></span>
-                                <div>
-                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider">TOTAL REKAPITULASI SELURUH DEALER</h3>
-                                    <p class="text-xs text-slate-400 font-medium">Capaian Penjualan Leasing & Cash Gabungan 6 Cabang</p>
-                                </div>
+                                <span class="w-3.5 h-3.5 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b] shrink-0"></span>
+                                <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">
+                                    TOTAL REKAPITULASI SELURUH DEALER
+                                </h3>
+                                <span class="bg-amber-500/15 border border-amber-500/50 text-amber-300 px-3 py-0.5 rounded-full text-xs font-black">GABUNGAN 6 CABANG</span>
                             </div>
-                            <div class="flex items-center space-x-2 shrink-0">
-                                <span class="text-xs text-slate-400 font-bold uppercase">Pencapaian:</span>
-                                <span class="bg-amber-500/20 text-yellow-400 border border-yellow-500/40 text-sm font-black px-3 py-1 rounded-xl shadow">
+                            
+                            <!-- Summary STU Badge -->
+                            <div class="flex items-center space-x-2 bg-[#0e1326] border border-yellow-500/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
+                                <span class="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
+                                <span class="text-sm sm:text-base font-black text-amber-400">
+                                    {{ $leasingTotal['ach_total'] }}
+                                </span>
+                                <span class="text-xs text-slate-400 font-bold">/ <span class="text-slate-200 font-black">{{ $leasingTotal['target_total'] }}</span> Target</span>
+                                <span class="bg-amber-500/20 text-yellow-300 text-xs font-black px-2 py-0.5 rounded-md border border-amber-500/40 ml-1">
                                     %ACH: {{ $leasingTotal['pct_ach']['target'] }}
                                 </span>
                             </div>
                         </div>
 
-                        <!-- 3 Summary Box Grid for Total -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-4">
-                            <!-- Box 1: TARGET TOTAL -->
-                            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between">
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">TARGET VS ACH TOTAL</span>
-                                <div class="flex items-baseline justify-between mt-2">
-                                    <span class="text-2xl font-black text-yellow-400">{{ $leasingTotal['ach_total'] }} <span class="text-xs text-slate-400 font-normal">/ {{ $leasingTotal['target_total'] }} Unit</span></span>
-                                    <span class="text-xs font-black text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-lg border border-emerald-500/30">{{ $leasingTotal['pct_ach']['target'] }}</span>
-                                </div>
-                            </div>
-                            <!-- Box 2: CASH -->
-                            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between">
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PENJUALAN CASH</span>
-                                <div class="flex items-baseline justify-between mt-2">
-                                    <span class="text-xl font-black text-white">{{ $leasingTotal['ach_cash'] }} <span class="text-xs text-slate-400 font-normal">/ {{ $leasingTotal['target_cash'] }} Unit ({{ $leasingTotal['pct_target']['cash'] }})</span></span>
-                                    <span class="text-xs font-black text-blue-400 bg-blue-500/20 px-2 py-0.5 rounded-lg border border-blue-500/30">ACH {{ $leasingTotal['pct_ach']['cash'] }}</span>
-                                </div>
-                            </div>
-                            <!-- Box 3: KREDIT -->
-                            <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between">
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PENJUALAN KREDIT</span>
-                                <div class="flex items-baseline justify-between mt-2">
-                                    <span class="text-xl font-black text-white">{{ $leasingTotal['ach_kredit'] }} <span class="text-xs text-slate-400 font-normal">/ {{ $leasingTotal['target_kredit'] }} Unit ({{ $leasingTotal['pct_target']['kredit'] }})</span></span>
-                                    <span class="text-xs font-black text-purple-400 bg-purple-500/20 px-2 py-0.5 rounded-lg border border-purple-500/30">ACH {{ $leasingTotal['pct_ach']['kredit'] }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Fincoy Breakdown Row for Total -->
-                        <div>
-                            <span class="text-[11px] text-slate-400 font-black uppercase tracking-wider block mb-2">RINCIAN FINCOY GABUNGAN:</span>
-                            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                                @foreach($fincoyKeys as $fk)
-                                    <div class="bg-slate-950/90 border border-slate-800/90 rounded-xl p-2.5 flex flex-col justify-between">
-                                        <div class="flex items-center justify-between text-xs font-extrabold border-b border-slate-800/80 pb-1 mb-1">
-                                            <span class="text-yellow-400">{{ $fk }}</span>
-                                            <span class="text-[10px] text-slate-400">{{ $leasingTotal['pct_target'][$fk] }} Target</span>
+                        <!-- Grid of 7 Items for Grand Total (Disusun Horizontal Memanjang ke Kanan) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+                            <!-- DISTINCT CASH CARD (TOTAL) -->
+                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-blue-400/80 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:border-blue-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/cash">
+                                <div class="absolute -right-8 -top-8 w-20 h-20 bg-blue-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                <div class="flex items-center justify-between pb-1.5 border-b border-blue-500/30">
+                                    <div class="flex items-center space-x-1.5 min-w-0">
+                                        <div class="w-6 h-6 rounded-lg bg-blue-500/25 border border-blue-400/60 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(59,130,246,0.4)]">
+                                            <i class="bi bi-cash-stack text-blue-300 text-xs"></i>
                                         </div>
-                                        <div class="flex items-baseline justify-between">
-                                            <span class="text-sm font-black text-white">{{ $leasingTotal['fincoy_ach'][$fk] }} <span class="text-[10px] text-slate-400 font-normal">/ {{ $leasingTotal['fincoy_target'][$fk] }}</span></span>
-                                            <span class="text-[10.5px] font-extrabold text-teal-300">{{ $leasingTotal['pct_ach'][$fk] }}</span>
+                                        <div>
+                                            <h4 class="text-xs font-black text-blue-100 uppercase tracking-wide">CASH</h4>
+                                            <span class="text-[9px] font-extrabold text-blue-300 block leading-none">Utama</span>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-blue-500/30 text-blue-100 border border-blue-400/70 shadow-sm">
+                                        {{ $leasingTotal['pct_ach']['cash'] }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-black text-white">
+                                        <strong class="text-blue-300 text-sm sm:text-base font-black">{{ $leasingTotal['ach_cash'] }}</strong> / {{ $leasingTotal['target_cash'] }} Unit
+                                    </div>
+                                    <span class="text-[9.5px] text-blue-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $leasingTotal['pct_target']['cash'] }}</span>
+                                </div>
+                                <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-blue-400/40">
+                                    <div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- DISTINCT KREDIT CARD (TOTAL) -->
+                            <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:border-purple-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/kredit">
+                                <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                <div class="flex items-center justify-between pb-1.5 border-b border-purple-500/30">
+                                    <div class="flex items-center space-x-1.5 min-w-0">
+                                        <div class="w-6 h-6 rounded-lg bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_8px_rgba(168,85,247,0.4)]">
+                                            <i class="bi bi-credit-card-2-front-fill text-purple-300 text-xs"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-black text-purple-100 uppercase tracking-wide">KREDIT</h4>
+                                            <span class="text-[9px] font-extrabold text-purple-300 block leading-none">Utama</span>
+                                        </div>
+                                    </div>
+                                    <span class="px-2.5 py-0.5 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm">
+                                        {{ $leasingTotal['pct_ach']['kredit'] }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-black text-white">
+                                        <strong class="text-purple-300 text-sm sm:text-base font-black">{{ $leasingTotal['ach_kredit'] }}</strong> / {{ $leasingTotal['target_kredit'] }} Unit
+                                    </div>
+                                    <span class="text-[9.5px] text-purple-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $leasingTotal['pct_target']['kredit'] }}</span>
+                                </div>
+                                <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
+                                    <div class="bg-gradient-to-r from-purple-600 via-pink-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- 5 FINCOY ITEMS FOR TOTAL -->
+                            @foreach($fincoyKeys as $fk)
+                                @php
+                                    $achVal = $leasingTotal['fincoy_ach'][$fk];
+                                    $tgtVal = $leasingTotal['fincoy_target'][$fk];
+                                    $pctAchStr = $leasingTotal['pct_ach'][$fk];
+                                    $pctTgtStr = $leasingTotal['pct_target'][$fk];
+                                    $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                @endphp
+                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-teal-500/30 hover:border-teal-400 shadow-md flex flex-col justify-between space-y-2">
+                                    <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
+                                        <div class="flex items-center space-x-1.5">
+                                            <i class="bi bi-building text-teal-400 text-xs"></i>
+                                            <h4 class="text-xs font-black text-teal-200 uppercase">{{ $fk }}</h4>
+                                        </div>
+                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black {{ $achVal > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-slate-900 text-slate-500' }}">
+                                            {{ $pctAchStr }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-white">
+                                            <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-400' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                        </div>
+                                        <span class="text-[9.5px] text-slate-400 font-bold block">Tgt Ratio: {{ $pctTgtStr }}</span>
+                                    </div>
+                                    <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-teal-500/30">
+                                        <div class="bg-gradient-to-r from-teal-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- 6 Dealer Cards (Wide Landscape Strips Memanjang ke Kanan) -->
+                    @foreach($leasingBranches as $b)
+                        @php
+                            $cColor = $colorPalette[$b['cabang']] ?? '#e94560';
+                            $achPctNum = (int)filter_var($b['pct_ach']['target'], FILTER_SANITIZE_NUMBER_INT);
+                        @endphp
+                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
+                            <div class="absolute -right-12 -top-12 w-36 h-36 bg-[#e94560]/10 rounded-full blur-2xl group-hover:bg-[#e94560]/20 transition pointer-events-none"></div>
+
+                            <!-- Header Bar Cabang (Horizontal Layout Memanjang Ke Kanan) -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#e94560]/30 pb-3 mb-3.5 gap-2.5">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: {{ $cColor }}; box-shadow: 0 0 10px {{ $cColor }}b0;"></span>
+                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">
+                                        {{ $b['cabang'] }}
+                                    </h3>
+                                    <span class="bg-[#e94560]/15 border border-[#e94560]/50 text-[#f36892] px-3 py-0.5 rounded-full text-xs font-black">DEALER</span>
+                                </div>
+                                
+                                <!-- Summary STU Badge -->
+                                <div class="flex items-center space-x-2 bg-[#0e1326] border border-[#e94560]/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
+                                    <span class="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
+                                    <span class="text-sm sm:text-base font-black text-emerald-400">
+                                        {{ $b['ach_total'] }}
+                                    </span>
+                                    <span class="text-xs text-slate-400 font-bold">/ <span class="text-slate-200 font-black">{{ $b['target_total'] }}</span> Target</span>
+                                    <span class="bg-[#e94560]/20 text-[#f36892] text-xs font-black px-2 py-0.5 rounded-md border border-[#e94560]/40 ml-1">
+                                        %ACH: {{ $b['pct_ach']['target'] }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Sub Leasing Items (Disusun Horizontal Memanjang ke Kanan: CASH, KREDIT, 5 FINCOY) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+                                <!-- DISTINCT CASH ITEM (CABANG) -->
+                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-blue-400/80 shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:border-blue-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/cash">
+                                    <div class="absolute -right-8 -top-8 w-20 h-20 bg-blue-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                    <div class="flex items-center justify-between pb-1.5 border-b border-blue-500/30">
+                                        <div class="flex items-center space-x-1.5 min-w-0">
+                                            <div class="w-5 h-5 rounded-md bg-blue-500/25 border border-blue-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(59,130,246,0.4)]">
+                                                <i class="bi bi-cash-stack text-blue-300 text-[10px]"></i>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-black text-blue-100 uppercase truncate">CASH</h4>
+                                                <span class="text-[8.5px] font-extrabold text-blue-300 block leading-none">Metode Utama</span>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 bg-blue-500/30 text-blue-100 border border-blue-400/70 shadow-sm">
+                                            {{ $b['pct_ach']['cash'] }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-white">
+                                            <strong class="text-blue-300 text-sm font-black">{{ $b['ach_cash'] }}</strong> / {{ $b['target_cash'] }} Unit
+                                        </div>
+                                        <span class="text-[9.5px] text-blue-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $b['pct_target']['cash'] }}</span>
+                                    </div>
+                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-blue-400/40">
+                                        <div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- DISTINCT KREDIT ITEM (CABANG) -->
+                                <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-gradient-to-br from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:border-purple-300 flex flex-col justify-between space-y-2 relative overflow-hidden group/kredit">
+                                    <div class="absolute -right-8 -top-8 w-20 h-20 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
+                                    <div class="flex items-center justify-between pb-1.5 border-b border-purple-500/30">
+                                        <div class="flex items-center space-x-1.5 min-w-0">
+                                            <div class="w-5 h-5 rounded-md bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.4)]">
+                                                <i class="bi bi-credit-card-2-front-fill text-purple-300 text-[10px]"></i>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-black text-purple-100 uppercase truncate">KREDIT</h4>
+                                                <span class="text-[8.5px] font-extrabold text-purple-300 block leading-none">Metode Utama</span>
+                                            </div>
+                                        </div>
+                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm">
+                                            {{ $b['pct_ach']['kredit'] }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-black text-white">
+                                            <strong class="text-purple-300 text-sm font-black">{{ $b['ach_kredit'] }}</strong> / {{ $b['target_kredit'] }} Unit
+                                        </div>
+                                        <span class="text-[9.5px] text-purple-200 font-extrabold block mt-0.5">Tgt Ratio: {{ $b['pct_target']['kredit'] }}</span>
+                                    </div>
+                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
+                                        <div class="bg-gradient-to-r from-purple-600 via-pink-400 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 5 FINCOY ITEMS FOR CABANG -->
+                                @foreach($fincoyKeys as $fk)
+                                    @php
+                                        $achVal = $b['fincoy_ach'][$fk];
+                                        $tgtVal = $b['fincoy_target'][$fk];
+                                        $pctAchStr = $b['pct_ach'][$fk];
+                                        $pctTgtStr = $b['pct_target'][$fk];
+                                        $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                    @endphp
+                                    <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-2">
+                                        <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
+                                            <div class="flex items-center space-x-1.5 min-w-0">
+                                                <i class="bi bi-building text-teal-400 text-xs shrink-0"></i>
+                                                <h4 class="text-xs font-black text-slate-100 uppercase truncate">{{ $fk }}</h4>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-md text-[11px] font-black shrink-0 {{ $achVal > 0 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-900 text-slate-500 border border-slate-800' }}">
+                                                {{ $pctAchStr }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-black text-white">
+                                                <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-400' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                            </div>
+                                            <span class="text-[9.5px] text-slate-400 font-bold block">Tgt Ratio: {{ $pctTgtStr }}</span>
+                                        </div>
+                                        <div class="w-full bg-[#04060d] rounded-full h-1.5 overflow-hidden border border-[#e94560]/30">
+                                            <div class="bg-gradient-to-r from-[#e94560] via-amber-400 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, $pctNum)) }}%;"></div>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                    </div>
-
-                    <!-- 6 Dealer Cards Grid (3 Columns on Desktop) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        @foreach($leasingBranches as $b)
-                            @php
-                                $achPctNum = (int)filter_var($b['pct_ach']['target'], FILTER_SANITIZE_NUMBER_INT);
-                            @endphp
-                            <div class="bg-[#0b132b]/95 border border-blue-900/80 rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-md relative overflow-hidden flex flex-col justify-between hover:border-yellow-400/60 transition duration-300">
-                                <div>
-                                    <!-- Dealer Card Header -->
-                                    <div class="flex items-center justify-between border-b border-blue-950 pb-3 mb-3.5">
-                                        <div class="flex items-center space-x-2.5">
-                                            <span class="w-6 h-6 rounded-full bg-blue-900/80 border border-blue-700 text-yellow-400 font-black text-xs flex items-center justify-center shrink-0 shadow">
-                                                {{ $b['no'] }}
-                                            </span>
-                                            <h3 class="text-base font-black text-white uppercase tracking-wide truncate">{{ $b['cabang'] }}</h3>
-                                        </div>
-                                        <span class="bg-slate-950/90 border border-yellow-500/40 text-yellow-400 text-xs font-black px-2.5 py-1 rounded-xl shadow">
-                                            %ACH: {{ $b['pct_ach']['target'] }}
-                                        </span>
-                                    </div>
-
-                                    <!-- STU Target vs ACH Progress -->
-                                    <div class="mb-4">
-                                        <div class="flex items-center justify-between text-xs font-extrabold mb-1">
-                                            <span class="text-slate-400 uppercase tracking-wider text-[10px]">TOTAL ACH VS TARGET</span>
-                                            <span class="text-white font-black"><strong class="text-yellow-400 text-sm">{{ $b['ach_total'] }}</strong> / {{ $b['target_total'] }} Unit</span>
-                                        </div>
-                                        <div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                                            <div class="bg-gradient-to-r from-blue-500 via-indigo-500 to-yellow-400 h-full rounded-full transition-all duration-500" style="width: {{ min(100, max(5, $achPctNum)) }}%"></div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Cash vs Kredit 2-Column Row -->
-                                    <div class="grid grid-cols-2 gap-2.5 mb-4">
-                                        <!-- Cash -->
-                                        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase mb-1">
-                                                <span>CASH ({{ $b['pct_target']['cash'] }})</span>
-                                                <span class="text-blue-400 font-black">{{ $b['pct_ach']['cash'] }}</span>
-                                            </div>
-                                            <p class="text-white font-black text-sm"><strong class="text-blue-400">{{ $b['ach_cash'] }}</strong> <span class="text-xs text-slate-400 font-normal">/ {{ $b['target_cash'] }} Unit</span></p>
-                                        </div>
-                                        <!-- Kredit -->
-                                        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5">
-                                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase mb-1">
-                                                <span>KREDIT ({{ $b['pct_target']['kredit'] }})</span>
-                                                <span class="text-purple-400 font-black">{{ $b['pct_ach']['kredit'] }}</span>
-                                            </div>
-                                            <p class="text-white font-black text-sm"><strong class="text-purple-400">{{ $b['ach_kredit'] }}</strong> <span class="text-xs text-slate-400 font-normal">/ {{ $b['target_kredit'] }} Unit</span></p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Fincoy Breakdown List -->
-                                    <div>
-                                        <span class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block mb-2">FINCOY LEASING BREAKDOWN:</span>
-                                        <div class="space-y-1.5">
-                                            @foreach($fincoyKeys as $fk)
-                                                @php
-                                                    $fTarget = $b['fincoy_target'][$fk];
-                                                    $fAch = $b['fincoy_ach'][$fk];
-                                                    $fPctTarget = $b['pct_target'][$fk];
-                                                    $fPctAch = $b['pct_ach'][$fk];
-                                                @endphp
-                                                <div class="flex items-center justify-between text-xs py-1 px-2.5 rounded-lg bg-slate-950/80 border border-slate-800/80">
-                                                    <div class="flex items-center space-x-1.5 min-w-0">
-                                                        <span class="w-1.5 h-1.5 rounded-full {{ $fAch > 0 ? 'bg-teal-400' : 'bg-slate-600' }} shrink-0"></span>
-                                                        <span class="text-white font-extrabold uppercase text-[11px]">{{ $fk }}</span>
-                                                        <span class="text-[10px] text-slate-400 font-medium">({{ $fPctTarget }})</span>
-                                                    </div>
-                                                    <div class="flex items-center space-x-2 shrink-0">
-                                                        <span class="text-white font-black text-[11px]">
-                                                            <strong class="{{ $fAch > 0 ? 'text-teal-300' : 'text-slate-400' }}">{{ $fAch }}</strong> / {{ $fTarget }} Unit
-                                                        </span>
-                                                        <span class="text-[10px] font-black px-1.5 py-0.2 rounded {{ $fAch > 0 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-slate-900 text-slate-500' }}">
-                                                            {{ $fPctAch }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+                    @endforeach
 
                 </div>
 
             </div>
+
+            <!-- ANALISA STU JENIS PENJUALAN SECTION (GRAFIK & VISUALISASI INTERAKTIF CHART.JS) -->
+            @php
+                $stuJenisList = [
+                    'PEKANBARU' => [
+                        'acv_pct' => 16, 'stu_total' => 14,
+                        'counter' => ['pct' => 29, 'stu' => 4, 'sdm' => 3, 'avg' => 1],
+                        'salesman' => ['pct' => 0, 'stu' => 0, 'sdm' => 2, 'avg' => 0],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 71, 'stu' => 10],
+                    ],
+                    'SEI PAGAR' => [
+                        'acv_pct' => 23, 'stu_total' => 16,
+                        'counter' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'salesman' => ['pct' => 56, 'stu' => 9, 'sdm' => 7, 'avg' => 1],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 44, 'stu' => 7],
+                    ],
+                    'AIR MOLEK' => [
+                        'acv_pct' => 29, 'stu_total' => 31,
+                        'counter' => ['pct' => 29, 'stu' => 9, 'sdm' => 4, 'avg' => 2],
+                        'salesman' => ['pct' => 71, 'stu' => 22, 'sdm' => 21, 'avg' => 1],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 0, 'stu' => 0],
+                    ],
+                    'SOREK' => [
+                        'acv_pct' => 23, 'stu_total' => 40,
+                        'counter' => ['pct' => 40, 'stu' => 16, 'sdm' => 3, 'avg' => 5],
+                        'salesman' => ['pct' => 53, 'stu' => 21, 'sdm' => 21, 'avg' => 1],
+                        'digital' => ['pct' => 3, 'stu' => 1, 'sdm' => 3, 'avg' => 0],
+                        'kds' => ['pct' => 5, 'stu' => 2],
+                        'broker' => ['pct' => 0, 'stu' => 0],
+                    ],
+                    'KANDIS' => [
+                        'acv_pct' => 20, 'stu_total' => 25,
+                        'counter' => ['pct' => 36, 'stu' => 9, 'sdm' => 2, 'avg' => 5],
+                        'salesman' => ['pct' => 64, 'stu' => 16, 'sdm' => 19, 'avg' => 1],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 2, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 0, 'stu' => 0],
+                    ],
+                    'MEDAN' => [
+                        'acv_pct' => 27, 'stu_total' => 37,
+                        'counter' => ['pct' => 32, 'stu' => 12, 'sdm' => 1, 'avg' => 12],
+                        'salesman' => ['pct' => 41, 'stu' => 15, 'sdm' => 8, 'avg' => 2],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 27, 'stu' => 10],
+                    ],
+                ];
+
+                $stuJenisBranches = [];
+                $totStuVal = 0;
+                $totCounterStu = 0; $totCounterSdm = 13;
+                $totSalesmanStu = 0; $totSalesmanSdm = 78;
+                $totDigitalStu = 0; $totDigitalSdm = 5;
+                $totKdsStu = 0;
+                $totBrokerStu = 0;
+
+                foreach ($cabangs as $c) {
+                    $cName = strtoupper(trim($c->nama));
+                    $data = $stuJenisList[$cName] ?? [
+                        'acv_pct' => 20, 'stu_total' => (int)$c->acv,
+                        'counter' => ['pct' => 30, 'stu' => (int)round($c->acv * 0.3), 'sdm' => 2, 'avg' => 1],
+                        'salesman' => ['pct' => 50, 'stu' => (int)round($c->acv * 0.5), 'sdm' => 10, 'avg' => 1],
+                        'digital' => ['pct' => 0, 'stu' => 0, 'sdm' => 0, 'avg' => 0],
+                        'kds' => ['pct' => 0, 'stu' => 0],
+                        'broker' => ['pct' => 20, 'stu' => (int)round($c->acv * 0.2)],
+                    ];
+
+                    $stuTotal = $c->acv > 0 ? (int)$c->acv : $data['stu_total'];
+                    $minTgt = $c->target_reguler > 0 ? (int)$c->target_reguler : ($c->target_tantangan > 0 ? (int)$c->target_tantangan : 100);
+                    $acvPct = $minTgt > 0 ? round(($stuTotal / $minTgt) * 100) : $data['acv_pct'];
+
+                    $stuJenisBranches[] = [
+                        'nama' => strtoupper($c->nama),
+                        'acv_pct' => $acvPct,
+                        'stu_total' => $stuTotal,
+                        'counter' => $data['counter'],
+                        'salesman' => $data['salesman'],
+                        'digital' => $data['digital'],
+                        'kds' => $data['kds'],
+                        'broker' => $data['broker'],
+                    ];
+
+                    $totStuVal += $stuTotal;
+                    $totCounterStu += $data['counter']['stu'];
+                    $totSalesmanStu += $data['salesman']['stu'];
+                    $totDigitalStu += $data['digital']['stu'];
+                    $totKdsStu += $data['kds']['stu'];
+                    $totBrokerStu += $data['broker']['stu'];
+                }
+
+                $totCounterPct = $totStuVal > 0 ? round(($totCounterStu / $totStuVal) * 100) : 31;
+                $totSalesmanPct = $totStuVal > 0 ? round(($totSalesmanStu / $totStuVal) * 100) : 51;
+                $totDigitalPct = $totStuVal > 0 ? round(($totDigitalStu / $totStuVal) * 100) : 1;
+                $totKdsPct = $totStuVal > 0 ? round(($totKdsStu / $totStuVal) * 100) : 1;
+                $totBrokerPct = $totStuVal > 0 ? round(($totBrokerStu / $totStuVal) * 100) : 17;
+
+                $totCounterAvg = $totCounterSdm > 0 ? round($totCounterStu / $totCounterSdm) : 25;
+                $totSalesmanAvg = $totSalesmanSdm > 0 ? round($totSalesmanStu / $totSalesmanSdm) : 6;
+                $totDigitalAvg = $totDigitalSdm > 0 ? round($totDigitalStu / $totDigitalSdm) : 0;
+            @endphp
+
+            <div class="mt-8 mb-8 bg-[#0e1326] border-[1.5px] border-[#e94560]/70 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl hover:border-[#e94560] transition duration-300">
+                
+                <!-- Section Header Banner with Mode Controllers -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[#e94560]/30 pb-3.5 mb-5 gap-3">
+                    <div class="flex items-start space-x-2.5 min-w-0">
+                        <span class="w-3 h-3 rounded-full bg-[#e94560] shadow-[0_0_8px_#e94560] shrink-0 mt-1"></span>
+                        <div>
+                            <h2 class="text-sm sm:text-base lg:text-lg font-black text-[#f36892] uppercase tracking-wider leading-tight">
+                                STU (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
+                            </h2>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                                ANALISA GRAFIK VISUAL CAPAIAN CHANNEL PENJUALAN & PRODUKTIVITAS SDM PER CABANG
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Mode Switcher Buttons -->
+                    <div class="flex items-center space-x-1.5 bg-[#04060d] border border-[#e94560]/40 p-1 rounded-2xl shadow-inner self-start sm:self-auto">
+                        <button id="btnStuBarView" type="button" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all duration-200 flex items-center space-x-1.5 bg-[#e94560] text-white shadow-lg">
+                            <i class="bi bi-bar-chart-line-fill text-sm"></i>
+                            <span>Grafik Batang</span>
+                        </button>
+                        <button id="btnStuPieView" type="button" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all duration-200 flex items-center space-x-1.5 bg-[#080a14] text-slate-400 hover:text-white">
+                            <i class="bi bi-pie-chart-fill text-sm"></i>
+                            <span>Grafik Donut</span>
+                        </button>
+                        <button id="btnStuTableView" type="button" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all duration-200 flex items-center space-x-1.5 bg-[#080a14] text-slate-400 hover:text-white">
+                            <i class="bi bi-table text-sm"></i>
+                            <span>Tabel Data</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TOP SUMMARY METRICS BANNER (4 HIGHLIGHT CARDS) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                    <!-- Card 1: TOTAL STU -->
+                    <div class="bg-[#080a14]/90 border border-amber-500/40 p-3.5 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-extrabold uppercase mb-1">
+                            <span>TOTAL STU RESULT</span>
+                            <i class="bi bi-trophy-fill text-amber-400"></i>
+                        </div>
+                        <div class="text-xl sm:text-2xl font-black text-amber-400 leading-none mb-1">
+                            {{ $totStuVal }} <span class="text-xs text-slate-300 font-normal">Unit</span>
+                        </div>
+                        <span class="text-[10px] text-emerald-400 font-bold">ACV {{ round(($totStuVal / max(1, $totalTargetMin)) * 100) }}% Total Target</span>
+                    </div>
+
+                    <!-- Card 2: SALESMAN (DOMINAN) -->
+                    <div class="bg-[#080a14]/90 border border-blue-500/40 p-3.5 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-extrabold uppercase mb-1">
+                            <span>SALESMAN (DOMINAN)</span>
+                            <i class="bi bi-people-fill text-blue-400"></i>
+                        </div>
+                        <div class="text-xl sm:text-2xl font-black text-blue-400 leading-none mb-1">
+                            {{ $totSalesmanStu }} <span class="text-xs text-slate-300 font-normal">Unit</span>
+                        </div>
+                        <span class="text-[10px] text-blue-300 font-bold">{{ $totSalesmanPct }}% Share &bull; {{ $totSalesmanSdm }} SDM</span>
+                    </div>
+
+                    <!-- Card 3: SALES COUNTER -->
+                    <div class="bg-[#080a14]/90 border border-emerald-500/40 p-3.5 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-extrabold uppercase mb-1">
+                            <span>SALES COUNTER</span>
+                            <i class="bi bi-[#10b981] bi-person-workspace text-emerald-400"></i>
+                        </div>
+                        <div class="text-xl sm:text-2xl font-black text-emerald-400 leading-none mb-1">
+                            {{ $totCounterStu }} <span class="text-xs text-slate-300 font-normal">Unit</span>
+                        </div>
+                        <span class="text-[10px] text-emerald-300 font-bold">{{ $totCounterPct }}% Share &bull; {{ $totCounterSdm }} SDM</span>
+                    </div>
+
+                    <!-- Card 4: BROKER & KDS -->
+                    <div class="bg-[#080a14]/90 border border-purple-500/40 p-3.5 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-extrabold uppercase mb-1">
+                            <span>BROKER D1 & KDS D2</span>
+                            <i class="bi bi-building text-purple-400"></i>
+                        </div>
+                        <div class="text-xl sm:text-2xl font-black text-purple-400 leading-none mb-1">
+                            {{ $totBrokerStu + $totKdsStu }} <span class="text-xs text-slate-300 font-normal">Unit</span>
+                        </div>
+                        <span class="text-[10px] text-purple-300 font-bold">{{ $totBrokerPct + $totKdsPct }}% Share (Broker+KDS)</span>
+                    </div>
+                </div>
+
+                <!-- VIEW MODE 1: GRAFIK BATANG KOMPARATIF (BAR CHART CANVAS) -->
+                <div id="stuBarChartView" class="bg-[#080a14]/90 border border-[#e94560]/40 rounded-2xl p-4 sm:p-5 shadow-xl relative min-h-[400px] flex flex-col justify-between">
+                    <!-- Top Title Bar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 mb-3.5 gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
+                            <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wide">
+                                Grafik Komparasi Capaian STU Channel Penjualan per Cabang
+                            </h3>
+                        </div>
+                        <span class="text-xs text-slate-400 font-bold bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800 self-start sm:self-auto">
+                            Satuan: Unit Motor (STU)
+                        </span>
+                    </div>
+
+                    <!-- DEDICATED CENTERED GLOSSY LEGEND BAR (POSISI PRESISI & NYAMAN DILIHAT) -->
+                    <div class="flex justify-center my-1">
+                        <div class="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-[#04060d]/90 border border-slate-800/80 px-3.5 py-2 rounded-2xl sm:rounded-full shadow-lg backdrop-blur-md">
+                            <!-- Sales Counter -->
+                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#34d399] shadow-[0_0_8px_#34d399] shrink-0"></span>
+                                <span class="text-xs font-black text-emerald-200 uppercase">Sales Counter</span>
+                                <span class="text-[10px] font-extrabold text-emerald-400 bg-emerald-950/90 px-1.5 py-0.5 rounded-md border border-emerald-500/40">{{ $totCounterStu }} STU</span>
+                            </div>
+
+                            <!-- Salesman -->
+                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-blue-950/40 border border-blue-500/30">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#60a5fa] shadow-[0_0_8px_#60a5fa] shrink-0"></span>
+                                <span class="text-xs font-black text-blue-200 uppercase">Salesman</span>
+                                <span class="text-[10px] font-extrabold text-blue-400 bg-blue-950/90 px-1.5 py-0.5 rounded-md border border-blue-500/40">{{ $totSalesmanStu }} STU</span>
+                            </div>
+
+                            <!-- Sales Digital -->
+                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-rose-950/40 border border-rose-500/30">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#f43f5e] shadow-[0_0_8px_#f43f5e] shrink-0"></span>
+                                <span class="text-xs font-black text-rose-200 uppercase">Sales Digital</span>
+                                <span class="text-[10px] font-extrabold text-rose-400 bg-rose-950/90 px-1.5 py-0.5 rounded-md border border-rose-500/40">{{ $totDigitalStu }} STU</span>
+                            </div>
+
+                            <!-- KDS D2 -->
+                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-amber-950/40 border border-amber-500/30">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#fbbf24] shadow-[0_0_8px_#fbbf24] shrink-0"></span>
+                                <span class="text-xs font-black text-amber-200 uppercase">KDS (D2)</span>
+                                <span class="text-[10px] font-extrabold text-amber-400 bg-amber-950/90 px-1.5 py-0.5 rounded-md border border-amber-500/40">{{ $totKdsStu }} STU</span>
+                            </div>
+
+                            <!-- Broker D1 -->
+                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-purple-950/40 border border-purple-500/30">
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#c084fc] shadow-[0_0_8px_#c084fc] shrink-0"></span>
+                                <span class="text-xs font-black text-purple-200 uppercase">Broker (D1)</span>
+                                <span class="text-[10px] font-extrabold text-purple-400 bg-purple-950/90 px-1.5 py-0.5 rounded-md border border-purple-500/40">{{ $totBrokerStu }} STU</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full h-[320px] sm:h-[350px]">
+                        <canvas id="stuJenisBarCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- VIEW MODE 2: GRAFIK DONUT DISTRIBUSI CHANNEL (DOUGHNUT CHART CANVAS) -->
+                <div id="stuPieChartView" class="hidden bg-[#080a14]/90 border border-[#e94560]/40 rounded-2xl p-4 sm:p-5 shadow-xl relative min-h-[360px] flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_6px_#3b82f6]"></span>
+                            <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wide">
+                                Grafik Distribusi Persentase Share Channel Penjualan Total
+                            </h3>
+                        </div>
+                        <span class="text-xs text-slate-400 font-bold">Total Share: 100% (163 STU)</span>
+                    </div>
+
+                    <div class="relative w-full h-[300px] sm:h-[340px] flex items-center justify-center">
+                        <canvas id="stuJenisPieCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- VIEW MODE 3: TABEL DATA DETAIL (EXACT MATCH USER TABLE) -->
+                <div id="stuTableView" class="hidden overflow-x-auto rounded-2xl border border-[#e94560]/40 shadow-xl bg-[#080a14]/90">
+                    <table class="w-full text-xs sm:text-sm text-center border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-slate-950 font-black text-sm uppercase tracking-wider">
+                                <th colspan="6" class="py-2.5 px-4 border-b border-amber-500 shadow-md">
+                                    STU (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
+                                </th>
+                            </tr>
+                            <tr class="text-white font-extrabold uppercase text-xs tracking-wide">
+                                <th class="p-3 border border-slate-800 bg-purple-950/80 text-purple-200 w-44 text-left">CABANG / ACV / STU</th>
+                                <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALES COUNTER</th>
+                                <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALESMAN</th>
+                                <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALES DIGITAL</th>
+                                <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">KDS (D2)</th>
+                                <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">BROKER (D1)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80 text-slate-200 font-medium">
+                            @foreach($stuJenisBranches as $b)
+                                @php
+                                    $bColor = $colorPalette[$b['nama']] ?? '#e94560';
+                                @endphp
+                                <tr class="hover:bg-slate-900/60 transition duration-150">
+                                    <td class="p-3 border border-slate-800/80 bg-purple-950/30 text-left">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $bColor }}; box-shadow: 0 0 6px {{ $bColor }}b0;"></span>
+                                            <span class="font-black text-sm text-white uppercase">{{ $b['nama'] }}</span>
+                                        </div>
+                                        <div class="text-[11px] text-purple-300 font-bold">
+                                            acv {{ $b['acv_pct'] }}% <span class="text-white font-extrabold ml-1">STU = {{ $b['stu_total'] }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 border border-slate-800/80 bg-slate-950/40">
+                                        <div class="text-base font-black text-white mb-1">{{ $b['counter']['pct'] }}%</div>
+                                        <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
+                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['counter']['stu'] }}</strong></div>
+                                            <div>sdm {{ $b['counter']['sdm'] }} org</div>
+                                            <div>avg {{ $b['counter']['avg'] }} unit/org</div>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 border border-slate-800/80 bg-slate-950/40">
+                                        <div class="text-base font-black text-white mb-1">{{ $b['salesman']['pct'] }}%</div>
+                                        <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
+                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['salesman']['stu'] }}</strong></div>
+                                            <div>sdm {{ $b['salesman']['sdm'] }} org</div>
+                                            <div>avg {{ $b['salesman']['avg'] }} unit/org</div>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 border border-slate-800/80 bg-slate-950/40">
+                                        <div class="text-base font-black text-white mb-1">{{ $b['digital']['pct'] }}%</div>
+                                        <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
+                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['digital']['stu'] }}</strong></div>
+                                            <div>sdm {{ $b['digital']['sdm'] }} org</div>
+                                            <div>avg {{ $b['digital']['avg'] }} unit/org</div>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 border border-slate-800/80 bg-slate-950/40 align-middle">
+                                        <div class="text-base font-black text-white mb-1">{{ $b['kds']['pct'] }}%</div>
+                                        <div class="text-[11px] text-slate-300 font-bold">
+                                            STU = <strong class="text-emerald-400 font-black">{{ $b['kds']['stu'] }}</strong>
+                                        </div>
+                                    </td>
+                                    <td class="p-3 border border-slate-800/80 bg-slate-950/40 align-middle">
+                                        <div class="text-base font-black text-white mb-1">{{ $b['broker']['pct'] }}%</div>
+                                        <div class="text-[11px] text-slate-300 font-bold">
+                                            STU = <strong class="text-emerald-400 font-black">{{ $b['broker']['stu'] }}</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-gradient-to-r from-purple-950 via-slate-900 to-purple-950 text-white font-black border-t-2 border-amber-500/80">
+                                <td class="p-3 border border-slate-800 text-left bg-purple-950">
+                                    <div class="text-sm font-black text-yellow-400 uppercase">TOTAL</div>
+                                    <div class="text-xs text-purple-200">
+                                        acv {{ round(($totStuVal / max(1, $totalTargetMin)) * 100) }}% <span class="text-white font-extrabold ml-1">STU = {{ $totStuVal }}</span>
+                                    </div>
+                                </td>
+                                <td class="p-3 border border-slate-800 bg-slate-950/80">
+                                    <div class="text-base font-black text-yellow-400 mb-1">{{ $totCounterPct }}%</div>
+                                    <div class="text-[11px] text-slate-200 leading-snug font-bold">
+                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totCounterStu }}</strong></div>
+                                        <div>sdm {{ $totCounterSdm }} org</div>
+                                        <div>avg {{ $totCounterAvg }} unit/org</div>
+                                    </div>
+                                </td>
+                                <td class="p-3 border border-slate-800 bg-slate-950/80">
+                                    <div class="text-base font-black text-yellow-400 mb-1">{{ $totSalesmanPct }}%</div>
+                                    <div class="text-[11px] text-slate-200 leading-snug font-bold">
+                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totSalesmanStu }}</strong></div>
+                                        <div>sdm {{ $totSalesmanSdm }} org</div>
+                                        <div>avg {{ $totSalesmanAvg }} unit/org</div>
+                                    </div>
+                                </td>
+                                <td class="p-3 border border-slate-800 bg-slate-950/80">
+                                    <div class="text-base font-black text-yellow-400 mb-1">{{ $totDigitalPct }}%</div>
+                                    <div class="text-[11px] text-slate-200 leading-snug font-bold">
+                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totDigitalStu }}</strong></div>
+                                        <div>sdm {{ $totDigitalSdm }} org</div>
+                                        <div>avg {{ $totDigitalAvg }} unit/org</div>
+                                    </div>
+                                </td>
+                                <td class="p-3 border border-slate-800 bg-slate-950/80 align-middle">
+                                    <div class="text-base font-black text-yellow-400 mb-1">{{ $totKdsPct }}%</div>
+                                    <div class="text-xs text-slate-200 font-extrabold">
+                                        STU = <strong class="text-emerald-400 font-black">{{ $totKdsStu }}</strong>
+                                    </div>
+                                </td>
+                                <td class="p-3 border border-slate-800 bg-slate-950/80 align-middle">
+                                    <div class="text-base font-black text-yellow-400 mb-1">{{ $totBrokerPct }}%</div>
+                                    <div class="text-xs text-slate-200 font-extrabold">
+                                        STU = <strong class="text-emerald-400 font-black">{{ $totBrokerStu }}</strong>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- JAVASCRIPT FOR STU JENIS PENJUALAN INTERACTIVE CHARTS -->
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const btnBar = document.getElementById('btnStuBarView');
+                const btnPie = document.getElementById('btnStuPieView');
+                const btnTable = document.getElementById('btnStuTableView');
+                
+                const viewBar = document.getElementById('stuBarChartView');
+                const viewPie = document.getElementById('stuPieChartView');
+                const viewTable = document.getElementById('stuTableView');
+
+                function setActiveMode(activeBtn, activeView) {
+                    [btnBar, btnPie, btnTable].forEach(b => {
+                        if (b) {
+                            b.classList.remove('bg-[#e94560]', 'text-white', 'shadow-lg');
+                            b.classList.add('bg-[#080a14]', 'text-slate-400', 'hover:text-white');
+                        }
+                    });
+                    if (activeBtn) {
+                        activeBtn.classList.remove('bg-[#080a14]', 'text-slate-400', 'hover:text-white');
+                        activeBtn.classList.add('bg-[#e94560]', 'text-white', 'shadow-lg');
+                    }
+
+                    [viewBar, viewPie, viewTable].forEach(v => {
+                        if (v) v.classList.add('hidden');
+                    });
+                    if (activeView) activeView.classList.remove('hidden');
+                }
+
+                if (btnBar) btnBar.addEventListener('click', () => setActiveMode(btnBar, viewBar));
+                if (btnPie) btnPie.addEventListener('click', () => setActiveMode(btnPie, viewPie));
+                if (btnTable) btnTable.addEventListener('click', () => setActiveMode(btnTable, viewTable));
+
+                // Dynamic Data extraction from Blade
+                const branchData = @json($stuJenisBranches);
+                const chartLabels = branchData.map(b => b.nama);
+                const dataCounter = branchData.map(b => b.counter ? b.counter.stu : 0);
+                const dataSalesman = branchData.map(b => b.salesman ? b.salesman.stu : 0);
+                const dataDigital = branchData.map(b => b.digital ? b.digital.stu : 0);
+                const dataKds = branchData.map(b => b.kds ? b.kds.stu : 0);
+                const dataBroker = branchData.map(b => b.broker ? b.broker.stu : 0);
+                const totalsPerBranch = branchData.map(b => b.stu_total || 0);
+
+                // 1. Chart.js Bar Chart Initialization with Executive Styling & Canvas Gradients
+                const ctxBar = document.getElementById('stuJenisBarCanvas');
+                if (ctxBar) {
+                    const ctx = ctxBar.getContext('2d');
+                    
+                    // Create linear gradients for professional neon aesthetics
+                    const gradCounter = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradCounter.addColorStop(0, '#34d399');
+                    gradCounter.addColorStop(1, '#059669');
+
+                    const gradSalesman = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradSalesman.addColorStop(0, '#60a5fa');
+                    gradSalesman.addColorStop(1, '#1d4ed8');
+
+                    const gradDigital = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradDigital.addColorStop(0, '#fb7185');
+                    gradDigital.addColorStop(1, '#e11d48');
+
+                    const gradKds = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradKds.addColorStop(0, '#fbbf24');
+                    gradKds.addColorStop(1, '#d97706');
+
+                    const gradBroker = ctx.createLinearGradient(0, 0, 0, 320);
+                    gradBroker.addColorStop(0, '#c084fc');
+                    gradBroker.addColorStop(1, '#7e22ce');
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: chartLabels,
+                            datasets: [
+                                {
+                                    label: 'Sales Counter',
+                                    data: dataCounter,
+                                    backgroundColor: gradCounter,
+                                    borderColor: 'rgba(52, 211, 153, 0.6)',
+                                    borderWidth: 1,
+                                    categoryPercentage: 0.65,
+                                    barPercentage: 0.75,
+                                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 4, bottomRight: 4 },
+                                },
+                                {
+                                    label: 'Salesman',
+                                    data: dataSalesman,
+                                    backgroundColor: gradSalesman,
+                                    borderColor: 'rgba(96, 165, 250, 0.6)',
+                                    borderWidth: 1,
+                                    categoryPercentage: 0.65,
+                                    barPercentage: 0.75,
+                                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 4, bottomRight: 4 },
+                                },
+                                {
+                                    label: 'Sales Digital',
+                                    data: dataDigital,
+                                    backgroundColor: gradDigital,
+                                    borderColor: 'rgba(251, 113, 133, 0.8)',
+                                    borderWidth: 1,
+                                    categoryPercentage: 0.65,
+                                    barPercentage: 0.75,
+                                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 4, bottomRight: 4 },
+                                },
+                                {
+                                    label: 'KDS (D2)',
+                                    data: dataKds,
+                                    backgroundColor: gradKds,
+                                    borderColor: 'rgba(251, 191, 36, 0.6)',
+                                    borderWidth: 1,
+                                    categoryPercentage: 0.65,
+                                    barPercentage: 0.75,
+                                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 4, bottomRight: 4 },
+                                },
+                                {
+                                    label: 'Broker (D1)',
+                                    data: dataBroker,
+                                    backgroundColor: gradBroker,
+                                    borderColor: 'rgba(192, 132, 252, 0.6)',
+                                    borderWidth: 1,
+                                    categoryPercentage: 0.65,
+                                    barPercentage: 0.75,
+                                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 4, bottomRight: 4 },
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            layout: {
+                                padding: {
+                                    top: 28,
+                                    bottom: 10,
+                                    left: 10,
+                                    right: 10
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    backgroundColor: 'rgba(8, 10, 20, 0.95)',
+                                    titleColor: '#facc15',
+                                    bodyColor: '#ffffff',
+                                    borderColor: 'rgba(233, 69, 96, 0.5)',
+                                    borderWidth: 1.5,
+                                    padding: 12,
+                                    boxPadding: 6,
+                                    usePointStyle: true
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    stacked: true,
+                                    ticks: { color: '#cbd5e1', font: { weight: 'bold', size: 11 } },
+                                    grid: { color: 'rgba(255,255,255,0.04)' }
+                                },
+                                y: {
+                                    stacked: true,
+                                    suggestedMax: 48,
+                                    ticks: { color: '#cbd5e1', font: { weight: 'bold', size: 11 } },
+                                    grid: { color: 'rgba(255,255,255,0.06)' }
+                                }
+                            }
+                        },
+                        plugins: [{
+                            id: 'stuTotalBarLabels',
+                            afterDatasetsDraw(chart) {
+                                const { ctx } = chart;
+                                ctx.save();
+                                const totals = totalsPerBranch;
+                                
+                                // Draw Top Badge Label on top of each bar
+                                chart.data.labels.forEach((label, index) => {
+                                    const totalVal = totals[index];
+                                    if (totalVal > 0) {
+                                        let topY = chart.chartArea.bottom;
+                                        let barX = 0;
+                                        chart.data.datasets.forEach((ds, dsIdx) => {
+                                            const meta = chart.getDatasetMeta(dsIdx);
+                                            const element = meta.data[index];
+                                            if (element) {
+                                                barX = element.x;
+                                                if (element.y < topY) {
+                                                    topY = element.y;
+                                                }
+                                            }
+                                        });
+
+                                        // Draw sleek pill badge background for total
+                                        const textStr = totalVal + ' STU';
+                                        ctx.font = '900 11.5px sans-serif';
+                                        const textWidth = ctx.measureText(textStr).width;
+                                        const badgeW = textWidth + 14;
+                                        const badgeH = 20;
+                                        const badgeX = barX - (badgeW / 2);
+                                        const badgeY = topY - badgeH - 6;
+
+                                        // Badge background frame
+                                        ctx.fillStyle = 'rgba(8, 10, 20, 0.9)';
+                                        ctx.strokeStyle = 'rgba(250, 204, 21, 0.8)';
+                                        ctx.lineWidth = 1.2;
+                                        
+                                        // Round rect badge
+                                        ctx.beginPath();
+                                        if (ctx.roundRect) {
+                                            ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 6);
+                                        } else {
+                                            ctx.rect(badgeX, badgeY, badgeW, badgeH);
+                                        }
+                                        ctx.fill();
+                                        ctx.stroke();
+
+                                        // Text inside badge
+                                        ctx.fillStyle = '#facc15';
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'middle';
+                                        ctx.fillText(textStr, barX, badgeY + (badgeH / 2));
+                                    }
+                                });
+
+                                // Segment numbers inside bar blocks
+                                chart.data.datasets.forEach((ds, dsIdx) => {
+                                    const meta = chart.getDatasetMeta(dsIdx);
+                                    meta.data.forEach((barEl, index) => {
+                                        const val = ds.data[index];
+                                        const h = Math.abs(barEl.base - barEl.y);
+                                        if (val > 0 && h >= 16) {
+                                            ctx.font = '900 11px sans-serif';
+                                            ctx.fillStyle = '#ffffff';
+                                            ctx.textAlign = 'center';
+                                            ctx.textBaseline = 'middle';
+                                            const centerY = (barEl.base + barEl.y) / 2;
+                                            ctx.fillText(val, barEl.x, centerY);
+                                        }
+                                    });
+                                });
+
+                                ctx.restore();
+                            }
+                        }]
+                    });
+                }
+
+                // 2. Chart.js Doughnut Chart Initialization
+                const ctxPie = document.getElementById('stuJenisPieCanvas');
+                if (ctxPie) {
+                    const totSalesman = {{ $totSalesmanStu }};
+                    const totCounter = {{ $totCounterStu }};
+                    const totBroker = {{ $totBrokerStu }};
+                    const totKds = {{ $totKdsStu }};
+                    const totDigital = {{ $totDigitalStu }};
+                    const totAll = {{ max(1, $totStuVal) }};
+
+                    const pctSalesman = Math.round((totSalesman / totAll) * 100);
+                    const pctCounter = Math.round((totCounter / totAll) * 100);
+                    const pctBroker = Math.round((totBroker / totAll) * 100);
+                    const pctKds = Math.round((totKds / totAll) * 100);
+                    const pctDigital = Math.round((totDigital / totAll) * 100);
+
+                    new Chart(ctxPie.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: [
+                                `Salesman (${pctSalesman}%)`,
+                                `Sales Counter (${pctCounter}%)`,
+                                `Broker D1 (${pctBroker}%)`,
+                                `KDS D2 (${pctKds}%)`,
+                                `Sales Digital (${pctDigital}%)`
+                            ],
+                            datasets: [{
+                                data: [totSalesman, totCounter, totBroker, totKds, totDigital],
+                                backgroundColor: ['#3b82f6', '#10b981', '#a855f7', '#fbbf24', '#f43f5e'],
+                                borderColor: '#080a14',
+                                borderWidth: 3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'right',
+                                    labels: { color: '#f8fafc', font: { weight: 'bold', size: 12 } }
+                                }
+                            },
+                            cutout: '68%'
+                        }
+                    });
+                }
+            });
+            </script>
 
     <!-- Footer Banner -->
     <footer class="bg-gradient-to-r from-blue-900 via-blue-950 to-blue-900 rounded-xl lg:rounded-2xl p-3 lg:p-4 border border-blue-800 shadow-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 lg:mt-6 text-center gap-2">
@@ -1846,11 +2706,23 @@ $colorPalette = [
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const inputs = document.querySelectorAll('.update-ytd-input');
+    const debounceTimers = {};
     
     inputs.forEach(input => {
-        input.addEventListener('change', function() {
-            updateYtd(this);
+        const id = input.getAttribute('data-id');
+        
+        input.addEventListener('input', function() {
+            if (debounceTimers[id]) clearTimeout(debounceTimers[id]);
+            debounceTimers[id] = setTimeout(() => {
+                updateYtd(input);
+            }, 350);
         });
+
+        input.addEventListener('change', function() {
+            if (debounceTimers[id]) clearTimeout(debounceTimers[id]);
+            updateYtd(input);
+        });
+
         input.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 this.blur();
@@ -1878,6 +2750,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             inputEl.classList.remove('opacity-50');
             if (data.success) {
+                // Visual indicator for successful auto-save
+                inputEl.classList.add('ring-2', 'ring-emerald-500', 'border-emerald-400');
+                setTimeout(() => {
+                    inputEl.classList.remove('ring-2', 'ring-emerald-500', 'border-emerald-400');
+                }, 800);
+
                 const row = inputEl.closest('tr');
                 const diffCell = row.querySelector('.ytd-diff-cell');
                 const percentCell = row.querySelector('.ytd-percent-cell');
@@ -1914,7 +2792,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(err => {
             inputEl.classList.remove('opacity-50');
             console.error(err);
-            alert('Terjadi kesalahan jaringan.');
         });
     }
 

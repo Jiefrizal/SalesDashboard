@@ -47,6 +47,45 @@
                    class="w-full bg-slate-950/60 border border-blue-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
         </div>
 
+        <div class="border-t border-blue-900/80 pt-4 mb-4">
+            <label class="block text-xs font-bold uppercase tracking-wider text-blue-300 mb-2">
+                <i class="bi bi-person-badge-fill mr-1 text-teal-400"></i> Jenis / Peran Pengguna (Role)
+            </label>
+            <p class="text-[11px] text-gray-400 mb-3">Tentukan tingkat kewenangan akun dalam mengedit data atau mengelola sistem:</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label class="flex flex-col p-3 rounded-2xl bg-slate-950/60 border border-blue-900/60 hover:border-purple-500/60 cursor-pointer transition">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <input type="radio" name="role" value="super_admin" {{ old('role', $user->role) === 'super_admin' ? 'checked' : '' }} class="w-4 h-4 text-purple-600 focus:ring-purple-500 bg-slate-950 border-purple-700">
+                        <span class="text-xs font-extrabold text-purple-300 flex items-center">
+                            <i class="bi bi-shield-check mr-1 text-purple-400"></i> Super Admin
+                        </span>
+                    </div>
+                    <span class="text-[10px] text-gray-400">Akses penuh ke semua menu & kelola akun user.</span>
+                </label>
+
+                <label class="flex flex-col p-3 rounded-2xl bg-slate-950/60 border border-blue-900/60 hover:border-amber-500/60 cursor-pointer transition">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <input type="radio" name="role" value="editor" {{ old('role', $user->role) === 'editor' ? 'checked' : '' }} class="w-4 h-4 text-amber-600 focus:ring-amber-500 bg-slate-950 border-amber-700">
+                        <span class="text-xs font-extrabold text-amber-300 flex items-center">
+                            <i class="bi bi-pencil-square mr-1 text-amber-400"></i> Editor
+                        </span>
+                    </div>
+                    <span class="text-[10px] text-gray-400">Dapat menginput & mengedit data di menu yang diizinkan.</span>
+                </label>
+
+                <label class="flex flex-col p-3 rounded-2xl bg-slate-950/60 border border-blue-900/60 hover:border-slate-500/60 cursor-pointer transition">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <input type="radio" name="role" value="viewer" {{ old('role', $user->role) === 'viewer' ? 'checked' : '' }} class="w-4 h-4 text-slate-400 focus:ring-slate-400 bg-slate-950 border-slate-600">
+                        <span class="text-xs font-extrabold text-slate-300 flex items-center">
+                            <i class="bi bi-eye mr-1 text-slate-400"></i> Viewer
+                        </span>
+                    </div>
+                    <span class="text-[10px] text-gray-400">Hanya dapat melihat data (Read-only).</span>
+                </label>
+            </div>
+        </div>
+
         <div class="border-t border-blue-900/80 pt-4">
             <label class="block text-xs font-bold uppercase tracking-wider text-blue-300 mb-2">
                 <i class="bi bi-shield-lock-fill mr-1 text-yellow-400"></i> Pilihan Hak Akses Menu
@@ -89,12 +128,7 @@
                     </span>
                 </label>
 
-                <label class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900/60 border border-blue-900/40 hover:border-blue-700/60 cursor-pointer transition">
-                    <input type="checkbox" name="allowed_menus[]" value="service" {{ in_array('service', $oldMenus) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 bg-slate-950 border-blue-700">
-                    <span class="text-xs font-semibold text-white flex items-center">
-                        <i class="bi bi-tools text-teal-400 mr-2"></i> SERVICE
-                    </span>
-                </label>
+
 
                 <label class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900/60 border border-blue-900/40 hover:border-blue-700/60 cursor-pointer transition">
                     <input type="checkbox" name="allowed_menus[]" value="cabang" {{ in_array('cabang', $oldMenus) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 bg-slate-950 border-blue-700">

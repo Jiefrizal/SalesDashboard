@@ -41,12 +41,15 @@ Route::middleware('auth')->group(function () {
     // Digital Marketing Executive Dashboard
     Route::middleware('menu:digital_marketing')->get('/digital-marketing', [\App\Http\Controllers\DigitalMarketingController::class, 'index'])->name('digital-marketing.index');
 
-    // Service & Aftersales Executive Dashboard
-    Route::middleware('menu:service')->get('/service', [\App\Http\Controllers\ServiceController::class, 'index'])->name('service.index');
+
 
     // Permission-controlled Actions
     // Sync spreadsheet
     Route::middleware('menu:cabang')->get('/sync-spreadsheet', function (SpreadsheetService $spreadsheetService) {
+        if (!auth()->user()->canEdit()) {
+            return redirect('/')->with('error', 'Anda tidak memiliki hak akses untuk menyinkronkan data.');
+        }
+
         $cabangs = \App\Models\Cabang::all();
         $isValidUrl = $cabangs->contains(fn($c) => !empty($c->spreadsheet_url));
 
@@ -67,12 +70,17 @@ Route::middleware('auth')->group(function () {
     // User management resource
     Route::middleware('menu:users')->resource('users', UserController::class);
 
-    // Cabang resource & YTD update
+    // Cabang resource & YTD update & Monthly Sales update
     Route::middleware('menu:cabang')->resource('cabang', CabangController::class);
     Route::middleware('menu:cabang')->post('/cabang/{cabang}/update-ytd', [CabangController::class, 'updateYtd'])->name('cabang.updateYtd');
+    Route::middleware('menu:cabang')->post('/cabang/{cabang}/update-monthly-sales', [CabangController::class, 'updateMonthlySales'])->name('cabang.updateMonthlySales');
 
     // Dashboard catatan — save
     Route::middleware('menu:dashboard')->post('/dashboard/notes', function (\Illuminate\Http\Request $request) {
+        if (!auth()->user()->canEdit()) {
+            return redirect('/')->with('error', 'Anda tidak memiliki hak akses untuk mengubah catatan dashboard.');
+        }
+
         $request->validate(['content' => 'nullable|string|max:2000']);
 
         \App\Models\DashboardNote::updateOrCreate(

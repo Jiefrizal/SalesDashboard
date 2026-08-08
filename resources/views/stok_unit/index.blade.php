@@ -298,12 +298,13 @@
                                         @php
                                             $classPct = $totalStock > 0 ? round(($qty / $totalStock) * 100) : 0;
                                             $imgName = match($class) {
-                                                'PREMIUM' => 'nmax.png',
-                                                'ATM' => 'gear ultima.png',
-                                                'CLASSY' => 'classy.png',
-                                                'MOPED' => 'moped.png',
-                                                'SPORT' => 'sport.png',
-                                                default => 'atm.png'
+                                                'PREMIUM'  => 'nmax.png',
+                                                'ATM'      => 'gear ultima.png',
+                                                'CLASSY'   => 'classy.png',
+                                                'MOPED'    => 'moped.png',
+                                                'SPORT'    => 'sport.png',
+                                                'OFF ROAD' => 'wr.png',
+                                                default    => 'atm.png'
                                             };
                                         @endphp
                                         <div class="bg-slate-950/50 rounded-xl p-2.5 border border-slate-800/60 flex items-center justify-between transition hover:border-teal-500/50">
