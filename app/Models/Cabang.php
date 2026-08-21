@@ -12,6 +12,7 @@ class Cabang extends Model
         'stock_url',
         'lm_url',
         'target_tantangan',
+        'target_classy_program',
         'acv',
         'target_reguler',
         'lm',

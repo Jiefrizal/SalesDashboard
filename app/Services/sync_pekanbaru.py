@@ -268,9 +268,36 @@ def main():
                         val_ser = row[col_ser - 1].value if col_ser and col_ser <= len(row) else None
                         val_typ = row[col_typ - 1].value if col_typ and col_typ <= len(row) else None
                         cat_name, series_name = classify_stu_row(val_klas, val_ser, val_typ)
+
+                        # Track STU breakdown
                         if cat_name not in stu_breakdown:
                             stu_breakdown[cat_name] = {}
                         stu_breakdown[cat_name][series_name] = stu_breakdown[cat_name].get(series_name, 0) + 1
+
+                        # Track ATM CLASSY program sales
+                        if cat_name in ('ATM', 'CLASSY'):
+                            if 'program_atm_classy' not in stu_breakdown:
+                                stu_breakdown['program_atm_classy'] = {
+                                    'acv': 0, 'cash': 0, 'credit': 0,
+                                    'adira': 0, 'imfi': 0, 'sof': 0, 'baf': 0, 'mega': 0
+                                }
+                            p_data = stu_breakdown['program_atm_classy']
+                            p_data['acv'] += 1
+                            val_p_upper = val_leasing_raw.upper()
+                            if val_p_upper in ("", "-", "NONE", "CASH", "TUNAI", "DIRECT", "CASH P", "CASH S", "KDS"):
+                                p_data['cash'] += 1
+                            else:
+                                p_data['credit'] += 1
+                                if "ADIRA" in val_p_upper:
+                                    p_data['adira'] += 1
+                                elif "IMFI" in val_p_upper or "INDOMOBIL" in val_p_upper:
+                                    p_data['imfi'] += 1
+                                elif "SOF" in val_p_upper or "SUMMIT" in val_p_upper or "OTO" in val_p_upper:
+                                    p_data['sof'] += 1
+                                elif "BAF" in val_p_upper or "BUSSAN" in val_p_upper:
+                                    p_data['baf'] += 1
+                                elif "MEGA" in val_p_upper or "MAF" in val_p_upper or val_p_upper == "MF":
+                                    p_data['mega'] += 1
 
                         # Parse POS breakdown (Rule: SO1, SO 1, SO-1, RIAU 1, D1... -> DEALER)
                         val_pos_raw = str(row[col_pos - 1].value or "").upper().strip() if col_pos and col_pos <= len(row) else ""

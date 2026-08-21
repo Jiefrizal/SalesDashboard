@@ -47,7 +47,7 @@ class UserController extends Controller
             'password'        => 'required|string|min:6|confirmed',
             'role'            => 'required|string|in:super_admin,editor,viewer',
             'allowed_menus'   => 'required|array|min:1',
-            'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,digital_marketing,cabang,users',
+            'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,cabang,users',
         ], [
             'name.required'          => 'Nama pengguna wajib diisi.',
             'email.required'         => 'Username / Email wajib diisi.',
@@ -102,7 +102,7 @@ class UserController extends Controller
             'password'        => 'nullable|string|min:6|confirmed',
             'role'            => 'required|string|in:super_admin,editor,viewer',
             'allowed_menus'   => 'required|array|min:1',
-            'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,digital_marketing,cabang,users',
+            'allowed_menus.*' => 'string|in:dashboard,stu_unit,stok_unit,cabang,users',
         ], [
             'name.required'          => 'Nama pengguna wajib diisi.',
             'email.required'         => 'Username / Email wajib diisi.',

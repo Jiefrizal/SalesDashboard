@@ -41,6 +41,14 @@
                 font-size: clamp(11px, 0.72vw + 0.1rem, 12.5px) !important;
             }
         }
+        /* Utility class to hide scrollbars while preserving touch scroll functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 
@@ -48,8 +56,8 @@
 
 <div class="flex flex-col lg:flex-row h-screen overflow-hidden bg-[#04060c]">
 
-    <!-- Mobile Top Navigation Header -->
-    <header class="bg-slate-950/90 border-b border-blue-900/80 backdrop-blur-md px-4 py-3 flex items-center justify-between lg:hidden shadow-xl z-40 shrink-0">
+    <!-- Mobile Top Navigation Header (Sticky Pin at Top with z-[60]) -->
+    <header class="sticky top-0 left-0 right-0 bg-[#080c1d]/95 border-b border-blue-900/80 backdrop-blur-xl px-4 py-3 flex items-center justify-between lg:hidden shadow-2xl z-[60] shrink-0">
         <div class="flex items-center space-x-3 min-w-0">
             <img src="{{ asset('logo.png') }}" alt="ASPACINDO" class="h-8 w-auto object-contain shrink-0">
             <div class="min-w-0">
@@ -57,120 +65,144 @@
                 <span class="text-[9.5px] font-extrabold text-yellow-400 block uppercase tracking-widest leading-none mt-0.5">Sales & Stock Realtime</span>
             </div>
         </div>
-        <button id="mobile-menu-toggle" aria-label="Open Navigation Menu" class="bg-blue-900/80 hover:bg-blue-800 text-white border border-blue-700/80 rounded-xl p-2 focus:outline-none shrink-0 shadow-md">
+        <button id="mobile-menu-toggle" type="button" aria-label="Open Navigation Menu" class="bg-blue-900/80 hover:bg-blue-700 text-white border border-blue-600/80 rounded-xl px-3 py-2 focus:outline-none shrink-0 shadow-md flex items-center space-x-1.5 active:scale-95 transition">
             <i class="bi bi-list text-xl"></i>
+            <span class="text-xs font-black uppercase tracking-wider hidden sm:inline">Menu</span>
         </button>
     </header>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-52 bg-blue-900 text-white transform -translate-x-full lg:translate-x-0 lg:static lg:h-full transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none flex flex-col shrink-0">
+    <!-- Sidebar (Drawer with z-[70]) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-[70] w-60 bg-blue-950 text-white transform -translate-x-full lg:translate-x-0 lg:static lg:h-full transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none flex flex-col shrink-0 border-r border-blue-900/60">
 
         <!-- Brand -->
-        <div class="flex flex-col items-center justify-center py-6 border-b border-blue-700 relative px-4 text-center shrink-0">
+        <div class="flex flex-col items-center justify-center py-6 border-b border-blue-800/80 relative px-4 text-center shrink-0">
             <img src="{{ asset('logo.png') }}" alt="ASPACINDO" class="h-16 w-auto object-contain mb-2">
             <h1 class="text-xs font-extrabold tracking-wider text-white uppercase px-2">
                 PT ASPACINDO KEDATON MOTOR
             </h1>
             <!-- Close button for mobile -->
-            <button id="mobile-menu-close" class="absolute top-4 right-4 text-white hover:text-blue-300 lg:hidden">
+            <button id="mobile-menu-close" type="button" class="absolute top-4 right-4 text-white hover:text-blue-300 lg:hidden p-1">
                 <i class="bi bi-x-lg text-xl"></i>
             </button>
         </div>
 
         <!-- Navigation -->
-        <nav class="mt-6 flex-1 overflow-y-auto">
+        <nav class="mt-4 flex-1 overflow-y-auto space-y-1 px-3">
             @auth
                 @if(auth()->user()->hasMenuAccess('dashboard'))
-                    <a href="{{ url('/') }}" class="flex items-center px-6 py-3 {{ Request::is('/') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-speedometer2 mr-3"></i>
+                    <a href="{{ url('/') }}" class="flex items-center px-4 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition duration-150 {{ Request::is('/') ? 'bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg border-l-4 border-yellow-400' : 'text-blue-200 hover:bg-blue-900/80 hover:text-white' }}">
+                        <i class="bi bi-speedometer2 text-base mr-3"></i>
                         DASHBOARD
                     </a>
                 @endif
 
+
                 @if(auth()->user()->hasMenuAccess('stu_unit'))
-                    <a href="{{ route('stu.index') }}" class="flex items-center px-6 py-3 {{ Request::is('stu-unit*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-graph-up mr-3"></i>
+                    <a href="{{ route('stu.index') }}" class="flex items-center px-4 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition duration-150 {{ Request::is('stu-unit*') ? 'bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg border-l-4 border-yellow-400' : 'text-blue-200 hover:bg-blue-900/80 hover:text-white' }}">
+                        <i class="bi bi-graph-up text-base mr-3"></i>
                         STU UNIT
                     </a>
                 @endif
 
                 @if(auth()->user()->hasMenuAccess('stok_unit'))
-                    <a href="{{ route('stok.index') }}" class="flex items-center px-6 py-3 {{ Request::is('stok-unit*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-box-seam mr-3"></i>
+                    <a href="{{ route('stok.index') }}" class="flex items-center px-4 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition duration-150 {{ Request::is('stok-unit*') ? 'bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg border-l-4 border-yellow-400' : 'text-blue-200 hover:bg-blue-900/80 hover:text-white' }}">
+                        <i class="bi bi-box-seam text-base mr-3"></i>
                         STOK UNIT
                     </a>
                 @endif
 
-                @if(auth()->user()->hasMenuAccess('digital_marketing'))
-                    <a href="{{ route('digital-marketing.index') }}" class="flex items-center px-6 py-3 {{ Request::is('digital-marketing*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-instagram mr-3"></i>
-                        SOSIAL MEDIA
-                    </a>
-                @endif
-
-
 
                 @if(auth()->user()->hasMenuAccess('cabang'))
-                    <a href="{{ route('cabang.index') }}" class="flex items-center px-6 py-3 {{ Request::is('cabang*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-building mr-3"></i>
+                    <a href="{{ route('cabang.index') }}" class="flex items-center px-4 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition duration-150 {{ Request::is('cabang*') ? 'bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg border-l-4 border-yellow-400' : 'text-blue-200 hover:bg-blue-900/80 hover:text-white' }}">
+                        <i class="bi bi-building text-base mr-3"></i>
                         Cabang
                     </a>
                 @endif
 
                 @if(auth()->user()->hasMenuAccess('users'))
-                    <a href="{{ route('users.index') }}" class="flex items-center px-6 py-3 {{ Request::is('users*') ? 'bg-blue-800 border-l-4 border-yellow-400' : '' }} hover:bg-blue-800">
-                        <i class="bi bi-people-fill mr-3"></i>
+                    <a href="{{ route('users.index') }}" class="flex items-center px-4 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition duration-150 {{ Request::is('users*') ? 'bg-gradient-to-r from-blue-700 to-blue-800 text-white shadow-lg border-l-4 border-yellow-400' : 'text-blue-200 hover:bg-blue-900/80 hover:text-white' }}">
+                        <i class="bi bi-people-fill text-base mr-3"></i>
                         Kelola User
                     </a>
                 @endif
             @endauth
-
         </nav>
 
         <!-- User Info & Logout -->
         @auth
-        <div class="p-4 border-t border-blue-800 shrink-0">
+        <div class="p-4 border-t border-blue-900/80 shrink-0 bg-blue-950/60">
             <div class="flex items-center space-x-3 mb-3">
-                <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black text-sm shrink-0 shadow-md">
                     {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-white truncate" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</p>
+                    <span class="text-[9px] uppercase font-extrabold tracking-wider text-emerald-400 block mt-0.5">
+                        <i class="bi bi-person-check-fill mr-0.5"></i>Akun Aktif
+                    </span>
                 </div>
             </div>
-            <div class="flex items-center justify-between">
-                {{-- Access Status --}}
-                <span class="text-[9px] uppercase font-extrabold tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full px-2 py-0.5">
-                    <i class="bi bi-person-check-fill mr-0.5"></i>Akun Aktif
-                </span>
-
-                {{-- Logout button --}}
-                <form method="POST" action="{{ route('logout') }}">
+            <div class="flex items-center justify-between pt-1">
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <button type="submit" title="Logout"
-                        class="text-blue-300 hover:text-rose-400 transition duration-150 p-1 rounded hover:bg-rose-500/10">
-                        <i class="bi bi-box-arrow-right text-base"></i>
+                        class="w-full flex items-center justify-center space-x-2 bg-rose-950/50 hover:bg-rose-900/80 text-rose-300 border border-rose-800/60 transition duration-150 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-sm">
+                        <i class="bi bi-box-arrow-right text-sm"></i>
+                        <span>Logout</span>
                     </button>
                 </form>
             </div>
         </div>
         @endauth
 
-        <div class="px-4 pb-3 text-center text-[10px] text-blue-300 font-bold uppercase tracking-widest shrink-0">
-            v1.0.0 &copy; 2026
+        <div class="px-4 pb-3 pt-2 text-center text-[10px] text-blue-300 font-bold uppercase tracking-widest shrink-0">
+            v2.5.5 &copy; 2026
         </div>
 
     </aside>
 
-    <!-- Overlay backdrop for mobile sidebar -->
-    <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 hidden lg:hidden transition-opacity duration-300"></div>
+    <!-- Overlay backdrop for mobile sidebar (z-[65]) -->
+    <div id="sidebar-backdrop" class="fixed inset-0 z-[65] bg-black/70 backdrop-blur-sm hidden lg:hidden transition-opacity duration-300"></div>
 
-    <!-- Content -->
-    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-5 bg-[#04060c]">
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-5 bg-[#04060c] pb-20 lg:pb-5">
         <div class="w-full mx-auto">
             @yield('content')
         </div>
     </main>
+
+    <!-- Mobile Bottom App Quick Navigation Bar (App-Style Experience) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-[60] bg-[#080c1d]/95 border-t border-blue-900/80 backdrop-blur-xl shadow-[0_-5px_20px_rgba(0,0,0,0.8)] flex items-center justify-around py-2 px-1">
+        @auth
+            @if(auth()->user()->hasMenuAccess('dashboard'))
+                <a href="{{ url('/') }}" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl transition duration-150 {{ Request::is('/') ? 'text-yellow-400 font-black scale-105' : 'text-slate-400 hover:text-white' }}">
+                    <i class="bi bi-speedometer2 text-lg leading-none mb-0.5"></i>
+                    <span class="text-[9px] font-extrabold uppercase tracking-tight">Dashboard</span>
+                </a>
+            @endif
+
+
+            @if(auth()->user()->hasMenuAccess('stu_unit'))
+                <a href="{{ route('stu.index') }}" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl transition duration-150 {{ Request::is('stu-unit*') ? 'text-yellow-400 font-black scale-105' : 'text-slate-400 hover:text-white' }}">
+                    <i class="bi bi-graph-up text-lg leading-none mb-0.5"></i>
+                    <span class="text-[9px] font-extrabold uppercase tracking-tight">STU Unit</span>
+                </a>
+            @endif
+
+            @if(auth()->user()->hasMenuAccess('stok_unit'))
+                <a href="{{ route('stok.index') }}" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl transition duration-150 {{ Request::is('stok-unit*') ? 'text-yellow-400 font-black scale-105' : 'text-slate-400 hover:text-white' }}">
+                    <i class="bi bi-box-seam text-lg leading-none mb-0.5"></i>
+                    <span class="text-[9px] font-extrabold uppercase tracking-tight">Stok</span>
+                </a>
+            @endif
+
+
+            <button id="mobile-bottom-menu-toggle" type="button" class="flex flex-col items-center justify-center py-1 px-2 rounded-xl text-blue-400 hover:text-white transition duration-150">
+                <i class="bi bi-grid-fill text-lg leading-none mb-0.5"></i>
+                <span class="text-[9px] font-extrabold uppercase tracking-tight">Menu</span>
+            </button>
+        @endauth
+    </nav>
 
 </div>
 
@@ -193,8 +225,11 @@
             document.body.classList.remove('overflow-hidden');
         }
 
+        const bottomToggleBtn = document.getElementById('mobile-bottom-menu-toggle');
+
         if (toggleBtn && closeBtn && sidebar && backdrop) {
             toggleBtn.addEventListener('click', openSidebar);
+            if (bottomToggleBtn) bottomToggleBtn.addEventListener('click', openSidebar);
             closeBtn.addEventListener('click', closeSidebar);
             backdrop.addEventListener('click', closeSidebar);
         }

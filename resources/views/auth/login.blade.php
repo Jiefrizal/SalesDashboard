@@ -252,7 +252,7 @@
         </div>
 
         <!-- Footer -->
-        <p class="text-center text-[10px] text-slate-600 mt-6 uppercase tracking-widest">v1.0.0 &copy; 2026 Aspacindo</p>
+        <p class="text-center text-[10px] text-slate-600 mt-6 uppercase tracking-widest">v2.5.5 &copy; 2026 Aspacindo</p>
 
     </div>
 

@@ -568,104 +568,127 @@ $colorPalette = [
                         $belumInputCabangs[] = $cabang;
                     }
                 }
+            @endphp            <!-- Executive Combined Card: Status Laporan Harian Cabang -->
+            @php
+                $totalCabangCount = max(1, count($cabangs));
+                $compliancePct = round((count($sudahInputCabangs) / $totalCabangCount) * 100);
             @endphp
-
-            <!-- Box 1: Sudah Input Laporan Hari Ini -->
-            <div class="bg-[#0e1326] border-[1.5px] border-emerald-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col justify-start hover:border-emerald-400 transition duration-300">
-                <div class="flex items-center justify-between border-b border-emerald-500/30 pb-3.5 mb-4 gap-2">
-                    <div class="flex items-start space-x-2.5 min-w-0">
-                        <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0 mt-1"></span>
-                        <h4 class="text-sm sm:text-base font-black text-emerald-300 uppercase tracking-wider leading-tight">
-                            Sudah Input Laporan Hari Ini
-                        </h4>
+            <div class="bg-[#080c1d]/90 border border-blue-900/60 rounded-2xl lg:rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden backdrop-blur-xl transition duration-300 hover:border-blue-500/60">
+                <!-- Top Header Bar -->
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4 gap-2">
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0 shadow-sm">
+                            <i class="bi bi-file-earmark-check text-base"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider leading-none truncate">
+                                Status Laporan Harian
+                            </h4>
+                            <span class="text-[10px] font-bold text-slate-400 tracking-wide mt-1 block truncate">
+                                Tgl {{ $reportingDay }} {{ \Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y') }}
+                            </span>
+                        </div>
                     </div>
-                    <span class="bg-emerald-500/15 border border-emerald-500/60 text-emerald-300 px-3.5 py-1 rounded-full text-xs font-black shrink-0 whitespace-nowrap shadow-md">
-                        {{ count($sudahInputCabangs) }} Cabang
+                    <span class="text-xs font-black text-yellow-400 bg-yellow-950/40 border border-yellow-500/40 px-2.5 py-1 rounded-xl shrink-0 shadow-sm">
+                        {{ $compliancePct }}% Kepatuhan
                     </span>
                 </div>
 
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3.5">TANGGAL LAPORAN: {{ $reportingDay }} {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y')) }}</p>
-                
-                @if(count($sudahInputCabangs) > 0)
-                    <div class="space-y-2.5">
-                        @foreach($sudahInputCabangs as $c)
-                            @php
-                                $color = $colorPalette[$c->nama] ?? '#22c55e';
-                                $valToday = $c->daily_performance[$reportingIdx] ?? $c->acv;
-                            @endphp
-                            <div class="flex items-center justify-between bg-[#080a14]/90 border border-emerald-500/40 hover:border-emerald-400/80 px-4 py-2.5 rounded-xl sm:rounded-2xl transition duration-200 shadow-md">
-                                <div class="flex items-center space-x-3 min-w-0">
-                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
-                                    <span class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate">{{ $c->nama }}</span>
-                                </div>
-                                <div class="flex items-center space-x-1.5 shrink-0 ml-3">
-                                    <span class="text-xs sm:text-sm font-semibold text-slate-400">Tgl {{ $reportingDay }}:</span>
-                                    <span class="text-sm sm:text-base font-black text-emerald-400">{{ $valToday }}</span>
-                                    <i class="bi bi-check-circle-fill text-emerald-400 text-sm sm:text-base ml-0.5"></i>
-                                </div>
-                            </div>
-                        @endforeach
+                <!-- 2 Summary Pills -->
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-emerald-950/40 border border-emerald-500/30 p-2.5 rounded-xl flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold text-emerald-300 flex items-center space-x-1">
+                            <i class="bi bi-check-circle-fill text-emerald-400"></i>
+                            <span>Sudah Input</span>
+                        </span>
+                        <span class="text-xs font-black text-white bg-emerald-900/80 px-2 py-0.5 rounded-lg border border-emerald-500/40">
+                            {{ count($sudahInputCabangs) }}
+                        </span>
                     </div>
-                @else
-                    <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5 text-center text-slate-400 text-xs font-bold italic">
-                        Belum ada cabang yang menginputkan laporan hari ini.
+
+                    <div class="bg-amber-950/40 border border-amber-500/30 p-2.5 rounded-xl flex items-center justify-between">
+                        <span class="text-[11px] font-extrabold text-amber-300 flex items-center space-x-1">
+                            <i class="bi bi-clock-history text-amber-400"></i>
+                            <span>Belum Input</span>
+                        </span>
+                        <span class="text-xs font-black text-white bg-amber-900/80 px-2 py-0.5 rounded-lg border border-amber-500/40">
+                            {{ count($belumInputCabangs) }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Branch Status Group 1: Sudah Input -->
+                @if(count($sudahInputCabangs) > 0)
+                    <div class="mb-4">
+                        <div class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center space-x-1.5">
+                            <i class="bi bi-[#10b981] bi-check-all text-sm"></i>
+                            <span>SUDAH TERINPUT HARI INI ({{ count($sudahInputCabangs) }})</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            @foreach($sudahInputCabangs as $c)
+                                @php
+                                    $color = $colorPalette[$c->nama] ?? '#22c55e';
+                                    $valToday = $c->daily_performance[$reportingIdx] ?? $c->acv;
+                                @endphp
+                                <div class="flex items-center justify-between bg-slate-950/60 border border-emerald-500/20 hover:border-emerald-500/50 px-3 py-1.5 rounded-xl transition duration-150">
+                                    <div class="flex items-center space-x-2 min-w-0">
+                                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 4px {{ $color }}a0;"></span>
+                                        <span class="text-xs font-bold text-slate-200 truncate">{{ $c->nama }}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1 shrink-0 ml-2">
+                                        <span class="text-xs font-black text-emerald-400">{{ $valToday }} Unit</span>
+                                        <i class="bi bi-check-circle-fill text-emerald-400 text-[11px]"></i>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
-            </div>
 
-            <!-- Box 2: Belum Input Laporan Hari Ini (SAMAKAN WARNA DAN JENIS DENGAN SUDAH INPUT LAPORAN) -->
-            <div class="bg-[#0e1326] border-[1.5px] border-emerald-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden flex flex-col justify-start hover:border-emerald-400 transition duration-300">
-                <div class="flex items-center justify-between border-b border-emerald-500/30 pb-3.5 mb-4 gap-2">
-                    <div class="flex items-start space-x-2.5 min-w-0">
-                        <span class="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] shrink-0 mt-1"></span>
-                        <h4 class="text-sm sm:text-base font-black text-emerald-300 uppercase tracking-wider leading-tight">
-                            Belum Input Laporan Hari Ini
-                        </h4>
-                    </div>
-                    <span class="bg-emerald-500/15 border border-emerald-500/60 text-emerald-300 px-3.5 py-1 rounded-full text-xs font-black shrink-0 whitespace-nowrap shadow-md">
-                        {{ count($belumInputCabangs) }} Cabang
-                    </span>
-                </div>
-
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3.5">TANGGAL LAPORAN: {{ $reportingDay }} {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('MMMM Y')) }}</p>
-
+                <!-- Branch Status Group 2: Belum Input -->
                 @if(count($belumInputCabangs) > 0)
-                    <div class="space-y-2.5">
-                        @foreach($belumInputCabangs as $c)
-                            @php
-                                $color = $colorPalette[$c->nama] ?? '#22c55e';
-                                $rawP = $c->daily_performance ?: [];
-                                $lastDayNum = 0;
-                                $lastVal = 0;
-                                for ($i = count($rawP) - 1; $i >= 0; $i--) {
-                                    if (isset($rawP[$i]) && $rawP[$i] !== null) {
-                                        $lastDayNum = $i + 1;
-                                        $lastVal = $rawP[$i];
-                                        break;
+                    <div>
+                        <div class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2 flex items-center space-x-1.5">
+                            <i class="bi bi-hourglass-split text-xs"></i>
+                            <span>BELUM TERINPUT / PENDING ({{ count($belumInputCabangs) }})</span>
+                        </div>
+                        <div class="space-y-1.5">
+                            @foreach($belumInputCabangs as $c)
+                                @php
+                                    $color = $colorPalette[$c->nama] ?? '#22c55e';
+                                    $rawP = $c->daily_performance ?: [];
+                                    $lastDayNum = 0;
+                                    $lastVal = 0;
+                                    for ($i = count($rawP) - 1; $i >= 0; $i--) {
+                                        if (isset($rawP[$i]) && $rawP[$i] !== null) {
+                                            $lastDayNum = $i + 1;
+                                            $lastVal = $rawP[$i];
+                                            break;
+                                        }
                                     }
-                                }
-                            @endphp
-                            <div class="flex items-center justify-between bg-[#080a14]/90 border border-emerald-500/40 hover:border-emerald-400/80 px-4 py-2.5 rounded-xl sm:rounded-2xl transition duration-200 shadow-md">
-                                <div class="flex items-center space-x-3 min-w-0">
-                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 6px {{ $color }}b0;"></span>
-                                    <span class="text-sm sm:text-base font-extrabold text-white tracking-wide truncate">{{ $c->nama }}</span>
+                                @endphp
+                                <div class="flex items-center justify-between bg-slate-950/60 border border-amber-500/20 hover:border-amber-500/50 px-3 py-1.5 rounded-xl transition duration-150">
+                                    <div class="flex items-center space-x-2 min-w-0">
+                                        <span class="w-2 h-2 rounded-full shrink-0" style="background-color: {{ $color }}; box-shadow: 0 0 4px {{ $color }}a0;"></span>
+                                        <span class="text-xs font-bold text-slate-200 truncate">{{ $c->nama }}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-1 shrink-0 ml-2">
+                                        @if($lastDayNum > 0)
+                                            <span class="text-[10px] font-medium text-slate-400">Tgl {{ $lastDayNum }}:</span>
+                                            <span class="text-xs font-black text-amber-400">{{ $lastVal }}</span>
+                                        @else
+                                            <span class="text-[10px] font-bold text-rose-400">Belum Ada Data</span>
+                                        @endif
+                                        <i class="bi bi-clock-history text-amber-400 text-[11px]"></i>
+                                    </div>
                                 </div>
-                                <div class="flex items-center space-x-1.5 shrink-0 ml-3">
-                                    @if($lastDayNum > 0)
-                                        <span class="text-xs sm:text-sm font-semibold text-slate-400">Tgl {{ $lastDayNum }}:</span>
-                                        <span class="text-sm sm:text-base font-black text-emerald-400">{{ $lastVal }}</span>
-                                    @else
-                                        <span class="text-xs sm:text-sm font-bold text-rose-400">Belum Input</span>
-                                    @endif
-                                    <i class="bi bi-clock-history text-emerald-400 text-sm sm:text-base ml-0.5"></i>
-                                </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 @else
-                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3.5 text-center text-emerald-300 text-xs font-bold flex items-center justify-center space-x-1.5">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-2.5 text-center text-emerald-300 text-xs font-bold flex items-center justify-center space-x-1.5">
                         <i class="bi bi-check-all text-base"></i>
-                        <span>Semua cabang sudah menginputkan laporan hari ini!</span>
+                        <span>Semua cabang sudah terinput hari ini!</span>
                     </div>
                 @endif
             </div>
@@ -1391,28 +1414,28 @@ $colorPalette = [
                                     <div class="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-2.5">
                                         
                                         <!-- Row 1: POS Name & Growth Badge -->
-                                        <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
-                                            <div class="flex items-center space-x-2 min-w-0">
+                                        <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80 gap-1.5 min-w-0">
+                                            <div class="flex items-center space-x-1.5 min-w-0 flex-1">
                                                 @if($p['name'] === 'DEALER')
                                                     <div class="w-5 h-5 rounded-lg bg-[#e94560]/20 border border-[#e94560]/50 flex items-center justify-center shrink-0">
                                                         <i class="bi bi-building-fill text-[#f36892] text-[10px]"></i>
                                                     </div>
-                                                    <div class="min-w-0">
-                                                        <h4 class="text-xs font-black text-rose-200 uppercase tracking-wide truncate">{{ $p['name'] }}</h4>
+                                                    <div class="min-w-0 flex-1">
+                                                        <h4 class="text-[11px] sm:text-xs font-black text-rose-200 uppercase tracking-wide leading-tight break-words" title="{{ $p['name'] }}">{{ $p['name'] }}</h4>
                                                         <span class="text-[9px] font-bold text-[#f36892] block leading-tight">Pos Utama</span>
                                                     </div>
                                                 @else
                                                     <div class="w-5 h-5 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center shrink-0">
                                                         <i class="bi bi-geo-alt-fill text-amber-400 text-[10px]"></i>
                                                     </div>
-                                                    <div class="min-w-0">
-                                                        <h4 class="text-xs font-black text-slate-100 uppercase tracking-wide truncate">{{ $p['name'] }}</h4>
+                                                    <div class="min-w-0 flex-1">
+                                                        <h4 class="text-[11px] sm:text-xs font-black text-slate-100 uppercase tracking-wide leading-tight break-words" title="{{ $p['name'] }}">{{ $p['name'] }}</h4>
                                                         <span class="text-[9px] font-medium text-slate-400 block leading-tight">Sub-Pos</span>
                                                     </div>
                                                 @endif
                                             </div>
-                                            <div class="shrink-0 ml-1">
-                                                <span class="pos-growth-badge px-2 py-0.5 rounded-md text-[11px] font-black shadow-sm {{ $p['pct_raw'] >= 50 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : ($p['pct_raw'] > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800') }}">
+                                            <div class="shrink-0">
+                                                <span class="pos-growth-badge px-2 py-0.5 rounded-md text-[11px] font-black shadow-sm whitespace-nowrap {{ $p['pct_raw'] >= 50 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : ($p['pct_raw'] > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800') }}">
                                                     {{ $p['growth'] }}
                                                 </span>
                                             </div>
@@ -1420,8 +1443,8 @@ $colorPalette = [
 
                                         <!-- Row 2: Target & STU Mini Inputs -->
                                         <div class="grid grid-cols-2 gap-1.5">
-                                            <div class="group/input bg-[#04060d] border border-[#e94560]/40 hover:border-[#e94560]/80 focus-within:border-[#e94560] focus-within:ring-1 focus-within:ring-[#e94560]/40 px-2 py-1 rounded-lg flex items-center justify-between shadow-inner transition-all duration-200 min-w-0 space-x-1">
-                                                <div class="flex items-center space-x-1 shrink-0">
+                                            <div class="group/input bg-[#04060d] border border-[#e94560]/40 hover:border-[#e94560]/80 focus-within:border-[#e94560] focus-within:ring-1 focus-within:ring-[#e94560]/40 px-1.5 py-1 rounded-lg flex items-center justify-between shadow-inner transition-all duration-200 min-w-0 space-x-1">
+                                                <div class="flex items-center space-x-0.5 shrink-0">
                                                     @if(auth()->user()->canEdit())
                                                         <i class="bi bi-pencil-fill text-[8px] text-[#f36892] group-hover/input:text-[#f36892] transition-colors shrink-0"></i>
                                                     @else
@@ -1435,7 +1458,7 @@ $colorPalette = [
                                                             type="number" 
                                                             value="{{ $p['target'] }}" 
                                                             min="0"
-                                                            class="pos-target-input w-full text-right bg-transparent text-white font-extrabold text-xs focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                            class="pos-target-input w-full text-right bg-transparent text-white font-extrabold text-xs focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none px-0.5"
                                                             data-dealer="{{ $d['dealer'] }}"
                                                             data-pos="{{ $p['name'] }}"
                                                             data-stu="{{ $p['stu'] }}"
@@ -1443,13 +1466,13 @@ $colorPalette = [
                                                             title="Klik untuk mengubah nilai target"
                                                         >
                                                     @else
-                                                        <span class="font-extrabold text-xs text-white select-none">{{ $p['target'] }}</span>
+                                                        <span class="font-extrabold text-xs text-white select-none block px-0.5 truncate">{{ $p['target'] }}</span>
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="bg-emerald-955/40 border border-emerald-500/40 px-2 py-1 rounded-lg flex items-center justify-between min-w-0 space-x-1 shadow-inner">
+                                            <div class="bg-emerald-955/40 border border-emerald-500/40 px-1.5 py-1 rounded-lg flex items-center justify-between min-w-0 space-x-1 shadow-inner">
                                                 <span class="text-[9px] font-extrabold text-emerald-400 uppercase tracking-wider whitespace-nowrap shrink-0">STU</span>
-                                                <span class="text-xs font-black text-emerald-400 truncate text-right flex-1 min-w-0">{{ $p['stu'] }}</span>
+                                                <span class="text-xs font-black text-emerald-400 text-right flex-1 min-w-0 px-0.5 truncate">{{ $p['stu'] }}</span>
                                             </div>
                                         </div>
 
@@ -1709,8 +1732,8 @@ $colorPalette = [
 
                 $totalPctAch = [
                     'target' => $totalTargetTotal > 0 ? round(($totalAchTotal / $totalTargetTotal) * 100, 1) . '%' : '0%',
-                    'cash'   => $totalTargetCash > 0 ? round(($totalAchCash / $totalTargetCash) * 100, 1) . '%' : '0%',
-                    'kredit' => $totalTargetKredit > 0 ? round(($totalAchKredit / $totalTargetKredit) * 100, 1) . '%' : '0%',
+                    'cash'   => $totalAchTotal > 0 ? round(($totalAchCash / $totalAchTotal) * 100, 1) . '%' : '0%',
+                    'kredit' => $totalAchTotal > 0 ? round(($totalAchKredit / $totalAchTotal) * 100, 1) . '%' : '0%',
                 ];
                 foreach (['ADIRA', 'BAF', 'IMFI', 'MEGA', 'SOF'] as $fk) {
                     $fTgtTot = $totalFincoyTarget[$fk] ?? 0;
@@ -1763,28 +1786,30 @@ $colorPalette = [
                 <div id="leasingCardsContainer" class="space-y-4 lg:space-y-5">
                     
                     <!-- Grand Total Banner Card (Wide Landscape Strip) -->
-                    <div class="dealer-card-root w-full bg-[#080a14]/90 border border-yellow-500/50 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-yellow-400 transition duration-300">
+                    <div class="dealer-card-root w-full bg-[#080a14]/95 border border-yellow-500/60 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-2xl relative overflow-hidden hover:border-yellow-400 transition duration-300">
                         <div class="absolute -right-12 -top-12 w-36 h-36 bg-yellow-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
                         <!-- Header Bar Total -->
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-yellow-500/30 pb-3 mb-3.5 gap-2.5">
-                            <div class="flex items-center space-x-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-yellow-500/30 pb-3 mb-3.5 gap-2.5">
+                            <div class="flex flex-wrap items-center gap-2">
                                 <span class="w-3.5 h-3.5 rounded-full bg-amber-400 shadow-[0_0_10px_#f59e0b] shrink-0"></span>
-                                <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">
+                                <h3 class="text-sm sm:text-base lg:text-lg font-black text-white uppercase tracking-wide">
                                     TOTAL REKAPITULASI SELURUH DEALER
                                 </h3>
-                                <span class="bg-amber-500/15 border border-amber-500/50 text-amber-300 px-3 py-0.5 rounded-full text-xs font-black">GABUNGAN 6 CABANG</span>
+                                <span class="bg-amber-500/15 border border-amber-500/50 text-amber-300 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black shrink-0">
+                                    GABUNGAN {{ count($leasingBranches) }} CABANG
+                                </span>
                             </div>
                             
                             <!-- Summary STU Badge -->
-                            <div class="flex items-center space-x-2 bg-[#0e1326] border border-yellow-500/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
-                                <span class="text-[11px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
-                                <span class="text-sm sm:text-base font-black text-amber-400">
-                                    {{ $leasingTotal['ach_total'] }}
-                                </span>
-                                <span class="text-xs text-slate-400 font-bold">/ <span class="text-slate-200 font-black">{{ $leasingTotal['target_total'] }}</span> Target</span>
-                                <span class="bg-amber-500/20 text-yellow-300 text-xs font-black px-2 py-0.5 rounded-md border border-amber-500/40 ml-1">
-                                    %ACH: {{ $leasingTotal['pct_ach']['target'] }}
+                            <div class="flex flex-wrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 bg-[#0e1326] border border-yellow-500/50 px-3 py-1.5 rounded-xl shadow-inner w-full md:w-auto">
+                                <div class="flex items-center space-x-1 text-xs">
+                                    <span class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
+                                    <span class="font-black text-amber-400 text-sm sm:text-base">{{ $leasingTotal['ach_total'] }}</span>
+                                    <span class="text-slate-400 font-bold text-xs">/ <strong class="text-slate-200 font-black">{{ $leasingTotal['target_total'] }}</strong> Unit</span>
+                                </div>
+                                <span class="bg-amber-500/20 text-yellow-300 text-xs font-black px-2.5 py-0.5 rounded-md border border-amber-500/40">
+                                    {{ $leasingTotal['pct_ach']['target'] }} ACH
                                 </span>
                             </div>
                         </div>
@@ -1794,73 +1819,80 @@ $colorPalette = [
                             <!-- TIER 1: CASH & KREDIT HIGHLIGHT PILLARS -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <!-- DISTINCT CASH CARD (TOTAL) -->
-                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_15px_rgba(34,211,238,0.25)] hover:border-cyan-300 flex items-center justify-between space-x-3 relative overflow-hidden group/cash">
+                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_15px_rgba(34,211,238,0.25)] hover:border-cyan-300 relative overflow-hidden group/cash">
                                     <div class="absolute -right-8 -top-8 w-24 h-24 bg-cyan-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                    <div class="flex items-center space-x-3 min-w-0 flex-1">
-                                        <div class="w-10 h-10 rounded-xl bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(34,211,238,0.4)]">
-                                            <i class="bi bi-cash-stack text-cyan-300 text-lg"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <div class="flex items-center space-x-2">
-                                                <h4 class="text-xs font-black text-cyan-100 uppercase tracking-wider">CASH (TUNAI)</h4>
-                                                <span class="text-[9px] font-extrabold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.2 rounded">Utama</span>
+                                    
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-2.5 min-w-0">
+                                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(34,211,238,0.4)]">
+                                                <i class="bi bi-cash-stack text-cyan-300 text-base sm:text-lg"></i>
                                             </div>
-                                            <div class="text-xs font-bold text-slate-200 mt-1">
-                                                <strong class="text-cyan-300 text-sm font-black">{{ $leasingTotal['ach_cash'] }}</strong> / {{ $leasingTotal['target_cash'] }} Unit
-                                                <span class="text-[10px] text-cyan-200 font-bold ml-2">Tgt Ratio: {{ $leasingTotal['pct_target']['cash'] }}</span>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-black text-cyan-100 uppercase tracking-wider truncate">CASH (TUNAI)</h4>
+                                                <span class="text-[9px] font-extrabold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.2 rounded">Tgt Ratio: {{ $leasingTotal['pct_target']['cash'] }}</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="flex flex-col items-end shrink-0 pl-2">
-                                        <span class="px-3 py-1 rounded-lg text-xs font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm mb-1.5">
+                                        <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm shrink-0">
                                             {{ $leasingTotal['pct_ach']['cash'] }}
                                         </span>
-                                        <div class="w-24 bg-[#02050b] rounded-full h-2 overflow-hidden border border-cyan-400/40">
-                                            <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-1.5">
+                                        <span>Realisasi vs Target:</span>
+                                        <div>
+                                            <strong class="text-cyan-300 text-sm font-black">{{ $leasingTotal['ach_cash'] }}</strong> / {{ $leasingTotal['target_cash'] }} Unit
                                         </div>
+                                    </div>
+
+                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-cyan-400/40">
+                                        <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                     </div>
                                 </div>
 
                                 <!-- DISTINCT KREDIT CARD (TOTAL) -->
-                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.25)] hover:border-purple-300 flex items-center justify-between space-x-3 relative overflow-hidden group/kredit">
+                                <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_15px_rgba(168,85,247,0.25)] hover:border-purple-300 relative overflow-hidden group/kredit">
                                     <div class="absolute -right-8 -top-8 w-24 h-24 bg-purple-500/20 rounded-full blur-xl pointer-events-none"></div>
-                                    <div class="flex items-center space-x-3 min-w-0 flex-1">
-                                        <div class="w-10 h-10 rounded-xl bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
-                                            <i class="bi bi-credit-card-2-front-fill text-purple-300 text-lg"></i>
-                                        </div>
-                                        <div class="min-w-0 flex-1">
-                                            <div class="flex items-center space-x-2">
-                                                <h4 class="text-xs font-black text-purple-100 uppercase tracking-wider">KREDIT (FINANCE)</h4>
-                                                <span class="text-[9px] font-extrabold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-1.5 py-0.2 rounded">Utama</span>
+                                    
+                                    <div class="flex items-center justify-between mb-2">
+                                        <div class="flex items-center space-x-2.5 min-w-0">
+                                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
+                                                <i class="bi bi-credit-card-2-front-fill text-purple-300 text-base sm:text-lg"></i>
                                             </div>
-                                            <div class="text-xs font-bold text-slate-200 mt-1">
-                                                <strong class="text-purple-300 text-sm font-black">{{ $leasingTotal['ach_kredit'] }}</strong> / {{ $leasingTotal['target_kredit'] }} Unit
-                                                <span class="text-[10px] text-purple-200 font-bold ml-2">Tgt Ratio: {{ $leasingTotal['pct_target']['kredit'] }}</span>
+                                            <div class="min-w-0">
+                                                <h4 class="text-xs font-black text-purple-100 uppercase tracking-wider truncate">KREDIT (FINANCE)</h4>
+                                                <span class="text-[9px] font-extrabold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-1.5 py-0.2 rounded">Tgt Ratio: {{ $leasingTotal['pct_target']['kredit'] }}</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="flex flex-col items-end shrink-0 pl-2">
-                                        <span class="px-3 py-1 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm mb-1.5">
+                                        <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm shrink-0">
                                             {{ $leasingTotal['pct_ach']['kredit'] }}
                                         </span>
-                                        <div class="w-24 bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
-                                            <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-2 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-1.5">
+                                        <span>Realisasi vs Target:</span>
+                                        <div>
+                                            <strong class="text-purple-300 text-sm font-black">{{ $leasingTotal['ach_kredit'] }}</strong> / {{ $leasingTotal['target_kredit'] }} Unit
                                         </div>
+                                    </div>
+
+                                    <div class="w-full bg-[#02050b] rounded-full h-2 overflow-hidden border border-purple-400/40">
+                                        <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-2 rounded-full transition-all duration-500" style="width: {{ min(100, max(5, (int)filter_var($leasingTotal['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- TIER 2: 5 FINCOY PROVIDER BREAKDOWN (ADIRA, BAF, IMFI, MEGA, SOF) -->
-                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
-                                @foreach($fincoyKeys as $fk)
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
+                                @foreach($fincoyKeys as $idx => $fk)
                                     @php
                                         $achVal = $leasingTotal['fincoy_ach'][$fk];
                                         $tgtVal = $leasingTotal['fincoy_target'][$fk];
                                         $pctAchStr = $leasingTotal['pct_ach'][$fk];
                                         $pctTgtStr = $leasingTotal['pct_target'][$fk];
                                         $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                        $isLastOdd = ($loop->last && count($fincoyKeys) % 2 !== 0);
                                     @endphp
-                                    <div class="p-3 rounded-xl border transition bg-[#0e1326]/90 border-teal-500/30 hover:border-teal-400 shadow-md flex flex-col justify-between space-y-2">
+                                    <div class="p-2.5 sm:p-3 rounded-xl border transition bg-[#0e1326]/90 border-teal-500/30 hover:border-teal-400 shadow-md flex flex-col justify-between space-y-2 {{ $isLastOdd ? 'col-span-2 sm:col-span-1' : '' }}">
                                         <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
                                             <div class="flex items-center space-x-1.5">
                                                 <i class="bi bi-building text-teal-400 text-xs"></i>
@@ -1871,8 +1903,11 @@ $colorPalette = [
                                             </span>
                                         </div>
                                         <div>
-                                            <div class="text-xs font-black text-white">
-                                                <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                            <div class="flex items-center justify-between text-xs font-black text-white">
+                                                <span>Ach / Target:</span>
+                                                <div>
+                                                    <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                                </div>
                                             </div>
                                             <span class="text-[10px] text-slate-300 font-bold block mt-0.5">Tgt Ratio: {{ $pctTgtStr }}</span>
                                         </div>
@@ -1891,28 +1926,28 @@ $colorPalette = [
                             $cColor = $colorPalette[$b['cabang']] ?? '#e94560';
                             $achPctNum = (int)filter_var($b['pct_ach']['target'], FILTER_SANITIZE_NUMBER_INT);
                         @endphp
-                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-xl p-4 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
+                        <div class="dealer-card-root w-full bg-[#080a14]/90 border border-[#e94560]/40 rounded-xl p-3.5 sm:p-5 shadow-xl relative overflow-hidden hover:border-[#e94560]/80 transition duration-300 group">
                             <div class="absolute -right-12 -top-12 w-36 h-36 bg-[#e94560]/10 rounded-full blur-2xl group-hover:bg-[#e94560]/20 transition pointer-events-none"></div>
 
                             <!-- Header Bar Cabang (Horizontal Layout Memanjang Ke Kanan) -->
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#e94560]/30 pb-3 mb-3.5 gap-2.5">
-                                <div class="flex items-center space-x-3">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[#e94560]/30 pb-3 mb-3.5 gap-2.5">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <span class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: {{ $cColor }}; box-shadow: 0 0 10px {{ $cColor }}b0;"></span>
-                                    <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wide">
+                                    <h3 class="text-sm sm:text-base lg:text-lg font-black text-white uppercase tracking-wide">
                                         {{ $b['cabang'] }}
                                     </h3>
-                                    <span class="bg-[#e94560]/15 border border-[#e94560]/50 text-[#f36892] px-3 py-0.5 rounded-full text-xs font-black">DEALER</span>
+                                    <span class="bg-[#e94560]/15 border border-[#e94560]/50 text-[#f36892] px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black shrink-0">DEALER</span>
                                 </div>
                                 
                                 <!-- Summary STU Badge -->
-                                <div class="flex items-center space-x-2 bg-[#0e1326] border border-[#e94560]/50 px-3.5 py-1.5 rounded-xl shadow-inner self-start sm:self-auto">
-                                    <span class="text-[11px] text-slate-300 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
-                                    <span class="text-sm sm:text-base font-black text-emerald-400">
-                                        {{ $b['ach_total'] }}
-                                    </span>
-                                    <span class="text-xs text-slate-300 font-bold">/ <span class="text-white font-black">{{ $b['target_total'] }}</span> Target</span>
-                                    <span class="bg-[#e94560]/20 text-[#f36892] text-xs font-black px-2 py-0.5 rounded-md border border-[#e94560]/40 ml-1">
-                                        %ACH: {{ $b['pct_ach']['target'] }}
+                                <div class="flex flex-wrap items-center justify-between sm:justify-end gap-1.5 sm:gap-2 bg-[#0e1326] border border-[#e94560]/50 px-3 py-1.5 rounded-xl shadow-inner w-full md:w-auto">
+                                    <div class="flex items-center space-x-1 text-xs">
+                                        <span class="text-[10px] text-slate-300 uppercase font-extrabold tracking-wider">TOTAL ACH:</span>
+                                        <span class="font-black text-emerald-400 text-sm sm:text-base">{{ $b['ach_total'] }}</span>
+                                        <span class="text-slate-300 font-bold text-xs">/ <strong class="text-white font-black">{{ $b['target_total'] }}</strong> Unit</span>
+                                    </div>
+                                    <span class="bg-[#e94560]/20 text-[#f36892] text-xs font-black px-2.5 py-0.5 rounded-md border border-[#e94560]/40">
+                                        {{ $b['pct_ach']['target'] }} ACH
                                     </span>
                                 </div>
                             </div>
@@ -1922,71 +1957,76 @@ $colorPalette = [
                                 <!-- TIER 1 (CABANG): CASH & KREDIT -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <!-- CASH CABANG -->
-                                    <div class="p-3 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_12px_rgba(34,211,238,0.2)] hover:border-cyan-300 flex items-center justify-between space-x-3 relative overflow-hidden group/cash">
-                                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
-                                            <div class="w-8 h-8 rounded-lg bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(34,211,238,0.3)]">
-                                                <i class="bi bi-cash-stack text-cyan-300 text-sm"></i>
-                                            </div>
-                                            <div class="min-w-0 flex-1">
-                                                <div class="flex items-center space-x-1.5">
+                                    <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#0c2340] via-[#09182d] to-[#040914] border-[1.5px] border-cyan-400/80 shadow-[0_0_12px_rgba(34,211,238,0.2)] hover:border-cyan-300 relative overflow-hidden group/cash">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center space-x-2.5 min-w-0">
+                                                <div class="w-8 h-8 rounded-lg bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(34,211,238,0.3)]">
+                                                    <i class="bi bi-cash-stack text-cyan-300 text-sm"></i>
+                                                </div>
+                                                <div class="min-w-0">
                                                     <h4 class="text-xs font-black text-cyan-100 uppercase truncate">CASH</h4>
-                                                    <span class="text-[8.5px] font-extrabold text-cyan-300">Metode Utama</span>
-                                                </div>
-                                                <div class="text-xs font-bold text-slate-200 mt-0.5">
-                                                    <strong class="text-cyan-300 text-sm font-black">{{ $b['ach_cash'] }}</strong> / {{ $b['target_cash'] }} Unit
-                                                    <span class="text-[10px] text-cyan-200 font-bold ml-2">Tgt Ratio: {{ $b['pct_target']['cash'] }}</span>
+                                                    <span class="text-[9px] font-extrabold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.2 rounded">Tgt Ratio: {{ $b['pct_target']['cash'] }}</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="flex flex-col items-end shrink-0 pl-2">
-                                            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm mb-1">
+                                            <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-cyan-500/30 text-cyan-100 border border-cyan-400/70 shadow-sm shrink-0">
                                                 {{ $b['pct_ach']['cash'] }}
                                             </span>
-                                            <div class="w-20 bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-cyan-400/40">
-                                                <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-1.5">
+                                            <span>Realisasi vs Target:</span>
+                                            <div>
+                                                <strong class="text-cyan-300 text-sm font-black">{{ $b['ach_cash'] }}</strong> / {{ $b['target_cash'] }} Unit
                                             </div>
+                                        </div>
+
+                                        <div class="w-full bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-cyan-400/40">
+                                            <div class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['cash'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                         </div>
                                     </div>
 
                                     <!-- KREDIT CABANG -->
-                                    <div class="p-3 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_12px_rgba(168,85,247,0.2)] hover:border-purple-300 flex items-center justify-between space-x-3 relative overflow-hidden group/kredit">
-                                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
-                                            <div class="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.3)]">
-                                                <i class="bi bi-credit-card-2-front-fill text-purple-300 text-sm"></i>
-                                            </div>
-                                            <div class="min-w-0 flex-1">
-                                                <div class="flex items-center space-x-1.5">
+                                    <div class="p-3.5 rounded-xl border transition bg-gradient-to-r from-[#270e38] via-[#1a0826] to-[#040914] border-[1.5px] border-purple-400/80 shadow-[0_0_12px_rgba(168,85,247,0.2)] hover:border-purple-300 relative overflow-hidden group/kredit">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center space-x-2.5 min-w-0">
+                                                <div class="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/60 flex items-center justify-center shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.3)]">
+                                                    <i class="bi bi-credit-card-2-front-fill text-purple-300 text-sm"></i>
+                                                </div>
+                                                <div class="min-w-0">
                                                     <h4 class="text-xs font-black text-purple-100 uppercase truncate">KREDIT</h4>
-                                                    <span class="text-[8.5px] font-extrabold text-purple-300">Metode Utama</span>
-                                                </div>
-                                                <div class="text-xs font-bold text-slate-200 mt-0.5">
-                                                    <strong class="text-purple-300 text-sm font-black">{{ $b['ach_kredit'] }}</strong> / {{ $b['target_kredit'] }} Unit
-                                                    <span class="text-[10px] text-purple-200 font-bold ml-2">Tgt Ratio: {{ $b['pct_target']['kredit'] }}</span>
+                                                    <span class="text-[9px] font-extrabold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-1.5 py-0.2 rounded">Tgt Ratio: {{ $b['pct_target']['kredit'] }}</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="flex flex-col items-end shrink-0 pl-2">
-                                            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm mb-1">
+                                            <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-purple-500/30 text-purple-100 border border-purple-400/70 shadow-sm shrink-0">
                                                 {{ $b['pct_ach']['kredit'] }}
                                             </span>
-                                            <div class="w-20 bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-purple-400/40">
-                                                <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between text-xs font-bold text-slate-200 mb-1.5">
+                                            <span>Realisasi vs Target:</span>
+                                            <div>
+                                                <strong class="text-purple-300 text-sm font-black">{{ $b['ach_kredit'] }}</strong> / {{ $b['target_kredit'] }} Unit
                                             </div>
+                                        </div>
+
+                                        <div class="w-full bg-[#02050b] rounded-full h-1.5 overflow-hidden border border-purple-400/40">
+                                            <div class="bg-gradient-to-r from-purple-500 to-pink-400 h-1.5 rounded-full" style="width: {{ min(100, max(5, (int)filter_var($b['pct_ach']['kredit'], FILTER_SANITIZE_NUMBER_INT))) }}%;"></div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- TIER 2 (CABANG): 5 FINCOY ITEMS -->
-                                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
-                                    @foreach($fincoyKeys as $fk)
+                                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
+                                    @foreach($fincoyKeys as $idx => $fk)
                                         @php
                                             $achVal = $b['fincoy_ach'][$fk];
                                             $tgtVal = $b['fincoy_target'][$fk];
                                             $pctAchStr = $b['pct_ach'][$fk];
                                             $pctTgtStr = $b['pct_target'][$fk];
                                             $pctNum = (int)filter_var($pctAchStr, FILTER_SANITIZE_NUMBER_INT);
+                                            $isLastOdd = ($loop->last && count($fincoyKeys) % 2 !== 0);
                                         @endphp
-                                        <div class="p-2.5 rounded-xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-1.5">
+                                        <div class="p-2.5 rounded-xl border transition bg-[#0e1326]/90 border-[#e94560]/30 hover:border-[#e94560]/70 shadow-md flex flex-col justify-between space-y-1.5 {{ $isLastOdd ? 'col-span-2 sm:col-span-1' : '' }}">
                                             <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
                                                 <div class="flex items-center space-x-1.5 min-w-0">
                                                     <i class="bi bi-building text-teal-400 text-xs shrink-0"></i>
@@ -1997,8 +2037,11 @@ $colorPalette = [
                                                 </span>
                                             </div>
                                             <div>
-                                                <div class="text-xs font-black text-white">
-                                                    <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                                <div class="flex items-center justify-between text-xs font-black text-white">
+                                                    <span>Ach / Target:</span>
+                                                    <div>
+                                                        <strong class="{{ $achVal > 0 ? 'text-teal-300' : 'text-slate-300' }} text-sm">{{ $achVal }}</strong> / {{ $tgtVal }} Unit
+                                                    </div>
                                                 </div>
                                                 <span class="text-[9.5px] text-slate-300 font-bold block mt-0.5">Tgt Ratio: {{ $pctTgtStr }}</span>
                                             </div>
@@ -2130,7 +2173,7 @@ $colorPalette = [
                         <span class="w-3 h-3 rounded-full bg-[#e94560] shadow-[0_0_8px_#e94560] shrink-0 mt-1"></span>
                         <div>
                             <h2 class="text-sm sm:text-base lg:text-lg font-black text-[#f36892] uppercase tracking-wider leading-tight">
-                                STU (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
+                                UNIT (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
                             </h2>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
                                 ANALISA GRAFIK VISUAL CAPAIAN CHANNEL PENJUALAN & PRODUKTIVITAS SDM PER CABANG
@@ -2160,7 +2203,7 @@ $colorPalette = [
                     <!-- Card 1: TOTAL STU -->
                     <div class="bg-[#080a14]/90 border border-amber-500/40 p-3.5 rounded-2xl shadow-md">
                         <div class="flex items-center justify-between text-[10px] text-slate-400 font-extrabold uppercase mb-1">
-                            <span>TOTAL STU RESULT</span>
+                            <span>TOTAL UNIT RESULT</span>
                             <i class="bi bi-trophy-fill text-amber-400"></i>
                         </div>
                         <div class="text-xl sm:text-2xl font-black text-amber-400 leading-none mb-1">
@@ -2213,50 +2256,50 @@ $colorPalette = [
                         <div class="flex items-center space-x-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
                             <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wide">
-                                Grafik Komparasi Capaian STU Channel Penjualan per Cabang
+                                Grafik Komparasi Capaian Unit Channel Penjualan per Cabang
                             </h3>
                         </div>
                         <span class="text-xs text-slate-400 font-bold bg-slate-900/80 px-3 py-1 rounded-full border border-slate-800 self-start sm:self-auto">
-                            Satuan: Unit Motor (STU)
+                            Satuan: Unit Motor
                         </span>
                     </div>
 
-                    <!-- DEDICATED CENTERED GLOSSY LEGEND BAR (POSISI PRESISI & NYAMAN DILIHAT) -->
-                    <div class="flex justify-center my-1">
-                        <div class="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-[#04060d]/90 border border-slate-800/80 px-3.5 py-2 rounded-2xl sm:rounded-full shadow-lg backdrop-blur-md">
+                    <!-- DEDICATED CENTERED GLOSSY LEGEND BAR (MOBILE ADAPTIVE 1 ROW - NO SCROLLBAR) -->
+                    <div class="w-full flex justify-center my-1.5 overflow-x-auto sm:overflow-hidden no-scrollbar px-1">
+                        <div class="inline-flex flex-nowrap items-center justify-start sm:justify-center gap-1 sm:gap-1.5 md:gap-2 bg-[#04060d]/90 border border-slate-800/80 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl sm:rounded-full shadow-lg backdrop-blur-md whitespace-nowrap overflow-x-auto sm:overflow-hidden no-scrollbar max-w-full">
                             <!-- Sales Counter -->
-                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#34d399] shadow-[0_0_8px_#34d399] shrink-0"></span>
-                                <span class="text-xs font-black text-emerald-200 uppercase">Sales Counter</span>
-                                <span class="text-[10px] font-extrabold text-emerald-400 bg-emerald-950/90 px-1.5 py-0.5 rounded-md border border-emerald-500/40">{{ $totCounterStu }} STU</span>
+                            <div class="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2 py-0.5 rounded-lg sm:rounded-xl bg-emerald-950/40 border border-emerald-500/30 shrink-0 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#34d399] shadow-[0_0_6px_#34d399] shrink-0"></span>
+                                <span class="text-[8.5px] sm:text-[10px] md:text-xs font-black text-emerald-200 uppercase whitespace-nowrap">Sales Counter</span>
+                                <span class="text-[8px] sm:text-[9px] md:text-[10px] font-extrabold text-emerald-400 bg-emerald-950/90 px-1 sm:px-1.5 py-0.5 rounded border border-emerald-500/40 shrink-0 leading-none whitespace-nowrap">{{ $totCounterStu }} UNIT</span>
                             </div>
 
                             <!-- Salesman -->
-                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-blue-950/40 border border-blue-500/30">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#60a5fa] shadow-[0_0_8px_#60a5fa] shrink-0"></span>
-                                <span class="text-xs font-black text-blue-200 uppercase">Salesman</span>
-                                <span class="text-[10px] font-extrabold text-blue-400 bg-blue-950/90 px-1.5 py-0.5 rounded-md border border-blue-500/40">{{ $totSalesmanStu }} STU</span>
+                            <div class="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2 py-0.5 rounded-lg sm:rounded-xl bg-blue-950/40 border border-blue-500/30 shrink-0 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#60a5fa] shadow-[0_0_6px_#60a5fa] shrink-0"></span>
+                                <span class="text-[8.5px] sm:text-[10px] md:text-xs font-black text-blue-200 uppercase whitespace-nowrap">Salesman</span>
+                                <span class="text-[8px] sm:text-[9px] md:text-[10px] font-extrabold text-blue-400 bg-blue-950/90 px-1 sm:px-1.5 py-0.5 rounded border border-blue-500/40 shrink-0 leading-none whitespace-nowrap">{{ $totSalesmanStu }} UNIT</span>
                             </div>
 
                             <!-- Sales Digital -->
-                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-rose-950/40 border border-rose-500/30">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#f43f5e] shadow-[0_0_8px_#f43f5e] shrink-0"></span>
-                                <span class="text-xs font-black text-rose-200 uppercase">Sales Digital</span>
-                                <span class="text-[10px] font-extrabold text-rose-400 bg-rose-950/90 px-1.5 py-0.5 rounded-md border border-rose-500/40">{{ $totDigitalStu }} STU</span>
+                            <div class="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2 py-0.5 rounded-lg sm:rounded-xl bg-rose-950/40 border border-rose-500/30 shrink-0 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#f43f5e] shadow-[0_0_6px_#f43f5e] shrink-0"></span>
+                                <span class="text-[8.5px] sm:text-[10px] md:text-xs font-black text-rose-200 uppercase whitespace-nowrap">Sales Digital</span>
+                                <span class="text-[8px] sm:text-[9px] md:text-[10px] font-extrabold text-rose-400 bg-rose-950/90 px-1 sm:px-1.5 py-0.5 rounded border border-rose-500/40 shrink-0 leading-none whitespace-nowrap">{{ $totDigitalStu }} UNIT</span>
                             </div>
 
                             <!-- KDS D2 -->
-                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-amber-950/40 border border-amber-500/30">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#fbbf24] shadow-[0_0_8px_#fbbf24] shrink-0"></span>
-                                <span class="text-xs font-black text-amber-200 uppercase">KDS (D2)</span>
-                                <span class="text-[10px] font-extrabold text-amber-400 bg-amber-950/90 px-1.5 py-0.5 rounded-md border border-amber-500/40">{{ $totKdsStu }} STU</span>
+                            <div class="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2 py-0.5 rounded-lg sm:rounded-xl bg-amber-950/40 border border-amber-500/30 shrink-0 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#fbbf24] shadow-[0_0_6px_#fbbf24] shrink-0"></span>
+                                <span class="text-[8.5px] sm:text-[10px] md:text-xs font-black text-amber-200 uppercase whitespace-nowrap">KDS (D2)</span>
+                                <span class="text-[8px] sm:text-[9px] md:text-[10px] font-extrabold text-amber-400 bg-amber-950/90 px-1 sm:px-1.5 py-0.5 rounded border border-amber-500/40 shrink-0 leading-none whitespace-nowrap">{{ $totKdsStu }} UNIT</span>
                             </div>
 
                             <!-- Broker D1 -->
-                            <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-purple-950/40 border border-purple-500/30">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#c084fc] shadow-[0_0_8px_#c084fc] shrink-0"></span>
-                                <span class="text-xs font-black text-purple-200 uppercase">Broker (D1)</span>
-                                <span class="text-[10px] font-extrabold text-purple-400 bg-purple-950/90 px-1.5 py-0.5 rounded-md border border-purple-500/40">{{ $totBrokerStu }} STU</span>
+                            <div class="flex items-center space-x-1 sm:space-x-1.5 px-1.5 sm:px-2 py-0.5 rounded-lg sm:rounded-xl bg-purple-950/40 border border-purple-500/30 shrink-0 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#c084fc] shadow-[0_0_6px_#c084fc] shrink-0"></span>
+                                <span class="text-[8.5px] sm:text-[10px] md:text-xs font-black text-purple-200 uppercase whitespace-nowrap">Broker (D1)</span>
+                                <span class="text-[8px] sm:text-[9px] md:text-[10px] font-extrabold text-purple-400 bg-purple-950/90 px-1 sm:px-1.5 py-0.5 rounded border border-purple-500/40 shrink-0 leading-none whitespace-nowrap">{{ $totBrokerStu }} UNIT</span>
                             </div>
                         </div>
                     </div>
@@ -2275,7 +2318,7 @@ $colorPalette = [
                                 Grafik Distribusi Persentase Share Channel Penjualan Total
                             </h3>
                         </div>
-                        <span class="text-xs text-slate-400 font-bold">Total Share: 100% (163 STU)</span>
+                        <span class="text-xs text-slate-400 font-bold">Total Share: 100% ({{ $totStuVal }} UNIT)</span>
                     </div>
 
                     <div class="relative w-full h-[300px] sm:h-[340px] flex items-center justify-center">
@@ -2289,11 +2332,11 @@ $colorPalette = [
                         <thead>
                             <tr class="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-slate-950 font-black text-sm uppercase tracking-wider">
                                 <th colspan="6" class="py-2.5 px-4 border-b border-amber-500 shadow-md">
-                                    STU (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
+                                    UNIT (JENIS PENJUALAN) PER TGL {{ strtoupper(\Carbon\Carbon::now()->locale('id')->isoFormat('D-MMM-Y')) }}
                                 </th>
                             </tr>
                             <tr class="text-white font-extrabold uppercase text-xs tracking-wide">
-                                <th class="p-3 border border-slate-800 bg-purple-950/80 text-purple-200 w-44 text-left">CABANG / ACV / STU</th>
+                                <th class="p-3 border border-slate-800 bg-purple-950/80 text-purple-200 w-44 text-left">CABANG / ACV / UNIT</th>
                                 <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALES COUNTER</th>
                                 <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALESMAN</th>
                                 <th class="p-3 border border-slate-800 bg-emerald-950/80 text-emerald-300">SALES DIGITAL</th>
@@ -2313,13 +2356,13 @@ $colorPalette = [
                                             <span class="font-black text-sm text-white uppercase">{{ $b['nama'] }}</span>
                                         </div>
                                         <div class="text-[11px] text-purple-300 font-bold">
-                                            acv {{ $b['acv_pct'] }}% <span class="text-white font-extrabold ml-1">STU = {{ $b['stu_total'] }}</span>
+                                            acv {{ $b['acv_pct'] }}% <span class="text-white font-extrabold ml-1">UNIT = {{ $b['stu_total'] }}</span>
                                         </div>
                                     </td>
                                     <td class="p-3 border border-slate-800/80 bg-slate-950/40">
                                         <div class="text-base font-black text-white mb-1">{{ $b['counter']['pct'] }}%</div>
                                         <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
-                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['counter']['stu'] }}</strong></div>
+                                            <div>UNIT = <strong class="text-emerald-400 font-black">{{ $b['counter']['stu'] }}</strong></div>
                                             <div>sdm {{ $b['counter']['sdm'] }} org</div>
                                             <div>avg {{ $b['counter']['avg'] }} unit/org</div>
                                         </div>
@@ -2327,7 +2370,7 @@ $colorPalette = [
                                     <td class="p-3 border border-slate-800/80 bg-slate-950/40">
                                         <div class="text-base font-black text-white mb-1">{{ $b['salesman']['pct'] }}%</div>
                                         <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
-                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['salesman']['stu'] }}</strong></div>
+                                            <div>UNIT = <strong class="text-emerald-400 font-black">{{ $b['salesman']['stu'] }}</strong></div>
                                             <div>sdm {{ $b['salesman']['sdm'] }} org</div>
                                             <div>avg {{ $b['salesman']['avg'] }} unit/org</div>
                                         </div>
@@ -2335,7 +2378,7 @@ $colorPalette = [
                                     <td class="p-3 border border-slate-800/80 bg-slate-950/40">
                                         <div class="text-base font-black text-white mb-1">{{ $b['digital']['pct'] }}%</div>
                                         <div class="text-[10.5px] text-slate-300 leading-snug font-semibold">
-                                            <div>STU = <strong class="text-emerald-400 font-black">{{ $b['digital']['stu'] }}</strong></div>
+                                            <div>UNIT = <strong class="text-emerald-400 font-black">{{ $b['digital']['stu'] }}</strong></div>
                                             <div>sdm {{ $b['digital']['sdm'] }} org</div>
                                             <div>avg {{ $b['digital']['avg'] }} unit/org</div>
                                         </div>
@@ -2343,13 +2386,13 @@ $colorPalette = [
                                     <td class="p-3 border border-slate-800/80 bg-slate-950/40 align-middle">
                                         <div class="text-base font-black text-white mb-1">{{ $b['kds']['pct'] }}%</div>
                                         <div class="text-[11px] text-slate-300 font-bold">
-                                            STU = <strong class="text-emerald-400 font-black">{{ $b['kds']['stu'] }}</strong>
+                                            UNIT = <strong class="text-emerald-400 font-black">{{ $b['kds']['stu'] }}</strong>
                                         </div>
                                     </td>
                                     <td class="p-3 border border-slate-800/80 bg-slate-950/40 align-middle">
                                         <div class="text-base font-black text-white mb-1">{{ $b['broker']['pct'] }}%</div>
                                         <div class="text-[11px] text-slate-300 font-bold">
-                                            STU = <strong class="text-emerald-400 font-black">{{ $b['broker']['stu'] }}</strong>
+                                            UNIT = <strong class="text-emerald-400 font-black">{{ $b['broker']['stu'] }}</strong>
                                         </div>
                                     </td>
                                 </tr>
@@ -2360,13 +2403,13 @@ $colorPalette = [
                                 <td class="p-3 border border-slate-800 text-left bg-purple-950">
                                     <div class="text-sm font-black text-yellow-400 uppercase">TOTAL</div>
                                     <div class="text-xs text-purple-200">
-                                        acv {{ round(($totStuVal / max(1, $totalTargetMin)) * 100) }}% <span class="text-white font-extrabold ml-1">STU = {{ $totStuVal }}</span>
+                                        acv {{ round(($totStuVal / max(1, $totalTargetMin)) * 100) }}% <span class="text-white font-extrabold ml-1">UNIT = {{ $totStuVal }}</span>
                                     </div>
                                 </td>
                                 <td class="p-3 border border-slate-800 bg-slate-950/80">
                                     <div class="text-base font-black text-yellow-400 mb-1">{{ $totCounterPct }}%</div>
                                     <div class="text-[11px] text-slate-200 leading-snug font-bold">
-                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totCounterStu }}</strong></div>
+                                        <div>UNIT = <strong class="text-emerald-400 font-black">{{ $totCounterStu }}</strong></div>
                                         <div>sdm {{ $totCounterSdm }} org</div>
                                         <div>avg {{ $totCounterAvg }} unit/org</div>
                                     </div>
@@ -2374,7 +2417,7 @@ $colorPalette = [
                                 <td class="p-3 border border-slate-800 bg-slate-950/80">
                                     <div class="text-base font-black text-yellow-400 mb-1">{{ $totSalesmanPct }}%</div>
                                     <div class="text-[11px] text-slate-200 leading-snug font-bold">
-                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totSalesmanStu }}</strong></div>
+                                        <div>UNIT = <strong class="text-emerald-400 font-black">{{ $totSalesmanStu }}</strong></div>
                                         <div>sdm {{ $totSalesmanSdm }} org</div>
                                         <div>avg {{ $totSalesmanAvg }} unit/org</div>
                                     </div>
@@ -2382,7 +2425,7 @@ $colorPalette = [
                                 <td class="p-3 border border-slate-800 bg-slate-950/80">
                                     <div class="text-base font-black text-yellow-400 mb-1">{{ $totDigitalPct }}%</div>
                                     <div class="text-[11px] text-slate-200 leading-snug font-bold">
-                                        <div>STU = <strong class="text-emerald-400 font-black">{{ $totDigitalStu }}</strong></div>
+                                        <div>UNIT = <strong class="text-emerald-400 font-black">{{ $totDigitalStu }}</strong></div>
                                         <div>sdm {{ $totDigitalSdm }} org</div>
                                         <div>avg {{ $totDigitalAvg }} unit/org</div>
                                     </div>
@@ -2390,13 +2433,13 @@ $colorPalette = [
                                 <td class="p-3 border border-slate-800 bg-slate-950/80 align-middle">
                                     <div class="text-base font-black text-yellow-400 mb-1">{{ $totKdsPct }}%</div>
                                     <div class="text-xs text-slate-200 font-extrabold">
-                                        STU = <strong class="text-emerald-400 font-black">{{ $totKdsStu }}</strong>
+                                        UNIT = <strong class="text-emerald-400 font-black">{{ $totKdsStu }}</strong>
                                     </div>
                                 </td>
                                 <td class="p-3 border border-slate-800 bg-slate-950/80 align-middle">
                                     <div class="text-base font-black text-yellow-400 mb-1">{{ $totBrokerPct }}%</div>
                                     <div class="text-xs text-slate-200 font-extrabold">
-                                        STU = <strong class="text-emerald-400 font-black">{{ $totBrokerStu }}</strong>
+                                        UNIT = <strong class="text-emerald-400 font-black">{{ $totBrokerStu }}</strong>
                                     </div>
                                 </td>
                             </tr>
@@ -2599,7 +2642,7 @@ $colorPalette = [
                                         });
 
                                         // Draw sleek pill badge background for total
-                                        const textStr = totalVal + ' STU';
+                                        const textStr = totalVal + ' UNIT';
                                         ctx.font = '900 11.5px sans-serif';
                                         const textWidth = ctx.measureText(textStr).width;
                                         const badgeW = textWidth + 14;

@@ -80,7 +80,7 @@ class User extends Authenticatable
             if ($this->role === 'super_admin') {
                 return true;
             }
-            return in_array($menuKey, ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing'], true);
+            return in_array($menuKey, ['dashboard', 'stu_unit', 'stok_unit', 'cabang'], true);
         }
 
         return is_array($this->allowed_menus) && in_array($menuKey, $this->allowed_menus, true);
@@ -93,7 +93,6 @@ class User extends Authenticatable
             'dashboard'         => 'DASHBOARD',
             'stu_unit'          => 'STU UNIT',
             'stok_unit'         => 'STOK UNIT',
-            'digital_marketing' => 'SOSIAL MEDIA',
             'cabang'            => 'CABANG',
             'users'             => 'KELOLA USER',
         ];

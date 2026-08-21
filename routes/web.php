@@ -38,9 +38,6 @@ Route::middleware('auth')->group(function () {
     // STOK UNIT Page
     Route::middleware('menu:stok_unit')->get('/stok-unit', [\App\Http\Controllers\StokUnitController::class, 'index'])->name('stok.index');
 
-    // Digital Marketing Executive Dashboard
-    Route::middleware('menu:digital_marketing')->get('/digital-marketing', [\App\Http\Controllers\DigitalMarketingController::class, 'index'])->name('digital-marketing.index');
-
 
 
     // Permission-controlled Actions

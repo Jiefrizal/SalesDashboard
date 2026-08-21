@@ -94,7 +94,7 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-950/40 p-4 rounded-2xl border border-blue-900/60">
                 @php
-                    $oldMenus = old('allowed_menus', ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing']);
+                    $oldMenus = old('allowed_menus', ['dashboard', 'stu_unit', 'stok_unit']);
                 @endphp
                 
                 <label class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900/60 border border-blue-900/40 hover:border-blue-700/60 cursor-pointer transition">
@@ -119,18 +119,9 @@
                 </label>
 
                 <label class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900/60 border border-blue-900/40 hover:border-blue-700/60 cursor-pointer transition">
-                    <input type="checkbox" name="allowed_menus[]" value="digital_marketing" {{ in_array('digital_marketing', $oldMenus) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 bg-slate-950 border-blue-700">
-                    <span class="text-xs font-semibold text-white flex items-center">
-                        <i class="bi bi-instagram text-pink-400 mr-2"></i> SOSIAL MEDIA
-                    </span>
-                </label>
-
-
-
-                <label class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900/60 border border-blue-900/40 hover:border-blue-700/60 cursor-pointer transition">
                     <input type="checkbox" name="allowed_menus[]" value="cabang" {{ in_array('cabang', $oldMenus) ? 'checked' : '' }} class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 bg-slate-950 border-blue-700">
                     <span class="text-xs font-semibold text-white flex items-center">
-                        <i class="bi bi-building text-yellow-400 mr-2"></i> CABANG
+                        <i class="bi bi-building text-blue-400 mr-2"></i> CABANG
                     </span>
                 </label>
 

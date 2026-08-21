@@ -286,7 +286,7 @@ class SpreadsheetSyncTest extends TestCase
 
         $user = \App\Models\User::factory()->create([
             'role' => 'editor',
-            'allowed_menus' => ['dashboard', 'stu_unit', 'digital_marketing', 'cabang', 'users']
+            'allowed_menus' => ['dashboard', 'stu_unit', 'cabang', 'users']
         ]);
         $response = $this->actingAs($user)->post(route('cabang.updateYtd', $cabang), [
             'act_ytd_jan_2026' => 350
@@ -382,7 +382,8 @@ class SpreadsheetSyncTest extends TestCase
 
         $response = $this->actingAs($editorUser)->get(route('users.index'));
         $response->assertStatus(200);
-        $response->assertDontSee('Boss Admin');
+        $response->assertDontSee('boss@aspacindo.com');
         $response->assertSee('Editor Guy');
     }
+
 }

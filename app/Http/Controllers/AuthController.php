@@ -29,7 +29,7 @@ class AuthController extends Controller
                     'name'          => 'Viewer',
                     'password'      => '',
                     'role'          => 'viewer',
-                    'allowed_menus' => ['dashboard', 'stu_unit', 'stok_unit', 'digital_marketing'],
+                    'allowed_menus' => ['dashboard', 'stu_unit', 'stok_unit'],
                 ]
             );
         } else {
